@@ -1,6 +1,8 @@
 #ifndef PID_H_
 #define PID_H_
 
+#include "stm32XX_hal.h"
+
 float PID_Calculate(float Error);
 void PID_Reset_Integration_Error();
 void PID_Set_KP(float kp);
