@@ -17,21 +17,11 @@ uint8_t List_Add(List_Node_t **head, List_Node_t *new_node)
 {
     uint8_t xreturn = 0;
 
-    /* this is first node in the list */
-    if (head == NULL && new_node != NULL)
+    if (head != NULL && new_node != NULL)
     {
-        printf("%s", new_node->Data);
-        *head = new_node;
         xreturn = 1;
-    }
-    else if (*head != NULL && new_node != NULL)
-    {
-        printf("%s", new_node->Data);
         new_node->Next = *head;
-
         *head = new_node;
-
-        xreturn = 1;
     }
 
     return xreturn;
@@ -44,9 +34,7 @@ uint8_t List_Add_After(List_Node_t *node, List_Node_t *new_node)
     if (node != NULL && new_node != NULL)
     {
         new_node->Next = node->Next;
-
         node->Next = new_node;
-
         xreturn = 1;
     }
 
@@ -59,18 +47,26 @@ uint8_t List_Add_Before(List_Node_t **head, List_Node_t *node, List_Node_t *new_
 
     if (head != NULL && *head != NULL && node != NULL && new_node != NULL)
     {
-        List_Node_t *temp_node = *head;
-
-        while (temp_node->Next != NULL && temp_node->Next != node)
-        {
-            temp_node = temp_node->Next;
-        }
-
-        temp_node->Next = new_node;
-
-        new_node->Next = node;
-
         xreturn = 1;
+
+        /* check if it is the fist node */
+        if (*head == node)
+        {
+            new_node->Next = *head;
+            *head = new_node;
+        }
+        else
+        {
+            List_Node_t *temp_node = *head;
+
+            while (temp_node != NULL && temp_node->Next != node)
+            {
+                temp_node = temp_node->Next;
+            }
+
+            temp_node->Next = new_node;
+            new_node->Next = node;
+        }
     }
 
     return xreturn;
@@ -80,18 +76,26 @@ uint8_t List_Add_At_End(List_Node_t **head, List_Node_t *new_node)
 {
     uint8_t xreturn = 0;
 
-    if (head != NULL && *head != NULL && new_node != NULL)
+    if (head != NULL && new_node != NULL)
     {
-        List_Node_t *last = *head;
-
-        while (last->Next != NULL)
-        {
-            last = last->Next;
-        }
-
-        last->Next = new_node;
-
         xreturn = 1;
+
+        /* if this is the first node in list*/
+        if (*head == NULL)
+        {
+            *head = new_node;
+        }
+        else
+        {
+            List_Node_t *last = *head;
+
+            while (last->Next != NULL)
+            {
+                last = last->Next;
+            }
+
+            last->Next = new_node;
+        }
     }
 
     return xreturn;
@@ -135,7 +139,6 @@ uint8_t List_Delete_From_End(List_Node_t **head)
         if ((*head)->Next == NULL)
         {
             free(head);
-
             *head = NULL;
         }
         else
@@ -146,7 +149,6 @@ uint8_t List_Delete_From_End(List_Node_t **head)
             }
 
             free(second_last->Next);
-
             second_last->Next = NULL;
         }
     }
@@ -160,18 +162,28 @@ uint8_t List_Delete_Node(List_Node_t **head, List_Node_t *node)
 
     if (head != NULL && *head != NULL && node != NULL)
     {
-        List_Node_t *temp_node = *head;
-
-        while (temp_node->Next != NULL && temp_node->Next != node)
+        /* check if it is the fist node */
+        if (*head == node)
         {
-            temp_node = temp_node->Next;
+            free(node);
+            *head = node->Next;
         }
+        else
+        {
+            List_Node_t *temp_node = *head;
 
-        temp_node->Next = node->Next;
+            while (temp_node != NULL && temp_node->Next != node)
+            {
+                temp_node = temp_node->Next;
+            }
 
-        free(node);
-
-        xreturn = 1;
+            if (temp_node != NULL)
+            {
+                temp_node->Next = node->Next;
+                free(node);
+                xreturn = 1;
+            }
+        }
     }
 
     return xreturn;
@@ -188,7 +200,10 @@ List_Node_t *List_Find_Node(List_Node_t **head, void *data)
             temp_node = temp_node->Next;
         }
 
-        return temp_node;
+        if (temp_node != NULL)
+        {
+            return temp_node;
+        }
     }
 
     return NULL;
