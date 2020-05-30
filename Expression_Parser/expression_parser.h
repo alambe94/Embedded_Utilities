@@ -6,10 +6,11 @@
 /* pointer wrapped in structure instead of pointer to pointer or double */
 typedef struct EXP_Handle_t
 {
-    char *EXP;
+    const char *EXP;
 } EXP_Handle_t;
 
-int32_t Parse_Expression(EXP_Handle_t *handle);
+uint8_t Validate_Expression(const char *str);
+int32_t Evaluate_Expression(const char *str);
 
 
 #endif /* EXPRESSION_PARSER_H_ */
