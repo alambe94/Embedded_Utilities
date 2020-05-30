@@ -5,6 +5,12 @@
 
 #include "expression_parser.h"
 
+/* pointer wrapped in struct instead of pointer to pointer or double pointer */
+typedef struct EXP_Handle_t
+{
+    const char *EXP;
+} EXP_Handle_t;
+
 static int32_t Parse_Expression(EXP_Handle_t *handle);
 
 static char peek(EXP_Handle_t *handle)

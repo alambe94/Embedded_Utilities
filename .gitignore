@@ -56,4 +56,5 @@ build/
 doc/
 Release/
 release/
+.vscode/
 
