@@ -27,11 +27,11 @@ uint8_t List_Add(List_Node_t **head, List_Node_t *new_node)
     return xreturn;
 }
 
-uint8_t List_Add_After(List_Node_t *node, List_Node_t *new_node)
+uint8_t List_Add_After(List_Node_t **head, List_Node_t *node, List_Node_t *new_node)
 {
     uint8_t xreturn = 0;
 
-    if (node != NULL && new_node != NULL)
+    if (head != NULL && *head != NULL && node != NULL && new_node != NULL)
     {
         new_node->Next = node->Next;
         node->Next = new_node;
