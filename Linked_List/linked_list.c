@@ -1,7 +1,6 @@
 
 #include "linked_list.h"
 #include "stdlib.h"
-#include "stdio.h"
 
 List_Node_t *List_New_Node(void *data)
 {
