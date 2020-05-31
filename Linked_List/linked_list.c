@@ -13,7 +13,7 @@ List_Node_t *List_New_Node(void *data)
 /**
  *
  **/
-uint8_t List_Add(List_Node_t **head, List_Node_t *new_node)
+uint8_t List_Add_At_Top(List_Node_t **head, List_Node_t *new_node)
 {
     uint8_t xreturn = 0;
 
@@ -33,9 +33,9 @@ uint8_t List_Add_After(List_Node_t **head, List_Node_t *node, List_Node_t *new_n
 
     if (head != NULL && *head != NULL && node != NULL && new_node != NULL)
     {
+        xreturn = 1;
         new_node->Next = node->Next;
         node->Next = new_node;
-        xreturn = 1;
     }
 
     return xreturn;
@@ -47,11 +47,10 @@ uint8_t List_Add_Before(List_Node_t **head, List_Node_t *node, List_Node_t *new_
 
     if (head != NULL && *head != NULL && node != NULL && new_node != NULL)
     {
-        xreturn = 1;
-
         /* check if it is the fist node */
         if (*head == node)
         {
+            xreturn = 1;
             new_node->Next = *head;
             *head = new_node;
         }
@@ -64,8 +63,12 @@ uint8_t List_Add_Before(List_Node_t **head, List_Node_t *node, List_Node_t *new_
                 temp_node = temp_node->Next;
             }
 
-            temp_node->Next = new_node;
-            new_node->Next = node;
+            if (temp_node != NULL)
+            {
+                xreturn = 1;
+                temp_node->Next = new_node;
+                new_node->Next = node;
+            }
         }
     }
 
@@ -101,7 +104,7 @@ uint8_t List_Add_At_End(List_Node_t **head, List_Node_t *new_node)
     return xreturn;
 }
 
-uint8_t List_Delete(List_Node_t **head)
+uint8_t List_Delete_From_Top(List_Node_t **head)
 {
     uint8_t xreturn = 0;
 
@@ -132,7 +135,6 @@ uint8_t List_Delete_From_End(List_Node_t **head)
 
     if (head != NULL && *head != NULL)
     {
-        List_Node_t *second_last = *head;
         xreturn = 1;
 
         /* check if it is only node in list*/
@@ -143,13 +145,15 @@ uint8_t List_Delete_From_End(List_Node_t **head)
         }
         else
         {
-            while (second_last->Next->Next != NULL)
+            List_Node_t *temp_node = *head;
+
+            while (temp_node->Next->Next != NULL)
             {
-                second_last = second_last->Next;
+                temp_node = temp_node->Next;
             }
 
-            free(second_last->Next);
-            second_last->Next = NULL;
+            free(temp_node->Next);
+            temp_node->Next = NULL;
         }
     }
 
@@ -165,6 +169,7 @@ uint8_t List_Delete_Node(List_Node_t **head, List_Node_t *node)
         /* check if it is the fist node */
         if (*head == node)
         {
+            xreturn = 1;
             free(node);
             *head = node->Next;
         }
@@ -179,10 +184,31 @@ uint8_t List_Delete_Node(List_Node_t **head, List_Node_t *node)
 
             if (temp_node != NULL)
             {
+                xreturn = 1;
                 temp_node->Next = node->Next;
                 free(node);
-                xreturn = 1;
             }
+        }
+    }
+
+    return xreturn;
+}
+
+uint8_t List_Delete_All(List_Node_t **head)
+{
+    uint8_t xreturn = 0;
+
+    if (head != NULL && *head != NULL)
+    {
+        xreturn = 1;
+        List_Node_t *next = NULL;
+        List_Node_t *temp = *head;
+
+        while (temp != NULL)
+        {
+            next = temp->Next;
+            free(temp);
+            temp = next;
         }
     }
 
@@ -207,4 +233,33 @@ List_Node_t *List_Find_Node(List_Node_t **head, void *data)
     }
 
     return NULL;
+}
+
+uint8_t List_Push(List_Node_t **head, void *data)
+{
+    return List_Add_At_Top(head, List_New_Node(data));
+}
+
+uint8_t List_Pop(List_Node_t **head, void **data)
+{
+    uint8_t xreturn = 0;
+
+    if (head != NULL && *head != NULL)
+    {
+        *data = (*head)->Data;
+    }
+
+    return List_Delete_From_Top(head);
+}
+
+uint16_t List_Get_Count(List_Node_t **head)
+{
+    uint16_t count = 0;
+
+    for (List_Node_t *temp = *head; temp != NULL; temp = temp->Next)
+    {
+        count++;
+    }
+
+    return count;
 }
