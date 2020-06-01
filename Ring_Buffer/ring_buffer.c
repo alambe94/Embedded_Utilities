@@ -198,20 +198,20 @@ uint8_t Ring_Buffer_Search(Ring_Buffer_t *handle, void *data, uint32_t *position
 
 uint8_t Ring_Buffer_Put_Char(Ring_Buffer_t *handle, uint8_t data)
 {
-    Ring_Buffer_Put(handle, &data);
+    return Ring_Buffer_Put(handle, &data);
 }
 
 uint8_t Ring_Buffer_Get_Char(Ring_Buffer_t *handle, uint8_t *data)
 {
-    Ring_Buffer_Get(handle, &data);
+    return Ring_Buffer_Get(handle, &data);
 }
 
 uint8_t Ring_Buffer_Peek_Char(Ring_Buffer_t *handle, uint8_t *data, uint32_t position)
 {
-    Ring_Buffer_Peek(handle, &data, position);
+    return Ring_Buffer_Peek(handle, &data, position);
 }
 
 uint8_t Ring_Buffer_Search_Char(Ring_Buffer_t *handle, uint8_t data, uint32_t *position)
 {
-    Ring_Buffer_Search(handle, &data, position);
+    return Ring_Buffer_Search(handle, &data, position);
 }
