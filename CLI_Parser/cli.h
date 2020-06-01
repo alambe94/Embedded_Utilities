@@ -28,7 +28,7 @@
 #ifndef _CLI_H_
 #define _CLI_H_
 
-#include "stm32f4xx_hal.h"
+#include "stdint.h"
 
 typedef struct
 {
@@ -42,8 +42,8 @@ typedef struct
 } CLI_Command_t;
 
 void CLI_Init();
-uint8_t CLI_Add_Cammand(CLI_Command_t *command_def);
-uint8_t CLI_Process_Cammand(const char *cli_in_buffer, char *cli_tx_out_buffer, uint16_t max_buffer_len);
+uint8_t CLI_Add_Command(CLI_Command_t *command_def);
+uint8_t CLI_Process_Command(const char *cli_in_buffer, char *cli_tx_out_buffer, uint16_t max_buffer_len);
 void CLI_Parse_Arguments(const char *cli_in_buffer, uint8_t *argc, const char *argv[]);
 uint8_t CLI_Get_Argument_Length(const char *arg);
 

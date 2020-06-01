@@ -159,7 +159,7 @@ uint8_t Ring_Buffer_Peek(Ring_Buffer_t *handle, void *data, uint32_t position)
     return xreturn;
 }
 
-uint8_t Ring_Buffer_Search(Ring_Buffer_t *handle, void *data, uint32_t *posotion)
+uint8_t Ring_Buffer_Search(Ring_Buffer_t *handle, void *data, uint32_t *position)
 {
     uint8_t xreturn = 1;
     uint8_t *ptr = (uint8_t *)data;
@@ -181,7 +181,7 @@ uint8_t Ring_Buffer_Search(Ring_Buffer_t *handle, void *data, uint32_t *posotion
 
         if (xreturn)
         {
-            *posotion = temp;
+            *position = temp;
             break;
         }
 
@@ -211,7 +211,7 @@ uint8_t Ring_Buffer_Peek_Char(Ring_Buffer_t *handle, uint8_t *data, uint32_t pos
     Ring_Buffer_Peek(handle, &data, position);
 }
 
-uint8_t Ring_Buffer_Search_Char(Ring_Buffer_t *handle, uint8_t data, uint32_t *posotion)
+uint8_t Ring_Buffer_Search_Char(Ring_Buffer_t *handle, uint8_t data, uint32_t *position)
 {
-    Ring_Buffer_Search(handle, &data, posotion);
+    Ring_Buffer_Search(handle, &data, position);
 }

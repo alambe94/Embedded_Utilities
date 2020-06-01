@@ -22,11 +22,11 @@ uint8_t Ring_Buffer_Is_Empty(Ring_Buffer_t *handle);
 uint8_t Ring_Buffer_Put(Ring_Buffer_t *handle, void *buffer);
 uint8_t Ring_Buffer_Get(Ring_Buffer_t *handle, void *buffer);
 uint8_t Ring_Buffer_Peek(Ring_Buffer_t *handle, void *data, uint32_t position);
-uint8_t Ring_Buffer_Search(Ring_Buffer_t *handle, void *data, uint32_t *posotion);
+uint8_t Ring_Buffer_Search(Ring_Buffer_t *handle, void *data, uint32_t *position);
 
 uint8_t Ring_Buffer_Put_Char(Ring_Buffer_t *handle, uint8_t data);
 uint8_t Ring_Buffer_Get_Char(Ring_Buffer_t *handle, uint8_t *data);
 uint8_t Ring_Buffer_Peek_Char(Ring_Buffer_t *handle, uint8_t *data, uint32_t position);
-uint8_t Ring_Buffer_Search_Char(Ring_Buffer_t *handle, uint8_t data, uint32_t *posotion);
+uint8_t Ring_Buffer_Search_Char(Ring_Buffer_t *handle, uint8_t data, uint32_t *position);
 
 #endif /* RING_BUFFER_H_ */

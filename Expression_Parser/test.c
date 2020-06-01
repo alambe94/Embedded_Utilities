@@ -3,7 +3,7 @@
 
 void main()
 {
-    char *exp1 = "10*5(10+30)1";
+    char *exp1 = "10*5(10+30))";
     char *exp2 = "10*10/30";
     char *exp3 = "10+10*30";
     char *exp4 = "10-10+30";

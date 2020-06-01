@@ -1,7 +1,7 @@
 #ifndef EXPRESSION_PARSER_H_
 #define EXPRESSION_PARSER_H_
 
-#include "stm32XX_hal.h"
+#include "stdlib.h"
 
 
 uint8_t Validate_Expression(const char *str);

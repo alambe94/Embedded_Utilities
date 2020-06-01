@@ -37,7 +37,7 @@ static uint16_t Command_Count = 0;
 /**
  * @brief list of all registered commands
  **/
-static CLI_Command_t *Cammand_List[MAX_COMMANDS];
+static CLI_Command_t *Command_List[MAX_COMMANDS];
 
 /**
  * @brief help callback prototype
@@ -55,7 +55,7 @@ static uint8_t Clear_Callback(uint8_t argc,
 /**
  * @brief definition of help command
  **/
-static CLI_Command_t Help_Defination =
+static CLI_Command_t Help_Definition =
     {
         /* command string to type */
         .CLI_Command = "help",
@@ -66,7 +66,7 @@ static CLI_Command_t Help_Defination =
         /* function to run. */
         .CLI_Callback = Help_Callback};
 
-static CLI_Command_t Clear_Defination =
+static CLI_Command_t Clear_Definition =
     {
         /* command string to type */
         .CLI_Command = "clear",
@@ -82,8 +82,8 @@ static CLI_Command_t Clear_Defination =
  **/
 void CLI_Init()
 {
-    CLI_Add_Cammand(&Help_Defination);
-    CLI_Add_Cammand(&Clear_Defination);
+    CLI_Add_Command(&Help_Definition);
+    CLI_Add_Command(&Clear_Definition);
 }
 
 /**
@@ -92,12 +92,12 @@ void CLI_Init()
  * @see CLI_Init for example
  * @note adjust MAX_COMMANDS accordingly
  **/
-uint8_t CLI_Add_Cammand(CLI_Command_t *command_def)
+uint8_t CLI_Add_Command(CLI_Command_t *command_def)
 {
     if (Command_Count < MAX_COMMANDS)
     {
         command_def->CLI_Command_Length = strlen(command_def->CLI_Command);
-        Cammand_List[Command_Count] = command_def;
+        Command_List[Command_Count] = command_def;
         Command_Count++;
         return 1; // command add successful
     }
@@ -114,7 +114,7 @@ uint8_t CLI_Add_Cammand(CLI_Command_t *command_def)
  * @retval return 0 if command process completed. return 1 if there are more outputs to be generated
  * @see cli_uart_interface.c
  **/
-uint8_t CLI_Process_Cammand(const char *cli_in_buffer,
+uint8_t CLI_Process_Command(const char *cli_in_buffer,
                             char *cli_out_buffer,
                             uint16_t cli_out_max)
 {
@@ -127,7 +127,7 @@ uint8_t CLI_Process_Cammand(const char *cli_in_buffer,
     /* Search for the command string in the list of registered commands. */
     for (uint16_t i = 0; i < Command_Count; i++)
     {
-        command_list_ptr = Cammand_List[i];
+        command_list_ptr = Command_List[i];
         uint16_t cmd_len = command_list_ptr->CLI_Command_Length;
 
         /** To ensure the string lengths match exactly, so as not to pick up
@@ -240,7 +240,7 @@ static uint8_t Help_Callback(uint8_t argc,
 {
     static uint16_t count = 0;
 
-    CLI_Command_t *command_list_ptr = Cammand_List[count];
+    CLI_Command_t *command_list_ptr = Command_List[count];
 
     snprintf(cli_out_buffer,
              cli_out_max,
