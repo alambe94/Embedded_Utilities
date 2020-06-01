@@ -1,13 +1,14 @@
 #ifndef STACK_H_
 #define STACK_H_
 
-#include "stm32XX_hal.h"
+#include "stdint.h"
 
 typedef struct Stack_t
 {
     uint8_t *Buffer;
     uint16_t Count;
     uint16_t Size;
+
 } Stack_t;
 
 void Stack_Init(Stack_t *handle, uint8_t *buffer, uint16_t size);
