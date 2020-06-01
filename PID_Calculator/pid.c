@@ -1,6 +1,6 @@
 #include "pid.h"
 
-#define MAX_PID_OUTPUT ((72000000 / 20000) - 1) //  clock/pwm freq
+#define MAX_PID_OUTPUT (1000)
 #define MAX_INTEGRATION_ERROR (150)
 
 static float PID_KP = 1000;
