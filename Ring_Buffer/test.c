@@ -2,21 +2,9 @@
 #include "ring_buffer.h"
 #include "sys/timeb.h"
 
-uint8_t Ring_Buffer_Storage[1000];
-Ring_Buffer_t RB1;
-
-struct XYZ_t
-{
-    uint64_t x;
-    uint64_t y;
-    uint64_t z;
-};
-
-struct XYZ_t RB_Generic_Storage[1000];
-RB_Generic_t RBG1;
-
-void Test();
-void RB_Generic_Test();
+void Ring_Buffer_Test_Char();
+void Ring_Buffer_Test_Short();
+void Ring_Buffer_Test_Custom();
 
 uint64_t system_current_time_millis()
 {
@@ -33,46 +21,111 @@ uint64_t system_current_time_millis()
 
 void main()
 {
-    //Test();
-    RB_Generic_Test();
+    //Ring_Buffer_Test_Char();
+    //Ring_Buffer_Test_Short();
+    Ring_Buffer_Test_Custom();
 }
 
-void Test()
+uint8_t Storage_Char[100];
+Ring_Buffer_t RB_Char;
+void Ring_Buffer_Test_Char()
 {
-    uint8_t data;
+    uint8_t data = 0;
+    uint64_t time_elapsed = system_current_time_millis();
 
-    Ring_Buffer_Init(&RB1, Ring_Buffer_Storage, sizeof(Ring_Buffer_Storage));
+    printf("elements = %d\n", sizeof(Storage_Char) / sizeof(Storage_Char[0]));
 
-    for (uint16_t i = 0; i < 1000; i++)
+    Ring_Buffer_Init(&RB_Char, (uint8_t *)Storage_Char, sizeof(Storage_Char[0]), sizeof(Storage_Char) / sizeof(Storage_Char[0]));
+
+    for (uint32_t i = 0; i < sizeof(Storage_Char) / sizeof(Storage_Char[0]); i++)
     {
-        Ring_Buffer_Put_Char(&RB1, i);
+        Ring_Buffer_Put(&RB_Char, &data);
+        data++;
     }
 
-    while (Ring_Buffer_Get_Char(&RB1, &data))
+    while (Ring_Buffer_Get(&RB_Char, &data))
     {
         printf("%d\n", data);
     }
+
+    time_elapsed = system_current_time_millis() - time_elapsed;
+
+    printf("elapsed time %llu\n", time_elapsed);
 }
 
-void RB_Generic_Test()
+uint16_t Storage_Short[10000];
+Ring_Buffer_t RB_Short;
+void Ring_Buffer_Test_Short()
 {
-    struct XYZ_t data = {1, 0, 0};
-
+    uint16_t data = 0;
     uint64_t time_elapsed = system_current_time_millis();
 
-    printf("elements = %d\n", sizeof(RB_Generic_Storage) / sizeof(RB_Generic_Storage[0]));
+    printf("elements = %d\n", sizeof(Storage_Short) / sizeof(Storage_Short[0]));
 
-    RB_Generic_Init(&RBG1, (uint8_t *)RB_Generic_Storage, sizeof(RB_Generic_Storage[0]), sizeof(RB_Generic_Storage) / sizeof(RB_Generic_Storage[0]));
+    Ring_Buffer_Init(&RB_Short, (uint8_t *)Storage_Short, sizeof(Storage_Short[0]), sizeof(Storage_Short) / sizeof(Storage_Short[0]));
 
-    for (size_t i = 0; i < sizeof(RB_Generic_Storage) / sizeof(RB_Generic_Storage[0]); i++)
+    for (uint32_t i = 0; i < sizeof(Storage_Short) / sizeof(Storage_Short[0]); i++)
     {
-        RB_Generic_Put(&RBG1, &data);
+        Ring_Buffer_Put(&RB_Short, &data);
+        data++;
+    }
+
+    while (Ring_Buffer_Get(&RB_Short, &data))
+    {
+        printf("%d\n", data);
+    }
+
+    time_elapsed = system_current_time_millis() - time_elapsed;
+
+    printf("elapsed time %llu\n", time_elapsed);
+}
+
+struct XYZ_t
+{
+    uint64_t x;
+    uint64_t y;
+    uint64_t z;
+};
+
+struct XYZ_t Storage_Custom[10000];
+Ring_Buffer_t RB_Custom;
+void Ring_Buffer_Test_Custom()
+{
+    struct XYZ_t data = {0, 0, 0};
+    uint64_t time_elapsed = system_current_time_millis();
+
+    printf("elements = %d\n", sizeof(Storage_Custom) / sizeof(Storage_Custom[0]));
+
+    Ring_Buffer_Init(&RB_Custom, (uint8_t *)Storage_Custom, sizeof(Storage_Custom[0]), sizeof(Storage_Custom) / sizeof(Storage_Custom[0]));
+
+    for (uint32_t i = 0; i < sizeof(Storage_Custom) / sizeof(Storage_Custom[0]); i++)
+    {
+        Ring_Buffer_Put(&RB_Custom, &data);
         data.x++;
         data.y += 2;
         data.z += 10;
     }
 
-    while (RB_Generic_Get(&RBG1, &data))
+    /* get count test */
+    printf("counts = %d\n", Ring_Buffer_Get_Count(&RB_Custom));
+
+    /* peek test*/
+    for (uint32_t i = 0; i < sizeof(Storage_Custom) / sizeof(Storage_Custom[0]); i++)
+    {
+        Ring_Buffer_Peek(&RB_Custom, &data, i);
+        printf("x%llu y%llu z%llu\n", data.x, data.y, data.z);
+    }
+
+    /* search test */
+    struct XYZ_t search = {9998, 19996, 99980};
+    uint32_t position = 0;
+    Ring_Buffer_Search(&RB_Custom, &search, &position);
+    printf("position = %llu\n", position);
+    Ring_Buffer_Peek(&RB_Custom, &data, position);
+    printf("x%llu y%llu z%llu\n", data.x, data.y, data.z);
+
+    /* get test */
+    while (Ring_Buffer_Get(&RB_Custom, &data))
     {
         printf("x%llu y%llu z%llu\n", data.x, data.y, data.z);
     }
