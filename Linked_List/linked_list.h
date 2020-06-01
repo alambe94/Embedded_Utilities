@@ -3,6 +3,8 @@
 
 #include "stdint.h"
 
+#define USE_LIST_ASSERT
+
 typedef struct List_Node_t
 {
     void *Data;
@@ -24,5 +26,12 @@ uint8_t List_Delete_All(List_Node_t **head);
 uint8_t List_Push(List_Node_t **head, void *data);
 uint8_t List_Pop(List_Node_t **head, void **data);
 uint16_t List_Get_Count(List_Node_t **head);
+
+#ifdef USE_LIST_ASSERT
+void List_Assert(uint8_t *file, uint32_t line);
+#define LIST_ASSERT(expr) ((expr) ? (void)0U : List_Assert((uint8_t *)__FILE__, __LINE__))
+#else
+#define LIST_ASSERT(expr) ((void)0U)
+#endif
 
 #endif /* LINKED_LIST_H_ */

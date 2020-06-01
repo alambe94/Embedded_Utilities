@@ -4,6 +4,8 @@
 
 List_Node_t *List_New_Node(void *data)
 {
+    LIST_ASSERT(data);
+
     List_Node_t *new_node = (List_Node_t *)malloc(sizeof(List_Node_t));
     new_node->Data = data;
     new_node->Next = NULL;
@@ -14,6 +16,9 @@ List_Node_t *List_New_Node(void *data)
  **/
 uint8_t List_Add_At_Top(List_Node_t **head, List_Node_t *new_node)
 {
+    LIST_ASSERT(head);
+    LIST_ASSERT(new_node);
+
     uint8_t xreturn = 0;
 
     if (head != NULL && new_node != NULL)
@@ -28,6 +33,10 @@ uint8_t List_Add_At_Top(List_Node_t **head, List_Node_t *new_node)
 
 uint8_t List_Add_After(List_Node_t **head, List_Node_t *node, List_Node_t *new_node)
 {
+    LIST_ASSERT(head);
+    LIST_ASSERT(node);
+    LIST_ASSERT(new_node);
+
     uint8_t xreturn = 0;
 
     if (head != NULL && *head != NULL && node != NULL && new_node != NULL)
@@ -42,6 +51,10 @@ uint8_t List_Add_After(List_Node_t **head, List_Node_t *node, List_Node_t *new_n
 
 uint8_t List_Add_Before(List_Node_t **head, List_Node_t *node, List_Node_t *new_node)
 {
+    LIST_ASSERT(head);
+    LIST_ASSERT(node);
+    LIST_ASSERT(new_node);
+
     uint8_t xreturn = 0;
 
     if (head != NULL && *head != NULL && node != NULL && new_node != NULL)
@@ -76,6 +89,9 @@ uint8_t List_Add_Before(List_Node_t **head, List_Node_t *node, List_Node_t *new_
 
 uint8_t List_Add_At_End(List_Node_t **head, List_Node_t *new_node)
 {
+    LIST_ASSERT(head);
+    LIST_ASSERT(new_node);
+
     uint8_t xreturn = 0;
 
     if (head != NULL && new_node != NULL)
@@ -105,6 +121,8 @@ uint8_t List_Add_At_End(List_Node_t **head, List_Node_t *new_node)
 
 uint8_t List_Delete_From_Top(List_Node_t **head)
 {
+    LIST_ASSERT(head);
+
     uint8_t xreturn = 0;
 
     if (head != NULL && *head != NULL)
@@ -130,6 +148,8 @@ uint8_t List_Delete_From_Top(List_Node_t **head)
 
 uint8_t List_Delete_From_End(List_Node_t **head)
 {
+    LIST_ASSERT(head);
+
     uint8_t xreturn = 0;
 
     if (head != NULL && *head != NULL)
@@ -161,6 +181,9 @@ uint8_t List_Delete_From_End(List_Node_t **head)
 
 uint8_t List_Delete_Node(List_Node_t **head, List_Node_t *node)
 {
+    LIST_ASSERT(head);
+    LIST_ASSERT(node);
+
     uint8_t xreturn = 0;
 
     if (head != NULL && *head != NULL && node != NULL)
@@ -195,6 +218,8 @@ uint8_t List_Delete_Node(List_Node_t **head, List_Node_t *node)
 
 uint8_t List_Delete_All(List_Node_t **head)
 {
+    LIST_ASSERT(head);
+
     uint8_t xreturn = 0;
 
     if (head != NULL && *head != NULL)
@@ -216,6 +241,9 @@ uint8_t List_Delete_All(List_Node_t **head)
 
 List_Node_t *List_Find_Node(List_Node_t **head, void *data)
 {
+    LIST_ASSERT(head);
+    LIST_ASSERT(data);
+
     if (head != NULL && *head != NULL)
     {
         List_Node_t *temp_node = *head;
@@ -236,11 +264,18 @@ List_Node_t *List_Find_Node(List_Node_t **head, void *data)
 
 uint8_t List_Push(List_Node_t **head, void *data)
 {
+    LIST_ASSERT(head);
+    LIST_ASSERT(data);
+
     return List_Add_At_Top(head, List_New_Node(data));
 }
 
 uint8_t List_Pop(List_Node_t **head, void **data)
 {
+    LIST_ASSERT(head);
+    LIST_ASSERT(data);
+    LIST_ASSERT(*data);
+
     uint8_t xreturn = 0;
 
     if (head != NULL && *head != NULL)
@@ -253,6 +288,8 @@ uint8_t List_Pop(List_Node_t **head, void **data)
 
 uint16_t List_Get_Count(List_Node_t **head)
 {
+    LIST_ASSERT(head);
+
     uint16_t count = 0;
 
     for (List_Node_t *temp = *head; temp != NULL; temp = temp->Next)
@@ -262,3 +299,11 @@ uint16_t List_Get_Count(List_Node_t **head)
 
     return count;
 }
+
+#ifdef USE_LIST_ASSERT
+#include "stdio.h"
+void List_Assert(uint8_t *file, uint32_t line)
+{
+    printf("assertion failed, file=%s, line=%lu\n", file, line);
+}
+#endif

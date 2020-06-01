@@ -6,11 +6,13 @@
 
 void Test();
 void List_As_Stack_Test();
+void List_Assersions();
 
 void main()
 {
     //Test();
-    List_As_Stack_Test();
+    //List_As_Stack_Test();
+    List_Assersions();
 }
 
 void Test()
@@ -131,7 +133,7 @@ void List_As_Stack_Test()
     List_Push(&head, "19");
     List_Push(&head, "20");
 
-    for(uint16_t i=21; i<50000; i++)
+    for (uint16_t i = 21; i < 50000; i++)
     {
         char *buf = malloc(6);
         snprintf(buf, 6, "%d", i);
@@ -142,4 +144,11 @@ void List_As_Stack_Test()
     {
         printf("%s\n", data);
     }
+}
+
+void List_Assersions()
+{
+    List_New_Node(NULL);
+    List_Add_At_Top(NULL, NULL);
+    List_Add_After(NULL, NULL, NULL);
 }
