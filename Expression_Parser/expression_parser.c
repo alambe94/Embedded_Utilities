@@ -156,7 +156,33 @@ uint8_t Validate_Expression(const char *str)
     return xreturn;
 }
 
-int32_t Evaluate_Expression(const char *str)
+uint8_t Evaluate_Expression(const char *str, int32_t *value, uint8_t *sign)
+{
+    uint8_t xreturn = 0;
+    int32_t val = 0;
+
+    if (Validate_Expression(str))
+    {
+        xreturn = 1;
+        val = Parse_Expression((EXP_Handle_t *)&str);
+
+        if (val >= 0)
+        {
+            *sign = 1;
+        }
+        else
+        {
+            *sign = 0;
+            val *= -1;
+        }
+
+        *value = val;
+    }
+
+    return xreturn;
+}
+
+int32_t Evaluate_Expression2(const char *str)
 {
     return Parse_Expression((EXP_Handle_t *)&str);
 }
