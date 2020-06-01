@@ -15,19 +15,19 @@ void main()
 
     if (Validate_Expression(exp1))
     {
-        printf("result = %li\n", Evaluate_Expression2(exp1));
+        printf("result = %li\n", Evaluate_Expression(exp1));
     }
     else
     {
         printf("invalid expression!!\n");
     }
 
-    printf("result = %li\n", Evaluate_Expression2(exp2));
-    printf("result = %li\n", Evaluate_Expression2(exp3));
-    printf("result = %li\n", Evaluate_Expression2(exp4));
-    printf("result = %li\n", Evaluate_Expression2(exp5));
-    printf("result = %li\n", Evaluate_Expression2(exp6));
-    printf("result = %li\n", Evaluate_Expression2(exp7));
-    printf("result = %li\n", Evaluate_Expression2(exp8));
-    printf("result = %li\n", Evaluate_Expression2(exp9));
+    printf("result = %li\n", Evaluate_Expression(exp2));
+    printf("result = %li\n", Evaluate_Expression(exp3));
+    printf("result = %li\n", Evaluate_Expression(exp4));
+    printf("result = %li\n", Evaluate_Expression(exp5));
+    printf("result = %li\n", Evaluate_Expression(exp6));
+    printf("result = %li\n", Evaluate_Expression(exp7));
+    printf("result = %li\n", Evaluate_Expression(exp8));
+    printf("result = %li\n", Evaluate_Expression(exp9));
 }

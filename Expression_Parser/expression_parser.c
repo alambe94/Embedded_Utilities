@@ -156,7 +156,17 @@ uint8_t Validate_Expression(const char *str)
     return xreturn;
 }
 
-uint8_t Evaluate_Expression(const char *str, int32_t *value, uint8_t *sign)
+int32_t Evaluate_Expression(const char *str)
+{
+    /* skip '=' if any*/
+    if (*str == '=')
+    {
+        str++;
+    }
+    return Parse_Expression((EXP_Handle_t *)&str);
+}
+
+uint8_t Evaluate_Expression2(const char *str, int32_t *value, uint8_t *sign)
 {
     uint8_t xreturn = 0;
     int32_t val = 0;
@@ -164,12 +174,8 @@ uint8_t Evaluate_Expression(const char *str, int32_t *value, uint8_t *sign)
     if (Validate_Expression(str))
     {
         xreturn = 1;
-        /* skip '=' if any*/
-        if (*str == '=')
-        {
-            str++;
-        }
-        val = Parse_Expression((EXP_Handle_t *)&str);
+
+        val = Evaluate_Expression(str);
 
         if (val >= 0)
         {
@@ -187,12 +193,4 @@ uint8_t Evaluate_Expression(const char *str, int32_t *value, uint8_t *sign)
     return xreturn;
 }
 
-int32_t Evaluate_Expression2(const char *str)
-{
-    /* skip '=' if any*/
-    if (*str == '=')
-    {
-        str++;
-    }
-    return Parse_Expression((EXP_Handle_t *)&str);
-}
+

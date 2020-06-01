@@ -244,7 +244,8 @@ static uint8_t Help_Callback(uint8_t argc,
 
     snprintf(cli_out_buffer,
              cli_out_max,
-             "\r\n%-20s: %s\r\n", command_list_ptr->CLI_Command,
+             "\r\n%-20s: %s\r\n",
+             command_list_ptr->CLI_Command,
              command_list_ptr->CLI_Command_Description);
 
     count++;
