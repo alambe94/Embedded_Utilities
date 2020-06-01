@@ -3,6 +3,9 @@
 
 #include "stdint.h"
 
+
+#define USE_RB_ASSERT
+
 typedef struct Ring_Buffer_t
 {
 	uint8_t *Storage;
@@ -28,5 +31,12 @@ uint8_t Ring_Buffer_Put_Char(Ring_Buffer_t *handle, uint8_t data);
 uint8_t Ring_Buffer_Get_Char(Ring_Buffer_t *handle, uint8_t *data);
 uint8_t Ring_Buffer_Peek_Char(Ring_Buffer_t *handle, uint8_t *data, uint32_t position);
 uint8_t Ring_Buffer_Search_Char(Ring_Buffer_t *handle, uint8_t data, uint32_t *position);
+
+#ifdef USE_RB_ASSERT
+void RB_Assert(uint8_t *file, uint32_t line);
+#define RB_ASSERT(expr) ((expr) ? (void)0U : RB_Assert((uint8_t *)__FILE__, __LINE__))
+#else
+#define RB_ASSERT(expr) ((void)0U)
+#endif
 
 #endif /* RING_BUFFER_H_ */

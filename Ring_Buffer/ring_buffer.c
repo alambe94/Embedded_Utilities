@@ -1,5 +1,5 @@
 /**
- *  V1.3
+ *  V1.4
  *
  *  Change log
  *  V1.1:
@@ -16,13 +16,18 @@
  *  V1.3:
  *  1. ring buffer for generic data type and uint8_t merged.
  *  2. wrapper around generic data type for uint8_t ring buffer.
+ *
+ *  V1.4:
+ *  1. added assersions
  */
 
 #include "ring_buffer.h"
-#include "memory.h"
 
 void Ring_Buffer_Init(Ring_Buffer_t *handle, uint8_t *buffer, uint8_t element_size, uint32_t max_elements)
 {
+    RB_ASSERT(handle);
+    RB_ASSERT(buffer);
+
     handle->Storage = buffer;
     handle->Element_Size = element_size;
     handle->MAX_Elements = max_elements;
@@ -33,12 +38,16 @@ void Ring_Buffer_Init(Ring_Buffer_t *handle, uint8_t *buffer, uint8_t element_si
 
 void Ring_Buffer_Flush(Ring_Buffer_t *handle)
 {
+    RB_ASSERT(handle);
+
     handle->Read_Index = handle->Write_Index;
     handle->Full_Flag = 0;
 }
 
 uint32_t Ring_Buffer_Get_Count(Ring_Buffer_t *handle)
 {
+    RB_ASSERT(handle);
+
     uint32_t count = 0;
 
     if (Ring_Buffer_Is_Full(handle))
@@ -59,16 +68,23 @@ uint32_t Ring_Buffer_Get_Count(Ring_Buffer_t *handle)
 
 uint8_t Ring_Buffer_Is_Full(Ring_Buffer_t *handle)
 {
+    RB_ASSERT(handle);
+
     return handle->Full_Flag;
 }
 
 uint8_t Ring_Buffer_Is_Empty(Ring_Buffer_t *handle)
 {
+    RB_ASSERT(handle);
+
     return (handle->Read_Index == handle->Write_Index && handle->Full_Flag == 0);
 }
 
 uint8_t Ring_Buffer_Put(Ring_Buffer_t *handle, void *data)
 {
+    RB_ASSERT(handle);
+    RB_ASSERT(data);
+
     uint8_t xreturn = 0;
     uint8_t *ptr = (uint8_t *)data;
 
@@ -103,6 +119,9 @@ uint8_t Ring_Buffer_Put(Ring_Buffer_t *handle, void *data)
 
 uint8_t Ring_Buffer_Get(Ring_Buffer_t *handle, void *data)
 {
+    RB_ASSERT(handle);
+    RB_ASSERT(data);
+
     uint8_t xreturn = 0;
     uint8_t *ptr = (uint8_t *)data;
 
@@ -134,6 +153,9 @@ uint8_t Ring_Buffer_Get(Ring_Buffer_t *handle, void *data)
 
 uint8_t Ring_Buffer_Peek(Ring_Buffer_t *handle, void *data, uint32_t position)
 {
+    RB_ASSERT(handle);
+    RB_ASSERT(data);
+
     uint8_t xreturn = 0;
     uint8_t *ptr = (uint8_t *)data;
 
@@ -161,6 +183,10 @@ uint8_t Ring_Buffer_Peek(Ring_Buffer_t *handle, void *data, uint32_t position)
 
 uint8_t Ring_Buffer_Search(Ring_Buffer_t *handle, void *data, uint32_t *position)
 {
+    RB_ASSERT(handle);
+    RB_ASSERT(data);
+    RB_ASSERT(position);
+
     uint8_t xreturn = 1;
     uint8_t *ptr = (uint8_t *)data;
     uint32_t temp = handle->Read_Index;
@@ -198,20 +224,41 @@ uint8_t Ring_Buffer_Search(Ring_Buffer_t *handle, void *data, uint32_t *position
 
 uint8_t Ring_Buffer_Put_Char(Ring_Buffer_t *handle, uint8_t data)
 {
+    RB_ASSERT(handle);
+    RB_ASSERT(data);
+
     return Ring_Buffer_Put(handle, &data);
 }
 
 uint8_t Ring_Buffer_Get_Char(Ring_Buffer_t *handle, uint8_t *data)
 {
+    RB_ASSERT(handle);
+    RB_ASSERT(data);
+
     return Ring_Buffer_Get(handle, data);
 }
 
 uint8_t Ring_Buffer_Peek_Char(Ring_Buffer_t *handle, uint8_t *data, uint32_t position)
 {
+    RB_ASSERT(handle);
+    RB_ASSERT(data);
+    RB_ASSERT(position);
+
     return Ring_Buffer_Peek(handle, data, position);
 }
 
 uint8_t Ring_Buffer_Search_Char(Ring_Buffer_t *handle, uint8_t data, uint32_t *position)
 {
+    RB_ASSERT(handle);
+    RB_ASSERT(position);
+
     return Ring_Buffer_Search(handle, &data, position);
 }
+
+#ifdef USE_RB_ASSERT
+#include "stdio.h"
+void RB_Assert(uint8_t *file, uint32_t line)
+{
+    printf("assertion failed, file=%s, line=%lu\n", file, line);
+}
+#endif
