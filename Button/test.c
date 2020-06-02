@@ -108,7 +108,7 @@ void main()
         Button_Loop();
 #if 1
         // ignore callback manually read click count
-        clicked_count_a = Button_Get_Clicked_Count(&Button_A);
+        uint8_t clicked_count_a = Button_Get_Clicked_Count(&Button_A);
         if (clicked_count_a)
         {
             if (clicked_count_a == 255)
