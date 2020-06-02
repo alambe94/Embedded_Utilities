@@ -12,6 +12,7 @@ uint32_t Button_Get_Tick()
 
 void Button_A_Init()
 {
+    // enable clock, configure as gpio as input
 }
 void Button_B_Init()
 {
