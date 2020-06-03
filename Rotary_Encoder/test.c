@@ -52,37 +52,42 @@ void main()
     Encoder_X.Encoder_Read_Pin_B = Encoder_X_Read_Pin_B;
     Encoder_Add(&Encoder_X);
 
-    Encoder_X.Encoder_Init = Encoder_X_Init;
-    Encoder_X.Encoder_Read_Pin_A = Encoder_Y_Read_Pin_A;
-    Encoder_X.Encoder_Read_Pin_B = Encoder_Y_Read_Pin_B;
-    Encoder_Add(&Encoder_X);
+    Encoder_Y.Encoder_Init = Encoder_Y_Init;
+    Encoder_Y.Encoder_Read_Pin_A = Encoder_Y_Read_Pin_A;
+    Encoder_Y.Encoder_Read_Pin_B = Encoder_Y_Read_Pin_B;
+    Encoder_Add(&Encoder_Y);
 
-    Encoder_X.Encoder_Init = Encoder_X_Init;
-    Encoder_X.Encoder_Read_Pin_A = Encoder_Z_Read_Pin_A;
-    Encoder_X.Encoder_Read_Pin_B = Encoder_Z_Read_Pin_B;
-    Encoder_Add(&Encoder_X);
+    Encoder_Z.Encoder_Init = Encoder_Z_Init;
+    Encoder_Z.Encoder_Read_Pin_A = Encoder_Z_Read_Pin_A;
+    Encoder_Z.Encoder_Read_Pin_B = Encoder_Z_Read_Pin_B;
+    Encoder_Add(&Encoder_Z);
+
+    int16_t count_x = 0, count_y = 0, count_z = 0;
+    int16_t count_x_accumulated = 0, count_y_accumulated = 0, count_z_accumulated = 0;
+
 
     while (1)
     {
-        int16_t count_x = 0, count_y = 0, count_z = 0;
-
         Encoder_Loop();
 
-        count_x += Encoder_Get_Count(&Encoder_X);
-        count_y += Encoder_Get_Count(&Encoder_Y);
-        count_z += Encoder_Get_Count(&Encoder_Z);
+        count_x = Encoder_Get_Count(&Encoder_X);
+        count_y = Encoder_Get_Count(&Encoder_Y);
+        count_z = Encoder_Get_Count(&Encoder_Z);
 
         if (count_x)
         {
-            printf("X count = %d\n", count_x);
+            count_x_accumulated += count_x;
+            printf("X count = %d\n", count_x_accumulated);
         }
         if (count_y)
         {
-            printf("Y count = %d\n", count_y);
+            count_y_accumulated += count_y;
+            printf("Y count = %d\n", count_y_accumulated);
         }
         if (count_z)
         {
-            printf("Z count = %d\n", count_z);
+            count_z_accumulated += count_z;
+            printf("Z count = %d\n", count_z_accumulated);
         }
     }
 }

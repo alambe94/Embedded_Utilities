@@ -8,6 +8,10 @@
 
 #define MAX_ENCODERS 3
 
+#define ENCODER_SCAN_TICK 1                           // Encoder_Loop() executes every ENCODER_SCAN_TICK
+#define ENCODER_READ_TICK (250 / ENCODER_SCAN_TICK)   // only read after 100ms of inactivity
+#define ENCODER_RESET_TICK (1000 / ENCODER_SCAN_TICK) // reset encoder count after 500ms of inactivity
+
 static Encoder_Struct_t *Encoder_List[MAX_ENCODERS];
 
 static uint8_t Encoder_Count = 0;
@@ -47,56 +51,68 @@ uint8_t Encoder_Add(Encoder_Struct_t *handle)
 /* call in millis callback or systick callback */
 void Encoder_Loop()
 {
+    static uint32_t Encoder_Scan_Time_Stamp = 0;
     Encoder_Struct_t *handle = NULL;
+    uint8_t pin_a_new_state = 0;
+    uint8_t pin_b_new_state = 0;
 
-    for (uint8_t Index = 0; Index < Encoder_Count; Index++)
+    /* execute this loop on every ENCODER_SCAN_TICK */
+    if (Encoder_Get_Tick() - Encoder_Scan_Time_Stamp > ENCODER_SCAN_TICK)
     {
-        handle = Encoder_List[Index];
+        Encoder_Scan_Time_Stamp = Encoder_Get_Tick();
 
-        /*current state != previous*/
-        if (handle->Encoder_Read_Pin_A() != handle->Encoder_Pin_A_State)
+        for (uint8_t Index = 0; Index < Encoder_Count; Index++)
         {
-            handle->Encoder_Pin_A_State = !handle->Encoder_Pin_A_State;
+            handle = Encoder_List[Index];
 
-            if (handle->Encoder_Pin_A_State && !handle->Encoder_Pin_B_State)
+            pin_a_new_state = handle->Encoder_Read_Pin_A();
+            pin_b_new_state = handle->Encoder_Read_Pin_B();
+
+            /*current state != previous*/
+            if (pin_a_new_state != handle->Encoder_Pin_A_State)
             {
-                if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 10)
-                {
-                    handle->Encoder_Count += 1;
-                }
-                else if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 5)
-                {
-                    handle->Encoder_Count += 10;
-                }
-                else
-                {
-                    handle->Encoder_Count += 50;
-                }
+                handle->Encoder_Pin_A_State = pin_a_new_state;
 
-                handle->Encoder_Time_Stamp = Encoder_Get_Tick();
+                if (handle->Encoder_Pin_A_State != handle->Encoder_Pin_B_State)
+                {
+                    if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 10)
+                    {
+                        handle->Encoder_Count += 1;
+                    }
+                    else if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 5)
+                    {
+                        handle->Encoder_Count += 10;
+                    }
+                    else
+                    {
+                        handle->Encoder_Count += 50;
+                    }
+
+                    handle->Encoder_Time_Stamp = Encoder_Get_Tick();
+                }
             }
-        }
 
-        if (handle->Encoder_Read_Pin_B() != handle->Encoder_Pin_B_State)
-        {
-            handle->Encoder_Pin_B_State = !handle->Encoder_Pin_B_State;
-
-            if (handle->Encoder_Pin_B_State && !handle->Encoder_Pin_A_State)
+            if (pin_b_new_state != handle->Encoder_Pin_B_State)
             {
-                if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 10)
-                {
-                    handle->Encoder_Count -= 1;
-                }
-                else if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 5)
-                {
-                    handle->Encoder_Count -= 10;
-                }
-                else
-                {
-                    handle->Encoder_Count -= 50;
-                }
+                handle->Encoder_Pin_B_State = pin_b_new_state;
 
-                handle->Encoder_Time_Stamp = Encoder_Get_Tick();
+                if (handle->Encoder_Pin_B_State != handle->Encoder_Pin_A_State)
+                {
+                    if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 10)
+                    {
+                        handle->Encoder_Count -= 1;
+                    }
+                    else if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 5)
+                    {
+                        handle->Encoder_Count -= 10;
+                    }
+                    else
+                    {
+                        handle->Encoder_Count -= 50;
+                    }
+
+                    handle->Encoder_Time_Stamp = Encoder_Get_Tick();
+                }
             }
         }
     }
@@ -115,7 +131,7 @@ int16_t Encoder_Get_Count(Encoder_Struct_t *handle)
         }
         else if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 100)
         {
-            /* copy count, encoder is still idle */
+            /* copy count, only after 100ms of inactivity*/
             count = handle->Encoder_Count;
             handle->Encoder_Count = 0;
         }

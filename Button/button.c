@@ -3,7 +3,7 @@
 
 #define MAX_BUTTONS 5
 
-#define BUTTON_SCAN_TICK 10 // Button_Loo() executes every BUTTON_SCAN_TICK
+#define BUTTON_SCAN_TICK 10 // Button_Loop() executes every BUTTON_SCAN_TICK
 
 #define BUTTON_DEBOUNCE_DELAY (50 / BUTTON_SCAN_TICK)		// ticks
 #define BUTTON_CLICKED_DELAY (250 / BUTTON_SCAN_TICK)		// confirm clicked in foreground after released for CLICKED_DELAY
@@ -51,7 +51,8 @@ void Button_Loop()
     static uint32_t Button_Scan_Time_Stamp = 0;
     Button_Struct_t *handle = NULL;
 
-    if (Button_Get_Tick() - Button_Scan_Time_Stamp > (BUTTON_SCAN_TICK - 1)) // excute this loop on every BUTTON_SCAN_TICK
+    /* execute this loop on every BUTTON_SCAN_TICK */
+    if (Button_Get_Tick() - Button_Scan_Time_Stamp > (BUTTON_SCAN_TICK - 1))
     {
         Button_Scan_Time_Stamp = Button_Get_Tick();
 
