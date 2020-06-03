@@ -1,4 +1,6 @@
 #include "rotary_encoder.h"
+#include "stddef.h"
+
 // based of
 // multi encoder code with speed up values adapted for STM32-arduino by Matthias Diro
 // no caps for encoder Pins needed: gives back wrong acc values

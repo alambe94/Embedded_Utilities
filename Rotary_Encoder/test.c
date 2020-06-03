@@ -6,8 +6,8 @@ Encoder_Struct_t Encoder_Y;
 Encoder_Struct_t Encoder_Z;
 
 uint32_t Encoder_Get_Tick()
-{
-    return 545;
+{ // return millis
+    return 0;
 }
 
 void Encoder_X_Init()
@@ -15,31 +15,34 @@ void Encoder_X_Init()
     // enable clock, configure as gpio as input
 }
 void Encoder_Y_Init()
-{
+{ // not used
 }
 void Encoder_Z_Init()
-{
+{ // not used
 }
 
 uint8_t Encoder_X_Read_Pin_A()
 {
+    return 0;
 }
-uint8_t Encoder_X_Read_Pin_B()
-{
-}
+uint8_t Encoder_X_Read_Pin_B(){return0}
 
 uint8_t Encoder_Y_Read_Pin_A()
-{
+{ //not used
+    return 0;
 }
 uint8_t Encoder_Y_Read_Pin_B()
-{
+{ //not used
+    return 0;
 }
 
 uint8_t Encoder_Z_Read_Pin_A()
-{
+{ //not used
+    return 0;
 }
 uint8_t Encoder_Z_Read_Pin_B()
-{
+{ //not used
+    return 0;
 }
 
 void main()
@@ -65,21 +68,21 @@ void main()
 
         Encoder_Loop();
 
-        count_x = Encoder_Get_Count(&Encoder_X);
-        count_y = Encoder_Get_Count(&Encoder_Y);
-        count_z = Encoder_Get_Count(&Encoder_Z);
+        count_x += Encoder_Get_Count(&Encoder_X);
+        count_y += Encoder_Get_Count(&Encoder_Y);
+        count_z += Encoder_Get_Count(&Encoder_Z);
 
         if (count_x)
         {
-            printf("X count = %s", count_x);
+            printf("X count = %d\n", count_x);
         }
         if (count_y)
         {
-            printf("Y count = %s", count_y);
+            printf("Y count = %d\n", count_y);
         }
         if (count_z)
         {
-            printf("Z count = %s", count_z);
+            printf("Z count = %d\n", count_z);
         }
     }
 }
