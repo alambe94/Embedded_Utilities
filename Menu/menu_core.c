@@ -4,7 +4,7 @@
 #include "menu_page1.h"
 
 #define MAX_PAGES 10
-#define REFRESH_CYCLE 100
+#define REFRESH_CYCLE 20
 
 static uint8_t Refresh_Flag;
 
@@ -51,9 +51,7 @@ void Menu_Init()
 void Menu_Loop()
 {
     static uint8_t in_page_loop = 1; // by default enter page0 screen0 (Home Screen).
-
     static uint64_t Scan_Time_Stamp = 0;
-
     Menu_Event_t menu_event;
 
     if (Menu_Get_Tick() - Scan_Time_Stamp > (REFRESH_CYCLE - 1))
@@ -85,9 +83,9 @@ void Menu_Loop()
             else if (menu_event.Encoder_Count < 0)
             {
                 Current_Page->Current_Screen++;
-                if (Current_Page->Current_Screen > Current_Page->Screens_In_Page)
+                if (Current_Page->Current_Screen >= Current_Page->Screens_In_Page)
                 {
-                    Current_Page->Current_Screen = Current_Page->Screens_In_Page;
+                    Current_Page->Current_Screen = Current_Page->Screens_In_Page - 1;
                 }
                 Refresh_Flag = 1;
             }
