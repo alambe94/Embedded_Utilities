@@ -1,129 +1,74 @@
 #include "stdio.h"
 #include "menu_core.h"
-#include "menu_page1.h"
+#include "menu_Page1.h"
 
-#define SCREENS_IN_PAGE 5
+#define SCREENS_IN_PAGE 3
 
 Menu_Page_t Page1;
 
-Page_Screen_t Screen_List[SCREENS_IN_PAGE];
+static Page_Screen_t Page1_Screen_List[SCREENS_IN_PAGE];
 
-void Show_Page1_Screen1()
+static void Show_Page1_Screen0()
 {
-    printf("\033[6;3H");
-    printf("->menu1 screen1\n"
-           "  menu1 screen2\n"
-           "  menu1 screen3\n"
-           "  menu1 screen4\n"
-           "  menu1 screen5\n");
+    printf("Show_Page1_Screen0\n");
 }
 
-void Show_Page1_Screen2()
+static void Show_Page1_Screen1()
 {
-    printf("\033[6;3H");
-    printf("  menu1 screen1\n"
-           "->menu1 screen2\n"
-           "  menu1 screen3\n"
-           "  menu1 screen4\n"
-           "  menu1 screen5\n");
+    printf("Show_Page1_Screen1\n");
 }
 
-void Show_Page1_Screen3()
+static void Show_Page1_Screen2()
 {
-    printf("\033[6;3H");
-    printf("  menu1 screen1\n"
-           "  menu1 screen2\n"
-           "->menu1 screen3\n"
-           "  menu1 screen4\n"
-           "  menu1 screen5\n");
+    printf("Show_Page1_Screen2\n");
 }
 
-void Show_Page1_Screen4()
-{
-    printf("\033[6;3H");
-    printf("  menu1 screen1\n"
-           "  menu1 screen2\n"
-           "  menu1 screen3\n"
-           "->menu1 screen4\n"
-           "  menu1 screen5\n");
-}
-
-void Show_Page1_Screen5()
-{
-    printf("\033[6;3H");
-    printf("  menu1 screen1\n"
-           "  menu1 screen2\n"
-           "  menu1 screen3\n"
-           "  menu1 screen4\n"
-           "->menu1 screen5\n");
-}
-
-uint8_t Loop_Page1_Screen1(Menu_Event_t *event)
+static uint8_t Loop_Page1_Screen0(Menu_Event_t *event)
 {
     uint8_t xreturn = 1;
-    uint8_t count = 0;
-
-    if (event->Enter_Button_Clicks == 1)
+    printf("Loop_Page1_Screen0\n");
+    if (event->Back_Button_Clicks)
     {
-        xreturn = 0; // exit loop
+        xreturn = 0;
     }
-
-    printf("\033[6;3H");
-    printf("****screen1****\n"
-           "*             *\n"
-           "*      %d     *\n"
-           "*             *\n"
-           " **************\n", count++);
-
     return xreturn;
 }
 
-uint8_t Loop_Page1_Screen2(Menu_Event_t *event)
+static uint8_t Loop_Page1_Screen1(Menu_Event_t *event)
 {
-    Menu_Change_Page(2, 1); // change page to page2 screen1
-    return 0;               // exit loop
-}
-
-uint8_t Loop_Page1_Screen3(Menu_Event_t *event)
-{
-    uint8_t xreturn = 0;
+    uint8_t xreturn = 1;
+    printf("Loop_Page1_Screen1\n");
+    if (event->Back_Button_Clicks)
+    {
+        xreturn = 0;
+    }
     return xreturn;
 }
 
-uint8_t Loop_Page1_Screen4(Menu_Event_t *event)
+static uint8_t Loop_Page1_Screen2(Menu_Event_t *event)
 {
-    uint8_t xreturn = 0;
-
-    return xreturn;
-}
-
-uint8_t Loop_Page1_Screen5(Menu_Event_t *event)
-{
-    uint8_t xreturn = 0;
-
+    uint8_t xreturn = 1;
+    printf("Loop_Page1_Screen2\n");
+    if (event->Back_Button_Clicks)
+    {
+        xreturn = 0;
+    }
     return xreturn;
 }
 
 void Menu_Page1_Init()
 {
     printf("Menu_Page1_Init\n");
+    Page1_Screen_List[0].Show_Page_Screen = Show_Page1_Screen0;
+    Page1_Screen_List[0].Enter_Page_Screen = Loop_Page1_Screen0;
 
-    Screen_List[0].Show_Page_Screen = Show_Page1_Screen1;
-    Screen_List[0].Enter_Page_Screen = Loop_Page1_Screen1;
+    Page1_Screen_List[1].Show_Page_Screen = Show_Page1_Screen1;
+    Page1_Screen_List[1].Enter_Page_Screen = Loop_Page1_Screen1;
 
-    Screen_List[1].Show_Page_Screen = Show_Page1_Screen2;
-    Screen_List[1].Enter_Page_Screen = Loop_Page1_Screen2;
+    Page1_Screen_List[2].Show_Page_Screen = Show_Page1_Screen2;
+    Page1_Screen_List[2].Enter_Page_Screen = Loop_Page1_Screen2;
 
-    Screen_List[2].Show_Page_Screen = Show_Page1_Screen3;
-    Screen_List[2].Enter_Page_Screen = Loop_Page1_Screen3;
-
-    Screen_List[3].Show_Page_Screen = Show_Page1_Screen4;
-    Screen_List[3].Enter_Page_Screen = Loop_Page1_Screen4;
-
-    Screen_List[4].Show_Page_Screen = Show_Page1_Screen5;
-    Screen_List[4].Enter_Page_Screen = Loop_Page1_Screen5;
-
-    Page1.Page_Screen_List = Screen_List;
+    Page1.Page_Screen_List = Page1_Screen_List;
     Page1.Screens_In_Page = SCREENS_IN_PAGE;
     Menu_Add_Page(&Page1);
 }

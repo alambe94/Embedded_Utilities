@@ -1,10 +1,10 @@
 #include "stdio.h"
 #include "menu_core.h"
+#include "menu_page0.h"
 #include "menu_page1.h"
-#include "menu_page2.h"
 
 #define MAX_PAGES 10
-#define REFRESH_CYCLE 20
+#define REFRESH_CYCLE 100
 
 static uint8_t Refresh_Flag;
 
@@ -32,12 +32,10 @@ void Menu_Change_Page(uint8_t page_no, uint8_t page_screen)
 	{
 		Current_Page = Menu_Page_List[page_no];
 
-		if (page_screen == 0)
+		if (page_screen < Current_Page->Screens_In_Page)
 		{
-			page_screen = 1;
+			Current_Page->Current_Screen = page_screen;
 		}
-
-		Current_Page->Current_Screen = page_screen;
 
 		Refresh_Flag = 1;
 	}
@@ -45,15 +43,14 @@ void Menu_Change_Page(uint8_t page_no, uint8_t page_screen)
 
 void Menu_Init()
 {
+	Menu_Page0_Init();
 	Menu_Page1_Init();
-	Menu_Page2_Init();
-	Menu_Change_Page(1, 1); // by default show page1 screen1.
-	Refresh_Flag = 0;
+	Menu_Change_Page(0, 0); // by default show page0 screen0.
 }
 
 void Menu_Loop()
 {
-	static uint8_t in_page_loop = 1; // by default enter page1 screen1 (Home Screen).
+	static uint8_t in_page_loop = 1; // by default enter page0 screen0 (Home Screen).
 
 	static uint64_t Scan_Time_Stamp = 0;
 
@@ -63,59 +60,51 @@ void Menu_Loop()
 	{
 		Scan_Time_Stamp = Menu_Get_Tick();
 
-		printf("Menu_Loop\n");
-
 		Menu_Get_Event(&menu_event);
 
-		if (!in_page_loop)
+		if (in_page_loop)
 		{
-			printf("in_page_loop\n");
-
-			if (menu_event.Encoder_Count < 0) // or down button
-			{
-				Current_Page->Current_Screen++;
-				if (Current_Page->Current_Screen++ > Current_Page->Screens_In_Page)
-				{
-					Current_Page->Current_Screen = Current_Page->Screens_In_Page;
-				}
-				Current_Page->Page_Screen_List[Current_Page->Current_Screen].Show_Page_Screen();
-			}
-
-			if (menu_event.Encoder_Count > 0) // or up button
-			{
-				Current_Page->Current_Screen--;
-				if (Current_Page->Current_Screen == 0)
-				{
-					Current_Page->Current_Screen = 1;
-				}
-				Current_Page->Page_Screen_List[Current_Page->Current_Screen].Show_Page_Screen();
-			}
-
-			if (menu_event.Enter_Button_Clicks == 1) // enter or select button
-			{
-				menu_event.Enter_Button_Clicks = 0; // click and count does not belong to page loop so reset them.
-				menu_event.Encoder_Count = 0;
-				in_page_loop = Current_Page->Page_Screen_List[Current_Page->Current_Screen].Enter_Page_Screen(&menu_event);
-			}
-
-			if (Refresh_Flag == 1)
-			{
-				printf("Refresh_Flag\n");
-				Refresh_Flag = 0;
-				Current_Page->Page_Screen_List[Current_Page->Current_Screen].Show_Page_Screen();
-			}
-		}
-		else
-		{
-			printf("!in_page_loop\n");
-
-			in_page_loop = Current_Page->Page_Screen_List[1].Enter_Page_Screen(&menu_event);
-
-			printf("in_page_loop = Current_Page->Page_Screen_List\n");
+			in_page_loop = Current_Page->Page_Screen_List[Current_Page->Current_Screen].Enter_Page_Screen(&menu_event);
 
 			if (!in_page_loop)
 			{
 				Refresh_Flag = 1;
+			}
+		}
+		else
+		{
+			/* enter button or select button is pressed */
+			if (menu_event.Enter_Button_Clicks == 1)
+			{
+				/* click and count do not belong to page loop so reset them */
+				menu_event.Enter_Button_Clicks = 0;
+				menu_event.Encoder_Count = 0;
+				in_page_loop = Current_Page->Page_Screen_List[Current_Page->Current_Screen].Enter_Page_Screen(&menu_event);
+			}
+			/* down is pressed or encoder decremented */
+			else if (menu_event.Encoder_Count < 0)
+			{
+				Current_Page->Current_Screen++;
+				if (Current_Page->Current_Screen > Current_Page->Screens_In_Page)
+				{
+					Current_Page->Current_Screen = Current_Page->Screens_In_Page;
+				}
+				Refresh_Flag == 1;
+			}
+			/* up is pressed or encoder incremented */
+			else if (menu_event.Encoder_Count > 0)
+			{
+				if (Current_Page->Current_Screen)
+				{
+					Current_Page->Current_Screen--;
+				}
+				Refresh_Flag == 1;
+			}
+
+			if (Refresh_Flag == 1)
+			{
+				Refresh_Flag = 0;
+				Current_Page->Page_Screen_List[Current_Page->Current_Screen].Show_Page_Screen();
 			}
 		}
 	}

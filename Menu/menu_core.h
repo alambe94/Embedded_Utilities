@@ -12,6 +12,7 @@ typedef struct Menu_Event_t
 	uint8_t Down_Button_Clicks;	 // if any
 	uint8_t Left_Button_Clicks;	 // if any
 	uint8_t Right_Button_Clicks; // if any
+	uint8_t Back_Button_Clicks;	 // if any
 
 } Menu_Event_t;
 
