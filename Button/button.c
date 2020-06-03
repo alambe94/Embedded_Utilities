@@ -114,14 +114,16 @@ void Button_Loop()
 
                 if (handle->Button_Released_Ticks > BUTTON_CLICKED_DELAY)
                 {
-                    handle->Button_Event = Button_Idle;
-                    handle->Button_Count_Captured = handle->Button_Clicked_Count;
-                    /* if callback is defined */
-                    if (handle->Callback != NULL && handle->Button_Event != Button_Idle)
+                    if (handle->Button_Event != Button_Idle)
                     {
-                        handle->Callback(handle->Button_Clicked_Count);
+                        handle->Button_Event = Button_Idle;
+                        handle->Button_Count_Captured = handle->Button_Clicked_Count;
+                        if (handle->Callback)
+                        {
+                            handle->Callback(handle->Button_Clicked_Count);
+                        }
+                        handle->Button_Clicked_Count = 0;
                     }
-                    handle->Button_Clicked_Count = 0;
                 }
             }
         }
