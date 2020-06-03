@@ -2,7 +2,7 @@
 #include "sys/timeb.h"
 #include "menu_core.h"
 
-uint64_t Menu_Get_Tick()
+uint32_t Menu_Get_Tick()
 {
 #if defined(_WIN32)
     struct _timeb timebuffer;
