@@ -5,9 +5,9 @@
 
 #define BUTTON_SCAN_TICK 10 // Button_Loop() executes every BUTTON_SCAN_TICK
 
-#define BUTTON_DEBOUNCE_DELAY (50 / BUTTON_SCAN_TICK)		// ticks
-#define BUTTON_CLICKED_DELAY (250 / BUTTON_SCAN_TICK)		// confirm clicked in foreground after released for CLICKED_DELAY
-#define BUTTON_REPRESSED_DELAY (150 / BUTTON_SCAN_TICK)		// ticks
+#define BUTTON_DEBOUNCE_DELAY (50 / BUTTON_SCAN_TICK)       // ticks
+#define BUTTON_CLICKED_DELAY (250 / BUTTON_SCAN_TICK)       // confirm clicked in foreground after released for CLICKED_DELAY
+#define BUTTON_REPRESSED_DELAY (150 / BUTTON_SCAN_TICK)     // ticks
 #define BUTTON_LONG_PRESSED_DELAY (1000 / BUTTON_SCAN_TICK) // ticks
 
 static Button_Struct_t *Button_List[MAX_BUTTONS];
@@ -114,13 +114,14 @@ void Button_Loop()
 
                 if (handle->Button_Released_Ticks > BUTTON_CLICKED_DELAY)
                 {
+                    handle->Button_Event = Button_Idle;
+                    handle->Button_Count_Captured = handle->Button_Clicked_Count;
+                    /* if callback is defined */
                     if (handle->Callback != NULL && handle->Button_Event != Button_Idle)
                     {
-                        handle->Button_Event = Button_Idle;
-                        handle->Button_Count_Captured = handle->Button_Clicked_Count;
                         handle->Callback(handle->Button_Clicked_Count);
-                        handle->Button_Clicked_Count = 0;
                     }
+                    handle->Button_Clicked_Count = 0;
                 }
             }
         }
