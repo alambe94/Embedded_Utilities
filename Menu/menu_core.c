@@ -42,7 +42,7 @@ void Menu_Change_Page(uint8_t page_no, uint8_t page_screen)
 void Menu_Loop()
 {
     static uint8_t in_page_loop = 1; // by default enter page0 screen0 (Home Screen).
-    static uint64_t Scan_Time_Stamp = 0;
+    static uint32_t Scan_Time_Stamp = 0;
     Menu_Event_t menu_event;
 
     if (Menu_Get_Tick() - Scan_Time_Stamp > (REFRESH_CYCLE - 1))
