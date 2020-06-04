@@ -25,8 +25,8 @@
 
 void Ring_Buffer_Init(Ring_Buffer_t *handle, uint8_t *buffer, uint8_t element_size, uint32_t max_elements)
 {
-    RB_ASSERT(handle);
-    RB_ASSERT(buffer);
+    RB_ASSERT(handle, "NULL Passed");
+    RB_ASSERT(buffer, "NULL Passed");
 
     handle->Storage = buffer;
     handle->Element_Size = element_size;
@@ -38,7 +38,7 @@ void Ring_Buffer_Init(Ring_Buffer_t *handle, uint8_t *buffer, uint8_t element_si
 
 void Ring_Buffer_Flush(Ring_Buffer_t *handle)
 {
-    RB_ASSERT(handle);
+    RB_ASSERT(handle, "NULL Passed");
 
     handle->Read_Index = handle->Write_Index;
     handle->Full_Flag = 0;
@@ -46,7 +46,7 @@ void Ring_Buffer_Flush(Ring_Buffer_t *handle)
 
 uint32_t Ring_Buffer_Get_Count(Ring_Buffer_t *handle)
 {
-    RB_ASSERT(handle);
+    RB_ASSERT(handle, "NULL Passed");
 
     uint32_t count = 0;
 
@@ -68,22 +68,22 @@ uint32_t Ring_Buffer_Get_Count(Ring_Buffer_t *handle)
 
 uint8_t Ring_Buffer_Is_Full(Ring_Buffer_t *handle)
 {
-    RB_ASSERT(handle);
+    RB_ASSERT(handle, "NULL Passed");
 
     return handle->Full_Flag;
 }
 
 uint8_t Ring_Buffer_Is_Empty(Ring_Buffer_t *handle)
 {
-    RB_ASSERT(handle);
+    RB_ASSERT(handle, "NULL Passed");
 
     return (handle->Read_Index == handle->Write_Index && handle->Full_Flag == 0);
 }
 
 uint8_t Ring_Buffer_Put(Ring_Buffer_t *handle, void *data)
 {
-    RB_ASSERT(handle);
-    RB_ASSERT(data);
+    RB_ASSERT(handle, "NULL Passed");
+    RB_ASSERT(data, "NULL Passed");
 
     uint8_t xreturn = 0;
     uint8_t *ptr = (uint8_t *)data;
@@ -91,6 +91,7 @@ uint8_t Ring_Buffer_Put(Ring_Buffer_t *handle, void *data)
     if (Ring_Buffer_Is_Full(handle))
     {
         //over flow return 0 ?
+        RB_ASSERT(0, "Ring buffer is full");
     }
     else
     {
@@ -119,8 +120,8 @@ uint8_t Ring_Buffer_Put(Ring_Buffer_t *handle, void *data)
 
 uint8_t Ring_Buffer_Get(Ring_Buffer_t *handle, void *data)
 {
-    RB_ASSERT(handle);
-    RB_ASSERT(data);
+    RB_ASSERT(handle, "NULL Passed");
+    RB_ASSERT(data, "NULL Passed");
 
     uint8_t xreturn = 0;
     uint8_t *ptr = (uint8_t *)data;
@@ -153,8 +154,8 @@ uint8_t Ring_Buffer_Get(Ring_Buffer_t *handle, void *data)
 
 uint8_t Ring_Buffer_Peek(Ring_Buffer_t *handle, void *data, uint32_t position)
 {
-    RB_ASSERT(handle);
-    RB_ASSERT(data);
+    RB_ASSERT(handle, "NULL Passed");
+    RB_ASSERT(data, "NULL Passed");
 
     uint8_t xreturn = 0;
     uint8_t *ptr = (uint8_t *)data;
@@ -183,9 +184,9 @@ uint8_t Ring_Buffer_Peek(Ring_Buffer_t *handle, void *data, uint32_t position)
 
 uint8_t Ring_Buffer_Search(Ring_Buffer_t *handle, void *data, uint32_t *position)
 {
-    RB_ASSERT(handle);
-    RB_ASSERT(data);
-    RB_ASSERT(position);
+    RB_ASSERT(handle, "NULL Passed");
+    RB_ASSERT(data, "NULL Passed");
+    RB_ASSERT(position, "NULL Passed");
 
     uint8_t xreturn = 1;
     uint8_t *ptr = (uint8_t *)data;
@@ -224,41 +225,41 @@ uint8_t Ring_Buffer_Search(Ring_Buffer_t *handle, void *data, uint32_t *position
 
 uint8_t Ring_Buffer_Put_Char(Ring_Buffer_t *handle, uint8_t data)
 {
-    RB_ASSERT(handle);
-    RB_ASSERT(data);
+    RB_ASSERT(handle, "NULL Passed");
+    RB_ASSERT(data, "NULL Passed");
 
     return Ring_Buffer_Put(handle, &data);
 }
 
 uint8_t Ring_Buffer_Get_Char(Ring_Buffer_t *handle, uint8_t *data)
 {
-    RB_ASSERT(handle);
-    RB_ASSERT(data);
+    RB_ASSERT(handle, "NULL Passed");
+    RB_ASSERT(data, "NULL Passed");
 
     return Ring_Buffer_Get(handle, data);
 }
 
 uint8_t Ring_Buffer_Peek_Char(Ring_Buffer_t *handle, uint8_t *data, uint32_t position)
 {
-    RB_ASSERT(handle);
-    RB_ASSERT(data);
-    RB_ASSERT(position);
+    RB_ASSERT(handle, "NULL Passed");
+    RB_ASSERT(data, "NULL Passed");
+    RB_ASSERT(position, "NULL Passed");
 
     return Ring_Buffer_Peek(handle, data, position);
 }
 
 uint8_t Ring_Buffer_Search_Char(Ring_Buffer_t *handle, uint8_t data, uint32_t *position)
 {
-    RB_ASSERT(handle);
-    RB_ASSERT(position);
+    RB_ASSERT(handle, "NULL Passed");
+    RB_ASSERT(position, "NULL Passed");
 
     return Ring_Buffer_Search(handle, &data, position);
 }
 
 #ifdef USE_RB_ASSERT
 #include "stdio.h"
-void RB_Assert(uint8_t *file, uint32_t line)
+void RB_Assert(char *msg, char *file, uint32_t line)
 {
-    printf("assertion failed, file=%s, line=%lu\n", file, line);
+    printf("%s, assertion failed, file=%s, line=%lu\n", msg, file, line);
 }
 #endif
