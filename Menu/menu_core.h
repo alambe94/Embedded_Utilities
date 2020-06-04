@@ -3,6 +3,8 @@
 
 #include "stdint.h"
 
+#define USE_MENU_ASSERT
+
 typedef struct Menu_Event_t
 {
     int16_t Encoder_Count;       // encoder value if any
@@ -32,7 +34,14 @@ typedef struct Menu_Page_t
 } Menu_Page_t;
 
 void Menu_Loop();
-void Menu_Add_Page(Menu_Page_t *page);
+uint8_t Menu_Add_Page(Menu_Page_t *page);
 void Menu_Change_Page(uint8_t page_no, uint8_t page_screen);
+
+#ifdef USE_MENU_ASSERT
+void Menu_Assert(char *msg, char *file, uint32_t line);
+#define MENU_ASSERT(expr, msg) ((expr) ? (void)0U : Menu_Assert(msg, "menu_core.c", __LINE__))
+#else
+#define MENU_ASSERT(expr) ((void)0U)
+#endif
 
 #endif /* INC_MENU_CORE_H_ */
