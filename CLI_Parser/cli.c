@@ -94,8 +94,12 @@ void CLI_Init()
  **/
 uint8_t CLI_Add_Command(CLI_Command_t *command_def)
 {
-    if (Command_Count < MAX_COMMANDS)
+    CLI_ASSERT(command_def, "NULL Passed");
+
+    if (Command_Count < MAX_COMMANDS && command_def != NULL)
     {
+        CLI_ASSERT(command_def->CLI_Callback, "CLI_Callback not defined");
+
         command_def->CLI_Command_Length = strlen(command_def->CLI_Command);
         Command_List[Command_Count] = command_def;
         Command_Count++;
@@ -118,17 +122,23 @@ uint8_t CLI_Process_Command(const char *cli_in_buffer,
                             char *cli_out_buffer,
                             uint16_t cli_out_max)
 {
+    CLI_ASSERT(cli_in_buffer, "NULL Passed");
+    CLI_ASSERT(cli_out_buffer, "NULL Passed");
+
     uint8_t is_command_valid = 0;
     uint8_t xreturn = 0;
     uint8_t argc = 0;
     const char *argv[MAX_ARGS_IN_CMD];
-    CLI_Command_t *command_list_ptr = NULL;
+    CLI_Command_t *cmd = NULL;
 
     /* Search for the command string in the list of registered commands. */
     for (uint16_t i = 0; i < Command_Count; i++)
     {
-        command_list_ptr = Command_List[i];
-        uint16_t cmd_len = command_list_ptr->CLI_Command_Length;
+        cmd = Command_List[i];
+
+        CLI_ASSERT(cli_out_buffer, "NULL found in list");
+
+        uint16_t cmd_len = cmd->CLI_Command_Length;
 
         /** To ensure the string lengths match exactly, so as not to pick up
             a sub-string of a longer command, check the byte after the expected
@@ -137,7 +147,7 @@ uint8_t CLI_Process_Command(const char *cli_in_buffer,
         */
         if ((cli_in_buffer[cmd_len] == ' ') || (cli_in_buffer[cmd_len] == 0x00))
         {
-            if (strncmp(cli_in_buffer, command_list_ptr->CLI_Command, cmd_len) == 0)
+            if (strncmp(cli_in_buffer, cmd->CLI_Command, cmd_len) == 0)
             {
                 is_command_valid = 1;
                 /* command found break the loop */
@@ -148,14 +158,14 @@ uint8_t CLI_Process_Command(const char *cli_in_buffer,
 
     if (is_command_valid)
     {
-        if (command_list_ptr->CLI_Callback != NULL)
+        if (cmd->CLI_Callback != NULL)
         {
             CLI_Parse_Arguments(cli_in_buffer, &argc, argv);
 
-            xreturn = command_list_ptr->CLI_Callback(argc,
-                                                     argv,
-                                                     cli_out_buffer,
-                                                     cli_out_max);
+            xreturn = cmd->CLI_Callback(argc,
+                                        argv,
+                                        cli_out_buffer,
+                                        cli_out_max);
         }
     }
     else
@@ -169,7 +179,6 @@ uint8_t CLI_Process_Command(const char *cli_in_buffer,
     return xreturn;
 }
 
-
 /**
  * @brief find arguments in input string. arguments are separated by space character ' '
  * @param cli_in_buffer: input string to be parsed
@@ -180,6 +189,10 @@ void CLI_Parse_Arguments(const char *cli_in_buffer,
                          uint8_t *argc,
                          const char *argv[])
 {
+    CLI_ASSERT(cli_in_buffer, "NULL Passed");
+    CLI_ASSERT(argc, "NULL Passed");
+    CLI_ASSERT(argv, "NULL Passed");
+
     uint8_t argc_temp = 0;
     /* arg 0 is input command */
     argv[argc_temp++] = cli_in_buffer;
@@ -219,11 +232,16 @@ void CLI_Parse_Arguments(const char *cli_in_buffer,
 uint8_t CLI_Get_Argument_Length(const char *arg)
 {
     uint8_t len = 0;
-    while (((*arg) != 0x00) && ((*arg) != ' '))
+
+    if (arg != NULL)
     {
-        arg++;
-        len++;
+        while (((*arg) != 0x00) && ((*arg) != ' '))
+        {
+            arg++;
+            len++;
+        }
     }
+
     return len;
 }
 
@@ -240,15 +258,16 @@ static uint8_t Help_Callback(uint8_t argc,
 {
     static uint16_t count = 0;
 
-    CLI_Command_t *command_list_ptr = Command_List[count];
+    CLI_Command_t *cmd = Command_List[count];
 
     snprintf(cli_out_buffer,
              cli_out_max,
              "\r\n%-20s: %s\r\n",
-             command_list_ptr->CLI_Command,
-             command_list_ptr->CLI_Command_Description);
+             cmd->CLI_Command,
+             cmd->CLI_Command_Description);
 
     count++;
+
     if (count < Command_Count)
     {
         return 1; //call again to generate next output
@@ -288,3 +307,11 @@ static uint8_t Clear_Callback(uint8_t argc,
 
     return 0; // operation complete do not call again
 }
+
+#ifdef USE_CLI_ASSERT
+#include "stdio.h"
+void CLI_Assert(char *msg, char *file, uint32_t line)
+{
+    printf("%s, assertion failed, file=%s, line=%lu\n", msg, file, line);
+}
+#endif
