@@ -1,9 +1,7 @@
 #include "stdio.h"
 #include "menu_core.h"
-#include "menu_page0.h"
-#include "menu_page1.h"
 
-#define MAX_PAGES 10
+#define MAX_PAGES 15
 #define REFRESH_CYCLE 20
 
 static uint8_t Refresh_Flag;
@@ -39,13 +37,6 @@ void Menu_Change_Page(uint8_t page_no, uint8_t page_screen)
 
         Refresh_Flag = 1;
     }
-}
-
-void Menu_Init()
-{
-    Menu_Page0_Init();
-    Menu_Page1_Init();
-    Menu_Change_Page(0, 0); // by default show page0 screen0.
 }
 
 void Menu_Loop()

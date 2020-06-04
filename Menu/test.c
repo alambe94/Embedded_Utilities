@@ -27,7 +27,12 @@ void Menu_Get_Event(Menu_Event_t *event)
 
 void main()
 {
-    Menu_Init();
+    extern void Menu_Page0_Init();
+    extern void Menu_Page1_Init();
+
+    Menu_Page0_Init();
+    Menu_Page1_Init();
+    Menu_Change_Page(0,0);
 
     while (1)
     {
