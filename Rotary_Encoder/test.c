@@ -25,7 +25,10 @@ uint8_t Encoder_X_Read_Pin_A()
 {
     return 0;
 }
-uint8_t Encoder_X_Read_Pin_B(){return0}
+uint8_t Encoder_X_Read_Pin_B()
+{
+    return 0;
+}
 
 uint8_t Encoder_Y_Read_Pin_A()
 { //not used
@@ -64,7 +67,6 @@ void main()
 
     int16_t count_x = 0, count_y = 0, count_z = 0;
     int16_t count_x_accumulated = 0, count_y_accumulated = 0, count_z_accumulated = 0;
-
 
     while (1)
     {

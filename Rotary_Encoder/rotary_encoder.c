@@ -16,16 +16,24 @@ static Encoder_Struct_t *Encoder_List[MAX_ENCODERS];
 
 static uint8_t Encoder_Count = 0;
 
+/* must be defined externally by user  */
 extern uint32_t Encoder_Get_Tick();
 
 uint8_t Encoder_Add(Encoder_Struct_t *handle)
 {
-    if (Encoder_Count < MAX_ENCODERS)
+    ENCODER_ASSERT(handle, "NULL Passed");
+
+    if (Encoder_Count < MAX_ENCODERS && handle != NULL)
     {
+        ENCODER_ASSERT(handle->Encoder_Read_Pin_A, "NULL Passed");
+        ENCODER_ASSERT(handle->Encoder_Read_Pin_B, "NULL Passed");
+
+        /* Init function can be NULL, if gpio is initialized  */
         if (handle->Encoder_Init)
         {
             handle->Encoder_Init();
         }
+
         handle->Encoder_Time_Stamp = 0;
         handle->Encoder_Count = 0;
 
@@ -65,53 +73,58 @@ void Encoder_Loop()
         {
             handle = Encoder_List[Index];
 
-            pin_a_new_state = handle->Encoder_Read_Pin_A();
-            pin_b_new_state = handle->Encoder_Read_Pin_B();
+            ENCODER_ASSERT(handle, "NULL found in list");
 
-            /*current state != previous*/
-            if (pin_a_new_state != handle->Encoder_Pin_A_State)
+            if (handle != NULL)
             {
-                handle->Encoder_Pin_A_State = pin_a_new_state;
+                pin_a_new_state = handle->Encoder_Read_Pin_A();
+                pin_b_new_state = handle->Encoder_Read_Pin_B();
 
-                if (handle->Encoder_Pin_A_State != handle->Encoder_Pin_B_State)
+                /*current state != previous*/
+                if (pin_a_new_state != handle->Encoder_Pin_A_State)
                 {
-                    if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 10)
-                    {
-                        handle->Encoder_Count += 1;
-                    }
-                    else if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 5)
-                    {
-                        handle->Encoder_Count += 10;
-                    }
-                    else
-                    {
-                        handle->Encoder_Count += 50;
-                    }
+                    handle->Encoder_Pin_A_State = pin_a_new_state;
 
-                    handle->Encoder_Time_Stamp = Encoder_Get_Tick();
+                    if (handle->Encoder_Pin_A_State != handle->Encoder_Pin_B_State)
+                    {
+                        if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 10)
+                        {
+                            handle->Encoder_Count += 1;
+                        }
+                        else if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 5)
+                        {
+                            handle->Encoder_Count += 10;
+                        }
+                        else
+                        {
+                            handle->Encoder_Count += 50;
+                        }
+
+                        handle->Encoder_Time_Stamp = Encoder_Get_Tick();
+                    }
                 }
-            }
 
-            if (pin_b_new_state != handle->Encoder_Pin_B_State)
-            {
-                handle->Encoder_Pin_B_State = pin_b_new_state;
-
-                if (handle->Encoder_Pin_B_State != handle->Encoder_Pin_A_State)
+                if (pin_b_new_state != handle->Encoder_Pin_B_State)
                 {
-                    if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 10)
-                    {
-                        handle->Encoder_Count -= 1;
-                    }
-                    else if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 5)
-                    {
-                        handle->Encoder_Count -= 10;
-                    }
-                    else
-                    {
-                        handle->Encoder_Count -= 50;
-                    }
+                    handle->Encoder_Pin_B_State = pin_b_new_state;
 
-                    handle->Encoder_Time_Stamp = Encoder_Get_Tick();
+                    if (handle->Encoder_Pin_B_State != handle->Encoder_Pin_A_State)
+                    {
+                        if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 10)
+                        {
+                            handle->Encoder_Count -= 1;
+                        }
+                        else if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 5)
+                        {
+                            handle->Encoder_Count -= 10;
+                        }
+                        else
+                        {
+                            handle->Encoder_Count -= 50;
+                        }
+
+                        handle->Encoder_Time_Stamp = Encoder_Get_Tick();
+                    }
                 }
             }
         }
@@ -120,6 +133,8 @@ void Encoder_Loop()
 
 int16_t Encoder_Get_Count(Encoder_Struct_t *handle)
 {
+    ENCODER_ASSERT(handle, "NULL Passed");
+
     int16_t count = 0;
 
     if (handle != NULL)
@@ -147,6 +162,8 @@ int16_t Encoder_Get_Count(Encoder_Struct_t *handle)
 /* to reset*/
 void Encoder_Reset_Count(Encoder_Struct_t *handle)
 {
+    ENCODER_ASSERT(handle, "NULL Passed");
+
     if (handle != NULL)
     {
         handle->Encoder_Count = 0;
@@ -155,8 +172,18 @@ void Encoder_Reset_Count(Encoder_Struct_t *handle)
 
 void Encoder_Set_Count(Encoder_Struct_t *handle, int16_t count)
 {
+    ENCODER_ASSERT(handle, "NULL Passed");
+
     if (handle != NULL)
     {
         handle->Encoder_Count = count;
     }
 }
+
+#ifdef USE_ENCODER_ASSERT
+#include "stdio.h"
+void Encoder_Assert(char *msg, char *file, uint32_t line)
+{
+    printf("%s, assertion failed, file=%s, line=%lu\n", msg, file, line);
+}
+#endif
