@@ -25,11 +25,11 @@ uint8_t Encoder_Add(Encoder_Struct_t *handle)
 
     if (Encoder_Count < MAX_ENCODERS && handle != NULL)
     {
-        ENCODER_ASSERT(handle->Encoder_Read_Pin_A, "NULL Passed");
-        ENCODER_ASSERT(handle->Encoder_Read_Pin_B, "NULL Passed");
+        ENCODER_ASSERT(handle->Encoder_Read_Pin_A, "Encoder_Read_Pin_A not defined");
+        ENCODER_ASSERT(handle->Encoder_Read_Pin_B, "Encoder_Read_Pin_B not defined");
 
-        /* Init function can be NULL, if gpio is initialized  */
-        if (handle->Encoder_Init)
+        /* call init function if defined */
+        if (handle->Encoder_Init != NULL)
         {
             handle->Encoder_Init();
         }
@@ -38,7 +38,7 @@ uint8_t Encoder_Add(Encoder_Struct_t *handle)
         handle->Encoder_Count = 0;
 
         /* initial state of encoder pins */
-        if (handle->Encoder_Read_Pin_A && handle->Encoder_Read_Pin_B)
+        if (handle->Encoder_Read_Pin_A != NULL && handle->Encoder_Read_Pin_B != NULL)
         {
             handle->Encoder_Pin_A_State = handle->Encoder_Read_Pin_A();
             handle->Encoder_Pin_B_State = handle->Encoder_Read_Pin_B();

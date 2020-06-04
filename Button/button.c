@@ -5,10 +5,10 @@
 
 #define BUTTON_SCAN_TICK 10 // Button_Loop() executes every BUTTON_SCAN_TICK
 
-#define BUTTON_DEBOUNCE_DELAY (50 / BUTTON_SCAN_TICK)       // ticks
-#define BUTTON_CLICKED_DELAY (250 / BUTTON_SCAN_TICK)       // confirm clicked in foreground after released for CLICKED_DELAY
-#define BUTTON_REPRESSED_DELAY (150 / BUTTON_SCAN_TICK)     // ticks
-#define BUTTON_LONG_PRESSED_DELAY (1000 / BUTTON_SCAN_TICK) // ticks
+#define BUTTON_DEBOUNCE_DELAY (50 / BUTTON_SCAN_TICK)       // if ressed for BUTTON_DEBOUNCE_DELAY register click
+#define BUTTON_CLICKED_DELAY (250 / BUTTON_SCAN_TICK)       // if released for BUTTON_CLICKED_DELAY, capture count and call the callback if defned
+#define BUTTON_REPRESSED_DELAY (150 / BUTTON_SCAN_TICK)     // if repressed within BUTTON_REPRESSED_DELAY increment count
+#define BUTTON_LONG_PRESSED_DELAY (1000 / BUTTON_SCAN_TICK) // if pressed for BUTTON_LONG_PRESSED_DELAY set count to 255 to indicate long pressed
 
 static Button_Struct_t *Button_List[MAX_BUTTONS];
 
@@ -18,9 +18,14 @@ extern uint32_t Button_Get_Tick();
 
 uint8_t Button_Add(Button_Struct_t *handle)
 {
-    if (Button_Count < MAX_BUTTONS)
+    BUTTON_ASSERT(handle, "NULL Passed");
+
+    if (Button_Count < MAX_BUTTONS && handle != NULL)
     {
-        if (handle->Button_Init)
+        BUTTON_ASSERT(handle->Button_Read, "Button_Read not defined");
+
+        /* call init function if defined */
+        if (handle->Button_Init != NULL)
         {
             handle->Button_Init();
         }
@@ -60,69 +65,75 @@ void Button_Loop()
         {
             handle = Button_List[Index];
 
-            if (handle->Button_Read && handle->Button_Read()) //pressed detected
+            BUTTON_ASSERT(handle, "NULL found in list");
+
+            if (handle != NULL)
             {
-                handle->Button_Pressed_Ticks++; //
-
-                if (handle->Button_Pressed_Ticks < BUTTON_LONG_PRESSED_DELAY)
+                if (handle->Button_Read && handle->Button_Read()) //pressed detected
                 {
-                    //repressed detected
-                    if (handle->Button_Released_Ticks < BUTTON_REPRESSED_DELAY)
-                    {
-                        handle->Button_Event = Button_Repressed;
-                    }
-                    else
-                    {
-                        handle->Button_Event = Button_Pressed;
-                    }
+                    handle->Button_Pressed_Ticks++; //
 
-                    handle->Button_Released_Ticks = 0;
-                }
-                else if (handle->Button_Event != Button_Long_Pressed)
-                {
-                    //long pressed detected
-                    handle->Button_Event = Button_Long_Pressed;
-                    handle->Button_Clicked_Count = 0xFF; //0xFF for long press
-                    handle->Button_Count_Captured = 0xFF;
-                    if (handle->Callback != NULL)
+                    if (handle->Button_Pressed_Ticks < BUTTON_LONG_PRESSED_DELAY)
                     {
-                        handle->Callback(handle->Button_Clicked_Count);
-                        handle->Button_Clicked_Count = 0;
-                    }
-                }
-            }
-            else //released detected
-            {
-                handle->Button_Released_Ticks++;
+                        //repressed detected
+                        if (handle->Button_Released_Ticks < BUTTON_REPRESSED_DELAY)
+                        {
+                            handle->Button_Event = Button_Repressed;
+                        }
+                        else
+                        {
+                            handle->Button_Event = Button_Pressed;
+                        }
 
-                if (handle->Button_Pressed_Ticks > BUTTON_DEBOUNCE_DELAY) //if button was pressed for BUTTON_DEBOUNCE_DELAY
-                {
-                    handle->Button_Pressed_Ticks = 0;
-                    if (handle->Button_Event == Button_Repressed)
-                    {
-                        handle->Button_Clicked_Count++;
+                        handle->Button_Released_Ticks = 0;
                     }
-                    else if (handle->Button_Event == Button_Pressed)
+                    else if (handle->Button_Event != Button_Long_Pressed)
                     {
-                        handle->Button_Clicked_Count = 1;
-                    }
-                    else if (handle->Button_Event == Button_Long_Pressed)
-                    {
-                        handle->Button_Event = Button_Idle;
-                    }
-                }
-
-                if (handle->Button_Released_Ticks > BUTTON_CLICKED_DELAY)
-                {
-                    if (handle->Button_Event != Button_Idle)
-                    {
-                        handle->Button_Event = Button_Idle;
-                        handle->Button_Count_Captured = handle->Button_Clicked_Count;
-                        if (handle->Callback)
+                        //long pressed detected
+                        handle->Button_Event = Button_Long_Pressed;
+                        handle->Button_Clicked_Count = 0xFF; //0xFF for long press
+                        handle->Button_Count_Captured = 0xFF;
+                        if (handle->Callback != NULL)
                         {
                             handle->Callback(handle->Button_Clicked_Count);
+                            handle->Button_Clicked_Count = 0;
                         }
-                        handle->Button_Clicked_Count = 0;
+                    }
+                }
+                else //released detected
+                {
+                    handle->Button_Released_Ticks++;
+
+                    if (handle->Button_Pressed_Ticks > BUTTON_DEBOUNCE_DELAY) //if button was pressed for BUTTON_DEBOUNCE_DELAY
+                    {
+                        handle->Button_Pressed_Ticks = 0;
+                        if (handle->Button_Event == Button_Repressed)
+                        {
+                            handle->Button_Clicked_Count++;
+                        }
+                        else if (handle->Button_Event == Button_Pressed)
+                        {
+                            handle->Button_Clicked_Count = 1;
+                        }
+                        else if (handle->Button_Event == Button_Long_Pressed)
+                        {
+                            handle->Button_Event = Button_Idle;
+                        }
+                    }
+
+                    if (handle->Button_Released_Ticks > BUTTON_CLICKED_DELAY)
+                    {
+                        if (handle->Button_Event != Button_Idle)
+                        {
+                            handle->Button_Event = Button_Idle;
+                            handle->Button_Count_Captured = handle->Button_Clicked_Count;
+                            /* if button callback is defined. call*/
+                            if (handle->Callback != NULL)
+                            {
+                                handle->Callback(handle->Button_Clicked_Count);
+                            }
+                            handle->Button_Clicked_Count = 0;
+                        }
                     }
                 }
             }
@@ -132,6 +143,8 @@ void Button_Loop()
 
 Button_Event_t Button_Get_Status(Button_Struct_t *handle)
 {
+    ENCODER_ASSERT(handle, "NULL Passed");
+
     if (handle != NULL)
     {
         return handle->Button_Event;
@@ -141,6 +154,8 @@ Button_Event_t Button_Get_Status(Button_Struct_t *handle)
 
 uint8_t Button_Get_Clicked_Count(Button_Struct_t *handle)
 {
+    ENCODER_ASSERT(handle, "NULL Passed");
+
     uint8_t count = 0;
 
     if (handle != NULL)
@@ -157,8 +172,18 @@ uint8_t Button_Get_Clicked_Count(Button_Struct_t *handle)
 
 void Button_Reset_Count(Button_Struct_t *handle)
 {
+    ENCODER_ASSERT(handle, "NULL Passed");
+
     if (handle != NULL)
     {
         handle->Button_Clicked_Count = 0;
     }
 }
+
+#ifdef USE_BUTTON_ASSERT
+#include "stdio.h"
+void Button_Assert(char *msg, char *file, uint32_t line)
+{
+    printf("%s, assertion failed, file=%s, line=%lu\n", msg, file, line);
+}
+#endif
