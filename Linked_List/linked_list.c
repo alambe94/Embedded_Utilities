@@ -4,11 +4,18 @@
 
 List_Node_t *List_New_Node(void *data)
 {
-    LIST_ASSERT(data);
+    LIST_ASSERT(data, "NULL Passed");
 
     List_Node_t *new_node = (List_Node_t *)malloc(sizeof(List_Node_t));
-    new_node->Data = data;
-    new_node->Next = NULL;
+
+    LIST_ASSERT(new_node, "malloc failed");
+
+    if (new_node != NULL)
+    {
+        new_node->Data = data;
+        new_node->Next = NULL;
+    }
+
     return new_node;
 }
 /**
@@ -16,8 +23,8 @@ List_Node_t *List_New_Node(void *data)
  **/
 uint8_t List_Add_At_Top(List_Node_t **head, List_Node_t *new_node)
 {
-    LIST_ASSERT(head);
-    LIST_ASSERT(new_node);
+    LIST_ASSERT(head, "NULL Passed");
+    LIST_ASSERT(new_node, "NULL Passed");
 
     uint8_t xreturn = 0;
 
@@ -33,9 +40,9 @@ uint8_t List_Add_At_Top(List_Node_t **head, List_Node_t *new_node)
 
 uint8_t List_Add_After(List_Node_t **head, List_Node_t *node, List_Node_t *new_node)
 {
-    LIST_ASSERT(head);
-    LIST_ASSERT(node);
-    LIST_ASSERT(new_node);
+    LIST_ASSERT(head, "NULL Passed");
+    LIST_ASSERT(node, "NULL Passed");
+    LIST_ASSERT(new_node, "NULL Passed");
 
     uint8_t xreturn = 0;
 
@@ -51,9 +58,9 @@ uint8_t List_Add_After(List_Node_t **head, List_Node_t *node, List_Node_t *new_n
 
 uint8_t List_Add_Before(List_Node_t **head, List_Node_t *node, List_Node_t *new_node)
 {
-    LIST_ASSERT(head);
-    LIST_ASSERT(node);
-    LIST_ASSERT(new_node);
+    LIST_ASSERT(head, "NULL Passed");
+    LIST_ASSERT(node, "NULL Passed");
+    LIST_ASSERT(new_node, "NULL Passed");
 
     uint8_t xreturn = 0;
 
@@ -89,8 +96,8 @@ uint8_t List_Add_Before(List_Node_t **head, List_Node_t *node, List_Node_t *new_
 
 uint8_t List_Add_At_End(List_Node_t **head, List_Node_t *new_node)
 {
-    LIST_ASSERT(head);
-    LIST_ASSERT(new_node);
+    LIST_ASSERT(head, "NULL Passed");
+    LIST_ASSERT(new_node, "NULL Passed");
 
     uint8_t xreturn = 0;
 
@@ -121,7 +128,7 @@ uint8_t List_Add_At_End(List_Node_t **head, List_Node_t *new_node)
 
 uint8_t List_Delete_From_Top(List_Node_t **head)
 {
-    LIST_ASSERT(head);
+    LIST_ASSERT(head, "NULL Passed");
 
     uint8_t xreturn = 0;
 
@@ -148,7 +155,7 @@ uint8_t List_Delete_From_Top(List_Node_t **head)
 
 uint8_t List_Delete_From_End(List_Node_t **head)
 {
-    LIST_ASSERT(head);
+    LIST_ASSERT(head, "NULL Passed");
 
     uint8_t xreturn = 0;
 
@@ -181,8 +188,8 @@ uint8_t List_Delete_From_End(List_Node_t **head)
 
 uint8_t List_Delete_Node(List_Node_t **head, List_Node_t *node)
 {
-    LIST_ASSERT(head);
-    LIST_ASSERT(node);
+    LIST_ASSERT(head, "NULL Passed");
+    LIST_ASSERT(node, "NULL Passed");
 
     uint8_t xreturn = 0;
 
@@ -218,7 +225,7 @@ uint8_t List_Delete_Node(List_Node_t **head, List_Node_t *node)
 
 uint8_t List_Delete_All(List_Node_t **head)
 {
-    LIST_ASSERT(head);
+    LIST_ASSERT(head, "NULL Passed");
 
     uint8_t xreturn = 0;
 
@@ -241,8 +248,8 @@ uint8_t List_Delete_All(List_Node_t **head)
 
 List_Node_t *List_Find_Node(List_Node_t **head, void *data)
 {
-    LIST_ASSERT(head);
-    LIST_ASSERT(data);
+    LIST_ASSERT(head, "NULL Passed");
+    LIST_ASSERT(data, "NULL Passed");
 
     if (head != NULL && *head != NULL)
     {
@@ -264,17 +271,16 @@ List_Node_t *List_Find_Node(List_Node_t **head, void *data)
 
 uint8_t List_Push(List_Node_t **head, void *data)
 {
-    LIST_ASSERT(head);
-    LIST_ASSERT(data);
+    LIST_ASSERT(head, "NULL Passed");
+    LIST_ASSERT(data, "NULL Passed");
 
     return List_Add_At_Top(head, List_New_Node(data));
 }
 
 uint8_t List_Pop(List_Node_t **head, void **data)
 {
-    LIST_ASSERT(head);
-    LIST_ASSERT(data);
-    LIST_ASSERT(*data);
+    LIST_ASSERT(head, "NULL Passed");
+    LIST_ASSERT(data, "NULL Passed");
 
     uint8_t xreturn = 0;
 
@@ -288,7 +294,7 @@ uint8_t List_Pop(List_Node_t **head, void **data)
 
 uint16_t List_Get_Count(List_Node_t **head)
 {
-    LIST_ASSERT(head);
+    LIST_ASSERT(head, "NULL Passed");
 
     uint16_t count = 0;
 
@@ -302,8 +308,8 @@ uint16_t List_Get_Count(List_Node_t **head)
 
 #ifdef USE_LIST_ASSERT
 #include "stdio.h"
-void List_Assert(uint8_t *file, uint32_t line)
+void List_Assert(char *msg, char *file, uint32_t line)
 {
-    printf("assertion failed, file=%s, line=%lu\n", file, line);
+    printf("%s, assertion failed, file=%s, line=%lu\n", msg, file, line);
 }
 #endif

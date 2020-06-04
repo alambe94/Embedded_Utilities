@@ -28,8 +28,8 @@ uint8_t List_Pop(List_Node_t **head, void **data);
 uint16_t List_Get_Count(List_Node_t **head);
 
 #ifdef USE_LIST_ASSERT
-void List_Assert(uint8_t *file, uint32_t line);
-#define LIST_ASSERT(expr) ((expr) ? (void)0U : List_Assert((uint8_t *)__FILE__, __LINE__))
+void List_Assert(char *msg, char *file, uint32_t line);
+#define LIST_ASSERT(expr, msg) ((expr) ? (void)0U : List_Assert(msg, "linked_list.c", __LINE__))
 #else
 #define LIST_ASSERT(expr) ((void)0U)
 #endif
