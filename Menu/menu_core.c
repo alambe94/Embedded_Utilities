@@ -19,6 +19,8 @@ static uint8_t Refresh_Flag;
 
 static Menu_Page_t *Menu_Page_List[MAX_PAGES];
 
+static uint8_t Menu_Page_Count = 0;
+
 Menu_Page_t *Current_Page;
 
 extern uint32_t Menu_Get_Tick();
@@ -30,7 +32,6 @@ uint8_t Menu_Add_Page(Menu_Page_t *page)
     MENU_ASSERT(page, "NULL Passed");
     MENU_ASSERT(Menu_Page_Count < MAX_PAGES, "MAX Page count reached");
 
-    static uint8_t Menu_Page_Count = 0;
     uint8_t xreturn = 1;
 
     if (Menu_Page_Count < MAX_PAGES && page != NULL)
@@ -115,23 +116,30 @@ void Menu_Loop()
                 menu_event.Encoder_Count = 0;
                 in_page_loop = Current_Page->Page_Screen_List[Current_Page->Current_Screen].Enter_Page_Screen(&menu_event);
             }
-            /* down is pressed or encoder decremented */
-            else if (menu_event.Encoder_Count < 0)
+            /* up is pressed or encoder incremented */
+            else if (menu_event.Encoder_Count > 0)
             {
-                Current_Page->Current_Screen++;
+                Current_Page->Current_Screen += menu_event.Encoder_Count;
                 if (Current_Page->Current_Screen >= Current_Page->Screens_In_Page)
                 {
                     Current_Page->Current_Screen = Current_Page->Screens_In_Page - 1;
                 }
                 Refresh_Flag = 1;
             }
-            /* up is pressed or encoder incremented */
-            else if (menu_event.Encoder_Count > 0)
+            /* down is pressed or encoder decremented */
+            else if (menu_event.Encoder_Count < 0)
             {
-                if (Current_Page->Current_Screen)
+                int16_t temp = Current_Page->Current_Screen + menu_event.Encoder_Count;
+
+                if (temp < 0)
                 {
-                    Current_Page->Current_Screen--;
+                    Current_Page->Current_Screen = 0;
                 }
+                else
+                {
+                    Current_Page->Current_Screen = temp;
+                }
+
                 Refresh_Flag = 1;
             }
 
