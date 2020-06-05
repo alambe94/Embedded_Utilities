@@ -89,7 +89,7 @@ uint8_t Ring_Buffer_Is_Empty(Ring_Buffer_t *handle)
 {
     RB_ASSERT(handle, "NULL Passed");
 
-    return (handle->Read_Index == handle->Write_Index && !Ring_Buffer_Is_Full(handle) == 0);
+    return (handle->Read_Index == handle->Write_Index && !Ring_Buffer_Is_Full(handle));
 }
 
 uint8_t Ring_Buffer_Put(Ring_Buffer_t *handle, void *data)
