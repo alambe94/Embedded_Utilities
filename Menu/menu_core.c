@@ -72,9 +72,13 @@ uint8_t Menu_Add_Page(Menu_Page_t *page)
 
 void Menu_Change_Page(uint8_t page_no, uint8_t page_screen)
 {
+    MENU_ASSERT(page_no < MAX_PAGES, "Page out of index");
+
     if (page_no < MAX_PAGES)
     {
         Current_Page = Menu_Page_List[page_no];
+
+        MENU_ASSERT(page_screen < Current_Page->Screens_In_Page, "Screen out of index");
 
         if (page_screen < Current_Page->Screens_In_Page)
         {
@@ -94,7 +98,6 @@ void Menu_Loop()
     if (Menu_Get_Tick() - Scan_Time_Stamp > (REFRESH_CYCLE - 1))
     {
         Scan_Time_Stamp = Menu_Get_Tick();
-
         Menu_Get_Event(&menu_event);
 
         if (in_page_loop)
@@ -112,8 +115,8 @@ void Menu_Loop()
             if (menu_event.Enter_Button_Clicks == 1)
             {
                 /* click and count do not belong to page loop so reset them */
-                menu_event.Enter_Button_Clicks = 0;
                 menu_event.Encoder_Count = 0;
+                menu_event.Enter_Button_Clicks = 0;
                 in_page_loop = Current_Page->Page_Screen_List[Current_Page->Current_Screen].Enter_Page_Screen(&menu_event);
             }
             /* up is pressed or encoder incremented */
