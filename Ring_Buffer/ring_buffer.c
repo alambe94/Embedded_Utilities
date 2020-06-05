@@ -23,6 +23,18 @@
 
 #include "ring_buffer.h"
 
+/* set USE_RB_ASSERT to enable assert */
+#if (USE_RB_ASSERT == 1)
+#include "stdio.h"
+#define RB_ASSERT(expr, msg) ((expr) ? (void)0U : RB_Assert(msg, "ring_buffer.c", __LINE__))
+static void RB_Assert(char *msg, char *file, uint32_t line)
+{
+    printf("%s, assertion failed, file=%s, line=%lu\n", msg, file, line);
+}
+#else
+#define RB_ASSERT(expr, msg) ((void)0U)
+#endif
+
 void Ring_Buffer_Init(Ring_Buffer_t *handle, uint8_t *buffer, uint8_t element_size, uint32_t max_elements)
 {
     RB_ASSERT(handle, "NULL Passed");
@@ -243,7 +255,6 @@ uint8_t Ring_Buffer_Peek_Char(Ring_Buffer_t *handle, uint8_t *data, uint32_t pos
 {
     RB_ASSERT(handle, "NULL Passed");
     RB_ASSERT(data, "NULL Passed");
-    RB_ASSERT(position, "NULL Passed");
 
     return Ring_Buffer_Peek(handle, data, position);
 }
@@ -255,11 +266,3 @@ uint8_t Ring_Buffer_Search_Char(Ring_Buffer_t *handle, uint8_t data, uint32_t *p
 
     return Ring_Buffer_Search(handle, &data, position);
 }
-
-#ifdef USE_RB_ASSERT
-#include "stdio.h"
-void RB_Assert(char *msg, char *file, uint32_t line)
-{
-    printf("%s, assertion failed, file=%s, line=%lu\n", msg, file, line);
-}
-#endif

@@ -3,7 +3,7 @@
 
 #include "stdint.h"
 
-#define USE_BUTTON_ASSERT
+#define USE_BUTTON_ASSERT 1
 
 typedef enum Button_Event_t
 {
@@ -32,12 +32,5 @@ void Button_Reset_Count(Button_Struct_t *handle);
 uint8_t Button_Add(Button_Struct_t *handle);
 uint8_t Button_Get_Clicked_Count(Button_Struct_t *handle);
 Button_Event_t Button_Get_Status(Button_Struct_t *handle);
-
-#ifdef USE_BUTTON_ASSERT
-void Button_Assert(char *msg, char *file, uint32_t line);
-#define BUTTON_ASSERT(expr, msg) ((expr) ? (void)0U : Button_Assert(msg, "button.c", __LINE__))
-#else
-#define BUTTON_ASSERT(expr) ((void)0U)
-#endif
 
 #endif /* BUTTON_H_ */

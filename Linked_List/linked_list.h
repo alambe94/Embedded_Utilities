@@ -3,7 +3,7 @@
 
 #include "stdint.h"
 
-#define USE_LIST_ASSERT
+#define USE_LIST_ASSERT 1
 
 typedef struct List_Node_t
 {
@@ -27,11 +27,6 @@ uint8_t List_Push(List_Node_t **head, void *data);
 uint8_t List_Pop(List_Node_t **head, void **data);
 uint16_t List_Get_Count(List_Node_t **head);
 
-#ifdef USE_LIST_ASSERT
-void List_Assert(char *msg, char *file, uint32_t line);
-#define LIST_ASSERT(expr, msg) ((expr) ? (void)0U : List_Assert(msg, "linked_list.c", __LINE__))
-#else
-#define LIST_ASSERT(expr) ((void)0U)
-#endif
+
 
 #endif /* LINKED_LIST_H_ */

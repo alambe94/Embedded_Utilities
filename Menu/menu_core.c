@@ -4,6 +4,17 @@
 #define MAX_PAGES 15
 #define REFRESH_CYCLE 20
 
+#if (USE_MENU_ASSERT == 1)
+#include "stdio.h"
+#define MENU_ASSERT(expr, msg) ((expr) ? (void)0U : Menu_Assert(msg, "menu_core.c", __LINE__))
+static void Menu_Assert(char *msg, char *file, uint32_t line)
+{
+    printf("%s, assertion failed, file=%s, line=%lu\n", msg, file, line);
+}
+#else
+#define MENU_ASSERT(expr, msg) ((void)0U)
+#endif
+
 static uint8_t Refresh_Flag;
 
 static Menu_Page_t *Menu_Page_List[MAX_PAGES];
@@ -131,11 +142,3 @@ void Menu_Loop()
         }
     }
 }
-
-#ifdef USE_MENU_ASSERT
-#include "stdio.h"
-void Menu_Assert(char *msg, char *file, uint32_t line)
-{
-    printf("%s, assertion failed, file=%s, line=%lu\n", msg, file, line);
-}
-#endif

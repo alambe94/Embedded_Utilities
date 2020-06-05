@@ -3,7 +3,7 @@
 
 #include "stdint.h"
 
-#define USE_ENCODER_ASSERT
+#define USE_ENCODER_ASSERT 0
 
 typedef struct Encoder_Struct_t
 {
@@ -22,12 +22,5 @@ void Encoder_Reset_Count(Encoder_Struct_t *handle);
 void Encoder_Set_Count(Encoder_Struct_t *handle, int16_t count);
 int16_t Encoder_Get_Count(Encoder_Struct_t *handle);
 uint8_t Encoder_Add(Encoder_Struct_t *Encoder_Struct_handle);
-
-#ifdef USE_ENCODER_ASSERT
-void Encoder_Assert(char *msg, char *file, uint32_t line);
-#define ENCODER_ASSERT(expr, msg) ((expr) ? (void)0U : Encoder_Assert(msg, "rotary_encoder.c", __LINE__))
-#else
-#define ENCODER_ASSERT(expr) ((void)0U)
-#endif
 
 #endif /* ROTARY_ENCODER_H_ */

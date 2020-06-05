@@ -30,7 +30,7 @@
 
 #include "stdint.h"
 
-#define USE_CLI_ASSERT
+#define USE_CLI_ASSERT 1
 
 typedef struct
 {
@@ -48,12 +48,5 @@ void CLI_Parse_Arguments(const char *cli_in_buffer, uint8_t *argc, const char *a
 uint8_t CLI_Process_Command(const char *cli_in_buffer, char *cli_tx_out_buffer, uint16_t max_buffer_len);
 uint8_t CLI_Get_Argument_Length(const char *arg);
 uint8_t CLI_Add_Command(CLI_Command_t *command_def);
-
-#ifdef USE_CLI_ASSERT
-void CLI_Assert(char *msg, char *file, uint32_t line);
-#define CLI_ASSERT(expr, msg) ((expr) ? (void)0U : CLI_Assert(msg, "cli.c", __LINE__))
-#else
-#define CLI_ASSERT(expr) ((void)0U)
-#endif
 
 #endif /* _CLI_H_ */

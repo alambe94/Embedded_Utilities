@@ -1,4 +1,5 @@
 #include "button.h"
+#include "stdio.h"
 
 Button_Struct_t Button_A;
 Button_Struct_t Button_B;

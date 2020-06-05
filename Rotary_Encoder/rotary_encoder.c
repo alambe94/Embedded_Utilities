@@ -12,6 +12,17 @@
 #define ENCODER_READ_TICK (250 / ENCODER_SCAN_TICK)   // only read after 100ms of inactivity
 #define ENCODER_RESET_TICK (1000 / ENCODER_SCAN_TICK) // reset encoder count after 500ms of inactivity
 
+#if (USE_ENCODER_ASSERT == 1)
+#include "stdio.h"
+#define ENCODER_ASSERT(expr, msg) ((expr) ? (void)0U : Encoder_Assert(msg, "rotary_encoder.c", __LINE__))
+static void Encoder_Assert(char *msg, char *file, uint32_t line)
+{
+    printf("%s, assertion failed, file=%s, line=%lu\n", msg, file, line);
+}
+#else
+#define ENCODER_ASSERT(expr, msg) ((void)0U)
+#endif
+
 static Encoder_Struct_t *Encoder_List[MAX_ENCODERS];
 
 static uint8_t Encoder_Count = 0;
@@ -179,11 +190,3 @@ void Encoder_Set_Count(Encoder_Struct_t *handle, int16_t count)
         handle->Encoder_Count = count;
     }
 }
-
-#ifdef USE_ENCODER_ASSERT
-#include "stdio.h"
-void Encoder_Assert(char *msg, char *file, uint32_t line)
-{
-    printf("%s, assertion failed, file=%s, line=%lu\n", msg, file, line);
-}
-#endif

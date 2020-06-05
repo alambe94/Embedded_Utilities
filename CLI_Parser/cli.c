@@ -32,6 +32,17 @@
 #define MAX_COMMANDS 100
 #define MAX_ARGS_IN_CMD 10
 
+#if (USE_CLI_ASSERT == 1)
+#include "stdio.h"
+#define CLI_ASSERT(expr, msg) ((expr) ? (void)0U : CLI_Assert(msg, "cli.c", __LINE__))
+static void CLI_Assert(char *msg, char *file, uint32_t line)
+{
+    printf("%s, assertion failed, file=%s, line=%lu\n", msg, file, line);
+}
+#else
+#define CLI_ASSERT(expr, msg) ((void)0U)
+#endif
+
 static uint16_t Command_Count = 0;
 
 /**
@@ -307,11 +318,3 @@ static uint8_t Clear_Callback(uint8_t argc,
 
     return 0; // operation complete do not call again
 }
-
-#ifdef USE_CLI_ASSERT
-#include "stdio.h"
-void CLI_Assert(char *msg, char *file, uint32_t line)
-{
-    printf("%s, assertion failed, file=%s, line=%lu\n", msg, file, line);
-}
-#endif

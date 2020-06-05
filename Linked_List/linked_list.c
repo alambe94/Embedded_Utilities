@@ -2,6 +2,17 @@
 #include "linked_list.h"
 #include "stdlib.h"
 
+#if (USE_LIST_ASSERT == 1)
+#include "stdio.h"
+#define LIST_ASSERT(expr, msg) ((expr) ? (void)0U : List_Assert(msg, "linked_list.c", __LINE__))
+static void List_Assert(char *msg, char *file, uint32_t line)
+{
+    printf("%s, assertion failed, file=%s, line=%lu\n", msg, file, line);
+}
+#else
+#define LIST_ASSERT(expr, msg) ((void)0U)
+#endif
+
 List_Node_t *List_New_Node(void *data)
 {
     LIST_ASSERT(data, "NULL Passed");
@@ -305,11 +316,3 @@ uint16_t List_Get_Count(List_Node_t **head)
 
     return count;
 }
-
-#ifdef USE_LIST_ASSERT
-#include "stdio.h"
-void List_Assert(char *msg, char *file, uint32_t line)
-{
-    printf("%s, assertion failed, file=%s, line=%lu\n", msg, file, line);
-}
-#endif

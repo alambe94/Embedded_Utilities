@@ -10,6 +10,17 @@
 #define BUTTON_REPRESSED_DELAY (150 / BUTTON_SCAN_TICK)     // if repressed within BUTTON_REPRESSED_DELAY increment count
 #define BUTTON_LONG_PRESSED_DELAY (1000 / BUTTON_SCAN_TICK) // if pressed for BUTTON_LONG_PRESSED_DELAY set count to 255 to indicate long pressed
 
+#if (USE_BUTTON_ASSERT == 1)
+#include "stdio.h"
+#define BUTTON_ASSERT(expr, msg) ((expr) ? (void)0U : Button_Assert(msg, "button.c", __LINE__))
+void Button_Assert(char *msg, char *file, uint32_t line)
+{
+    printf("%s, assertion failed, file=%s, line=%lu\n", msg, file, line);
+}
+#else
+#define BUTTON_ASSERT(expr, msg) ((void)0U)
+#endif
+
 static Button_Struct_t *Button_List[MAX_BUTTONS];
 
 static uint8_t Button_Count = 0;
@@ -143,7 +154,7 @@ void Button_Loop()
 
 Button_Event_t Button_Get_Status(Button_Struct_t *handle)
 {
-    ENCODER_ASSERT(handle, "NULL Passed");
+    BUTTON_ASSERT(handle, "NULL Passed");
 
     if (handle != NULL)
     {
@@ -154,7 +165,7 @@ Button_Event_t Button_Get_Status(Button_Struct_t *handle)
 
 uint8_t Button_Get_Clicked_Count(Button_Struct_t *handle)
 {
-    ENCODER_ASSERT(handle, "NULL Passed");
+    BUTTON_ASSERT(handle, "NULL Passed");
 
     uint8_t count = 0;
 
@@ -172,18 +183,10 @@ uint8_t Button_Get_Clicked_Count(Button_Struct_t *handle)
 
 void Button_Reset_Count(Button_Struct_t *handle)
 {
-    ENCODER_ASSERT(handle, "NULL Passed");
+    BUTTON_ASSERT(handle, "NULL Passed");
 
     if (handle != NULL)
     {
         handle->Button_Clicked_Count = 0;
     }
 }
-
-#ifdef USE_BUTTON_ASSERT
-#include "stdio.h"
-void Button_Assert(char *msg, char *file, uint32_t line)
-{
-    printf("%s, assertion failed, file=%s, line=%lu\n", msg, file, line);
-}
-#endif
