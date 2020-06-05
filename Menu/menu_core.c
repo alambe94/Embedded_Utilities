@@ -29,22 +29,22 @@ uint8_t Menu_Add_Page(Menu_Page_t *page)
 {
     MENU_ASSERT(page, "NULL Passed");
 
-    static uint8_t Menu_Page_Count;
+    static uint8_t Menu_Page_Count = 0;
     uint8_t xreturn = 1;
 
     if (Menu_Page_Count < MAX_PAGES && page != NULL)
     {
         MENU_ASSERT(page->Page_Screen_List, "Page_Screen_List not defined");
 
-        if (page->Page_Screen_List)
+        if (page->Page_Screen_List != NULL)
         {
             for (uint8_t i = 0; i < page->Screens_In_Page; i++)
             {
-                MENU_ASSERT(Current_Page->Page_Screen_List[i].Enter_Page_Screen, "Enter_Page_Screen not defined");
-                MENU_ASSERT(Current_Page->Page_Screen_List[i].Show_Page_Screen, "Show_Page_Screen not defined");
+                MENU_ASSERT(page->Page_Screen_List[i].Enter_Page_Screen, "Enter_Page_Screen not defined");
+                MENU_ASSERT(page->Page_Screen_List[i].Show_Page_Screen, "Show_Page_Screen not defined");
 
-                if (Current_Page->Page_Screen_List[i].Show_Page_Screen == NULL ||
-                    Current_Page->Page_Screen_List[i].Show_Page_Screen == NULL)
+                if (page->Page_Screen_List[i].Show_Page_Screen == NULL ||
+                    page->Page_Screen_List[i].Show_Page_Screen == NULL)
                 {
                     xreturn = 0;
                 }
