@@ -3,7 +3,7 @@
 
 #include "stdint.h"
 
-#define USE_ENCODER_ASSERT 0
+#define USE_ENCODER_ASSERT 1
 
 typedef struct Encoder_Struct_t
 {

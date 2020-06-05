@@ -10,9 +10,9 @@ void List_Assersions();
 
 void main()
 {
-    //Test();
-    //List_As_Stack_Test();
-    List_Assersions();
+    Test();
+    List_As_Stack_Test();
+    //List_Assersions();
 }
 
 void Test()

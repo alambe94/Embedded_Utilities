@@ -3,7 +3,7 @@
 
 #include "stdint.h"
 
-#define USE_RB_ASSERT 0
+#define USE_RB_ASSERT 1
 
 typedef struct Ring_Buffer_t
 {

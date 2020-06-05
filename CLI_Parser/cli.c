@@ -106,6 +106,7 @@ void CLI_Init()
 uint8_t CLI_Add_Command(CLI_Command_t *command_def)
 {
     CLI_ASSERT(command_def, "NULL Passed");
+    CLI_ASSERT(Command_Count < MAX_COMMANDS, "MAX Command count reached");
 
     if (Command_Count < MAX_COMMANDS && command_def != NULL)
     {

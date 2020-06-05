@@ -28,6 +28,7 @@ extern void Menu_Get_Event(Menu_Event_t *event);
 uint8_t Menu_Add_Page(Menu_Page_t *page)
 {
     MENU_ASSERT(page, "NULL Passed");
+    MENU_ASSERT(Menu_Page_Count < MAX_PAGES, "MAX Page count reached");
 
     static uint8_t Menu_Page_Count = 0;
     uint8_t xreturn = 1;

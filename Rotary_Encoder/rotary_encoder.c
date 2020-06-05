@@ -33,6 +33,7 @@ extern uint32_t Encoder_Get_Tick();
 uint8_t Encoder_Add(Encoder_Struct_t *handle)
 {
     ENCODER_ASSERT(handle, "NULL Passed");
+    ENCODER_ASSERT(Encoder_Count < MAX_ENCODERS, "MAX Encoder count reached");
 
     if (Encoder_Count < MAX_ENCODERS && handle != NULL)
     {
