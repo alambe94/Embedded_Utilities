@@ -1,1 +1,1 @@
-stm32 example https://github.com/alambe94/STM32_Button.git
+stm32 example <https://github.com/alambe94/STM32_Button.git>

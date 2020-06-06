@@ -177,7 +177,7 @@ uint8_t List_Delete_From_End(List_Node_t **head)
         /* check if it is only node in list*/
         if ((*head)->Next == NULL)
         {
-            free(head);
+            free(*head);
             *head = NULL;
         }
         else
@@ -210,7 +210,7 @@ uint8_t List_Delete_Node(List_Node_t **head, List_Node_t *node)
         if (*head == node)
         {
             xreturn = 1;
-            free(node);
+            free(*head);
             *head = node->Next;
         }
         else

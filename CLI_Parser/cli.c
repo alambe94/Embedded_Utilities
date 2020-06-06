@@ -30,6 +30,7 @@
 #include "stdio.h"
 
 #define MAX_COMMANDS 100
+#define MAX_COMMAND_LEN 32
 #define MAX_ARGS_IN_CMD 10
 
 #if (USE_CLI_ASSERT == 1)
@@ -112,7 +113,7 @@ uint8_t CLI_Add_Command(CLI_Command_t *command_def)
     {
         CLI_ASSERT(command_def->CLI_Callback, "CLI_Callback not defined");
 
-        command_def->CLI_Command_Length = strlen(command_def->CLI_Command);
+        command_def->CLI_Command_Length = strnlen(command_def->CLI_Command, MAX_COMMAND_LEN);
         Command_List[Command_Count] = command_def;
         Command_Count++;
         return 1; // command add successful

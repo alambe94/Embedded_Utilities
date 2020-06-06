@@ -73,8 +73,6 @@ void Encoder_Loop()
 {
     static uint32_t Encoder_Scan_Time_Stamp = 0;
     Encoder_Struct_t *handle = NULL;
-    uint8_t pin_a_new_state = 0;
-    uint8_t pin_b_new_state = 0;
 
     /* execute this loop on every ENCODER_SCAN_TICK */
     if (Encoder_Get_Tick() - Encoder_Scan_Time_Stamp > ENCODER_SCAN_TICK)
@@ -89,8 +87,8 @@ void Encoder_Loop()
 
             if (handle != NULL)
             {
-                pin_a_new_state = handle->Encoder_Read_Pin_A();
-                pin_b_new_state = handle->Encoder_Read_Pin_B();
+                uint8_t pin_a_new_state = handle->Encoder_Read_Pin_A();
+                uint8_t pin_b_new_state = handle->Encoder_Read_Pin_B();
 
                 /*current state != previous*/
                 if (pin_a_new_state != handle->Encoder_Pin_A_State)
