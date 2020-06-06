@@ -1,68 +1,68 @@
 #include "stdio.h"
 #include "menu_core.h"
 
-#define SCREENS_IN_PAGE 5
+#define ITEMS_IN_PAGE 5
 
 Menu_Page_t Page0;
 
-static Page_Screen_t Page0_Screen_List[SCREENS_IN_PAGE];
+static Page_Item_t Page0_Item_List[ITEMS_IN_PAGE];
 
-static void Show_Page0_Screen0()
+static void Show_Page0_Item0()
 {
     printf("\033[2J\033[1;1H");
 
-    printf("->menu1 screen0\n"
-           "  menu1 screen1\n"
-           "  menu1 screen2\n"
-           "  menu1 screen3\n"
-           "  menu1 screen4\n");
+    printf("->menu1 Item0\n"
+           "  menu1 Item1\n"
+           "  menu1 Item2\n"
+           "  menu1 Item3\n"
+           "  menu1 Item4\n");
 }
 
-static void Show_Page0_Screen1()
+static void Show_Page0_Item1()
 {
     printf("\033[2J\033[1;1H");
 
-    printf("  menu1 screen0\n"
-           "->menu1 screen1\n"
-           "  menu1 screen2\n"
-           "  menu1 screen3\n"
-           "  menu1 screen4\n");
+    printf("  menu1 Item0\n"
+           "->menu1 Item1\n"
+           "  menu1 Item2\n"
+           "  menu1 Item3\n"
+           "  menu1 Item4\n");
 }
 
-static void Show_Page0_Screen2()
+static void Show_Page0_Item2()
 {
     printf("\033[2J\033[1;1H");
 
-    printf("  menu1 screen0\n"
-           "  menu1 screen1\n"
-           "->menu1 screen2\n"
-           "  menu1 screen3\n"
-           "  menu1 screen4\n");
+    printf("  menu1 Item0\n"
+           "  menu1 Item1\n"
+           "->menu1 Item2\n"
+           "  menu1 Item3\n"
+           "  menu1 Item4\n");
 }
 
-static void Show_Page0_Screen3()
+static void Show_Page0_Item3()
 {
     printf("\033[2J\033[1;1H");
 
-    printf("  menu1 screen0\n"
-           "  menu1 screen1\n"
-           "  menu1 screen2\n"
-           "->menu1 screen3\n"
-           "  menu1 screen4\n");
+    printf("  menu1 Item0\n"
+           "  menu1 Item1\n"
+           "  menu1 Item2\n"
+           "->menu1 Item3\n"
+           "  menu1 Item4\n");
 }
 
-static void Show_Page0_Screen4()
+static void Show_Page0_Item4()
 {
     printf("\033[2J\033[1;1H");
 
-    printf("  menu1 screen0\n"
-           "  menu1 screen1\n"
-           "  menu1 screen2\n"
+    printf("  menu1 Item0\n"
+           "  menu1 Item1\n"
+           "  menu1 Item2\n"
            "  menu1 screen3\n"
            "->menu1 screen4\n");
 }
 
-static uint8_t Loop_Page0_Screen0(Menu_Event_t *event)
+static uint8_t Run_Page0_Item0(Menu_Event_t *event)
 {
     uint8_t xreturn = 1;
     static uint8_t count = 0;
@@ -84,7 +84,7 @@ static uint8_t Loop_Page0_Screen0(Menu_Event_t *event)
     return xreturn;
 }
 
-static uint8_t Loop_Page0_Screen1(Menu_Event_t *event)
+static uint8_t Run_Page0_Item1(Menu_Event_t *event)
 {
     uint8_t xreturn = 1;
     static uint8_t count = 0;
@@ -106,7 +106,7 @@ static uint8_t Loop_Page0_Screen1(Menu_Event_t *event)
     return xreturn;
 }
 
-static uint8_t Loop_Page0_Screen2(Menu_Event_t *event)
+static uint8_t Run_Page0_Item2(Menu_Event_t *event)
 {
     uint8_t xreturn = 1;
     static uint8_t count = 0;
@@ -128,7 +128,7 @@ static uint8_t Loop_Page0_Screen2(Menu_Event_t *event)
     return xreturn;
 }
 
-static uint8_t Loop_Page0_Screen3(Menu_Event_t *event)
+static uint8_t Run_Page0_Item3(Menu_Event_t *event)
 {
     uint8_t xreturn = 1;
     static uint8_t count = 0;
@@ -150,7 +150,7 @@ static uint8_t Loop_Page0_Screen3(Menu_Event_t *event)
     return xreturn;
 }
 
-static uint8_t Loop_Page0_Screen4(Menu_Event_t *event)
+static uint8_t Run_Page0_Item4(Menu_Event_t *event)
 {
     uint8_t xreturn = 1;
     static uint8_t count = 0;
@@ -176,22 +176,22 @@ void Menu_Page0_Init()
 {
     printf("Menu_Page0_Init\n");
 
-    Page0_Screen_List[0].Show_Page_Screen = Show_Page0_Screen0;
-    Page0_Screen_List[0].Enter_Page_Screen = Loop_Page0_Screen0;
+    Page0_Item_List[0].Show_Page_Item = Show_Page0_Item0;
+    Page0_Item_List[0].Page_Item_Callback = Run_Page0_Item0;
 
-    Page0_Screen_List[1].Show_Page_Screen = Show_Page0_Screen1;
-    Page0_Screen_List[1].Enter_Page_Screen = Loop_Page0_Screen1;
+    Page0_Item_List[1].Show_Page_Item = Show_Page0_Item1;
+    Page0_Item_List[1].Page_Item_Callback = Run_Page0_Item1;
 
-    Page0_Screen_List[2].Show_Page_Screen = Show_Page0_Screen2;
-    Page0_Screen_List[2].Enter_Page_Screen = Loop_Page0_Screen2;
+    Page0_Item_List[2].Show_Page_Item = Show_Page0_Item2;
+    Page0_Item_List[2].Page_Item_Callback = Run_Page0_Item2;
 
-    Page0_Screen_List[3].Show_Page_Screen = Show_Page0_Screen3;
-    Page0_Screen_List[3].Enter_Page_Screen = Loop_Page0_Screen3;
+    Page0_Item_List[3].Show_Page_Item = Show_Page0_Item3;
+    Page0_Item_List[3].Page_Item_Callback = Run_Page0_Item3;
 
-    Page0_Screen_List[4].Show_Page_Screen = Show_Page0_Screen4;
-    Page0_Screen_List[4].Enter_Page_Screen = Loop_Page0_Screen4;
+    Page0_Item_List[4].Show_Page_Item = Show_Page0_Item4;
+    Page0_Item_List[4].Page_Item_Callback = Run_Page0_Item4;
 
-    Page0.Page_Screen_List = Page0_Screen_List;
-    Page0.Screens_In_Page = SCREENS_IN_PAGE;
+    Page0.Page_Item_List = Page0_Item_List;
+    Page0.Items_In_Page = ITEMS_IN_PAGE;
     Menu_Add_Page(&Page0);
 }

@@ -18,23 +18,23 @@ typedef struct Menu_Event_t
 
 } Menu_Event_t;
 
-typedef struct Page_Screen_t
+typedef struct Page_Item_t
 {
-    void (*Show_Page_Screen)();
-    uint8_t (*Enter_Page_Screen)(Menu_Event_t *event);
+    void (*Show_Page_Item)();
+    uint8_t (*Page_Item_Callback)(Menu_Event_t *event);
 
-} Page_Screen_t;
+} Page_Item_t;
 
 typedef struct Menu_Page_t
 {
-    Page_Screen_t *Page_Screen_List;
-    uint8_t Screens_In_Page;
-    uint8_t Current_Screen;
+    Page_Item_t *Page_Item_List;
+    uint8_t Items_In_Page;
+    uint8_t Current_Item;
 
 } Menu_Page_t;
 
 void Menu_Loop();
 uint8_t Menu_Add_Page(Menu_Page_t *page);
-void Menu_Change_Page(uint8_t page_no, uint8_t page_screen);
+void Menu_Change_Page(uint8_t page_no, uint8_t page_Item);
 
 #endif /* INC_MENU_CORE_H_ */
