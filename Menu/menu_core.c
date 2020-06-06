@@ -46,7 +46,7 @@ uint8_t Menu_Add_Page(Menu_Page_t *page)
                 MENU_ASSERT(page->Page_Screen_List[i].Show_Page_Screen, "Show_Page_Screen not defined");
 
                 if (page->Page_Screen_List[i].Show_Page_Screen == NULL ||
-                    page->Page_Screen_List[i].Show_Page_Screen == NULL)
+                    page->Page_Screen_List[i].Enter_Page_Screen == NULL)
                 {
                     xreturn = 0;
                 }

@@ -169,13 +169,12 @@ int32_t Evaluate_Expression(const char *str)
 uint8_t Evaluate_Expression2(const char *str, int32_t *value, uint8_t *sign)
 {
     uint8_t xreturn = 0;
-    int32_t val = 0;
 
     if (Validate_Expression(str))
     {
         xreturn = 1;
 
-        val = Evaluate_Expression(str);
+        int32_t val = Evaluate_Expression(str);
 
         if (val >= 0)
         {
@@ -192,5 +191,3 @@ uint8_t Evaluate_Expression2(const char *str, int32_t *value, uint8_t *sign)
 
     return xreturn;
 }
-
-

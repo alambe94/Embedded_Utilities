@@ -293,8 +293,6 @@ uint8_t List_Pop(List_Node_t **head, void **data)
     LIST_ASSERT(head, "NULL Passed");
     LIST_ASSERT(data, "NULL Passed");
 
-    uint8_t xreturn = 0;
-
     if (head != NULL && *head != NULL)
     {
         *data = (*head)->Data;

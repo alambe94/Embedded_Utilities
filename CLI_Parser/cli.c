@@ -140,8 +140,6 @@ uint8_t CLI_Process_Command(const char *cli_in_buffer,
 
     uint8_t is_command_valid = 0;
     uint8_t xreturn = 0;
-    uint8_t argc = 0;
-    const char *argv[MAX_ARGS_IN_CMD];
     CLI_Command_t *cmd = NULL;
 
     /* Search for the command string in the list of registered commands. */
@@ -173,6 +171,9 @@ uint8_t CLI_Process_Command(const char *cli_in_buffer,
     {
         if (cmd->CLI_Callback != NULL)
         {
+            uint8_t argc = 0;
+            const char *argv[MAX_ARGS_IN_CMD];
+
             CLI_Parse_Arguments(cli_in_buffer, &argc, argv);
 
             xreturn = cmd->CLI_Callback(argc,
@@ -302,20 +303,25 @@ static uint8_t Clear_Callback(uint8_t argc,
                               char *cli_out_buffer,
                               uint16_t cli_out_max)
 {
-    static uint16_t count = 0;
+    CLI_ASSERT(cli_out_buffer, "NULL Passed");
 
-    if (!count)
+    if (cli_out_buffer != NULL)
     {
-        count = 1;
-        /* send terminal clear command */
-        strncpy(cli_out_buffer, "\033[2J", cli_out_max);
-        return 1; //call again to generate next output
-    }
-    else
-    {
-        count = 0;
-        /* send cursor home command */
-        strncpy(cli_out_buffer, "\033[H", cli_out_max);
+        static uint16_t count = 0;
+
+        if (!count)
+        {
+            count = 1;
+            /* send terminal clear command */
+            strncpy(cli_out_buffer, "\033[2J", cli_out_max);
+            return 1; //call again to generate next output
+        }
+        else
+        {
+            count = 0;
+            /* send cursor home command */
+            strncpy(cli_out_buffer, "\033[H", cli_out_max);
+        }
     }
 
     return 0; // operation complete do not call again
