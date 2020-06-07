@@ -2,9 +2,9 @@
 #include "stddef.h"
 
 /**
- * @brief assert implemenation, set USE_BUTTON_ASSERT to 1 to enable assert
+ * @brief assert implemenation, set BUTTON_USE_ASSERT to 1 to enable assert
  **/
-#if (USE_BUTTON_ASSERT == 1)
+#if (BUTTON_USE_ASSERT == 1)
 #include "stdio.h"
 #define BUTTON_ASSERT(expr, msg) ((expr) ? (void)0U : Button_Assert(msg, "button.c", __LINE__))
 void Button_Assert(char *msg, char *file, uint32_t line)
@@ -33,7 +33,7 @@ extern uint32_t Button_Get_Tick();
 /**
  * @brief add given button to list of registered buttons
  * @param handle handle of button to be registered
- * @retval return button ID (index+1  of button in registred list)
+ * @retval return button ID (index+1  of button in registred list), return 0 on failure
  * @note adjust MAX_BUTTONS accordingly
  **/
 uint8_t Button_Add(Button_Struct_t *handle)
@@ -62,7 +62,7 @@ uint8_t Button_Add(Button_Struct_t *handle)
         /** return button ID */
         return Button_Count;
     }
-
+    /** return error */
     return 0;
 }
 

@@ -6,13 +6,13 @@
 #define MAX_BUTTONS 5
 
 /** enable disable assert */
-#define USE_BUTTON_ASSERT 1
+#define BUTTON_USE_ASSERT 1
 
 /** milliseconds in single tick */
-#define MS_IN_TICK 1
+#define BUTTON_MS_IN_TICK 1
 
 /** Button_Loop() executes every BUTTON_SCAN_TICK */
-#define BUTTON_SCAN_TICK (10 / MS_IN_TICK)
+#define BUTTON_SCAN_TICK (10 / BUTTON_MS_IN_TICK)
 
 /** if released for BUTTON_DEBOUNCE_TICK, register click */
 #define BUTTON_DEBOUNCE_TICK (50 / BUTTON_SCAN_TICK)

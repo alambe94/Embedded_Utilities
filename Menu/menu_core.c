@@ -1,10 +1,10 @@
 #include "stdio.h"
 #include "menu_core.h"
 
-#define MAX_PAGES 15
-#define REFRESH_CYCLE 20
-
-#if (USE_MENU_ASSERT == 1)
+/**
+ * @brief assert implemenation, set MENU_USE_ASSERT to 1 to enable assert
+ **/
+#if (MENU_USE_ASSERT == 1)
 #include "stdio.h"
 #define MENU_ASSERT(expr, msg) ((expr) ? (void)0U : Menu_Assert(msg, "menu_core.c", __LINE__))
 static void Menu_Assert(char *msg, char *file, uint32_t line)
@@ -15,24 +15,45 @@ static void Menu_Assert(char *msg, char *file, uint32_t line)
 #define MENU_ASSERT(expr, msg) ((void)0U)
 #endif
 
-static Menu_Page_t *Menu_Page_List[MAX_PAGES];
+/**
+ * @brief list of all registered pages
+ **/
+static Menu_Page_t *Menu_Page_List[MENU_MAX_PAGES];
 
+/**
+ * @brief count of registred pages
+ **/
 static uint8_t Menu_Page_Count = 0;
 
+/**
+ * @brief handle of current or active page
+ **/
 Menu_Page_t *Current_Page;
 
+/**
+ * @brief need to define by user externally. used for timing purpose. simply return millis or tick elapsed
+ **/
 extern uint32_t Menu_Get_Tick();
 
+/**
+ * @brief need to define by user externally. used for navigation purpose. return state of navigation keys
+ **/
 extern void Menu_Get_Event(Menu_Event_t *event);
 
+/**
+ * @brief add given page to list of registered pages
+ * @param handle handle of page to be registered
+ * @retval return page ID (index+1  of page in registred list), return 0 on failure
+ * @note adjust MENU_MAX_PAGES accordingly
+ **/
 uint8_t Menu_Add_Page(Menu_Page_t *page)
 {
     MENU_ASSERT(page, "NULL Passed");
-    MENU_ASSERT(Menu_Page_Count < MAX_PAGES, "MAX Page count reached");
+    MENU_ASSERT(Menu_Page_Count < MENU_MAX_PAGES, "MAX Page count reached");
 
-    uint8_t xreturn = 1;
+    uint8_t page_valid_flag = 1;
 
-    if (Menu_Page_Count < MAX_PAGES && page != NULL)
+    if (Menu_Page_Count < MENU_MAX_PAGES && page != NULL)
     {
         MENU_ASSERT(page->Page_Item_List, "Page_Item_List not defined");
 
@@ -46,33 +67,44 @@ uint8_t Menu_Add_Page(Menu_Page_t *page)
                 if (page->Page_Item_List[i].Show_Page_Item == NULL ||
                     page->Page_Item_List[i].Page_Item_Callback == NULL)
                 {
-                    xreturn = 0;
+                    page_valid_flag = 0;
                 }
             }
         }
         else
         {
-            xreturn = 0;
+            page_valid_flag = 0;
         }
     }
     else
     {
-        xreturn = 0;
+        page_valid_flag = 0;
     }
 
-    if (xreturn)
+    if (page_valid_flag)
     {
         Menu_Page_List[Menu_Page_Count++] = page;
+        /** return page ID */
+        return Menu_Page_Count;
     }
-
-    return xreturn;
+    /** return error */
+    return 0;
 }
 
-void Menu_Change_Page(uint8_t page_no, uint8_t page_Item)
+/**
+ * @brief change current menu and screen(item) to specified page
+ * @param page_no page number to switch to
+ * @param page_Item page item to switch to
+ * @retval return 1 if success
+ * @note adjust MENU_MAX_PAGES accordingly
+ **/
+uint8_t Menu_Change_Page(uint8_t page_no, uint8_t page_Item)
 {
-    MENU_ASSERT(page_no < MAX_PAGES, "Page out of index");
+    MENU_ASSERT(page_no < MENU_MAX_PAGES, "Page out of index");
 
-    if (page_no < MAX_PAGES)
+    uint8_t ok_flag = 1;
+
+    if (page_no < MENU_MAX_PAGES)
     {
         Current_Page = Menu_Page_List[page_no];
 
@@ -82,16 +114,32 @@ void Menu_Change_Page(uint8_t page_no, uint8_t page_Item)
         {
             Current_Page->Current_Item = page_Item;
         }
+        else
+        {
+            ok_flag = 0;
+        }
     }
+    else
+    {
+        ok_flag = 0;
+    }
+    return ok_flag;
 }
 
+/**
+ * @brief frequently called in main loop. should be called at least every 20ms?
+ * @param none
+ * @retval none
+ **/
 void Menu_Loop()
 {
     static uint32_t Scan_Time_Stamp = 0;
 
-    if (Menu_Get_Tick() - Scan_Time_Stamp > (REFRESH_CYCLE - 1))
+    if (Menu_Get_Tick() - Scan_Time_Stamp > (MENU_REFRESH_TICK - 1))
     {
-        static uint8_t item_callback_flag = 1; // by default enter page0 Item0 (Home Item).
+        /** by default item_callback_flag set to 1 to call Home Screen*/
+        /** call Menu_Change_Page(HOME_PAGE, HOME_ITEM) in init to set home page and screen */
+        static uint8_t item_callback_flag = 1;
         uint8_t item_show_flag = 0;
         Menu_Event_t menu_event;
 
@@ -105,19 +153,19 @@ void Menu_Loop()
         }
         else
         {
-            /* enter button or select button is pressed */
+            /** enter button or select button is pressed */
             if (menu_event.Enter_Button_Clicks == 1)
             {
                 item_callback_flag = 1;
             }
-            /* up is pressed or encoder incremented */
-            /* down is pressed or encoder decremented */
+            /** up is pressed or encoder incremented */
+            /** down is pressed or encoder decremented */
             else if (menu_event.Encoder_Count)
             {
                 int16_t temp = Current_Page->Current_Item + menu_event.Encoder_Count;
                 if (temp < 0)
                 {
-                    Current_Page->Current_Item = 0;
+                    temp = 0;
                 }
                 else if (temp >= Current_Page->Items_In_Page)
                 {
