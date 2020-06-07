@@ -30,6 +30,7 @@ extern uint32_t Button_Get_Tick();
 uint8_t Button_Add(Button_Struct_t *handle)
 {
     BUTTON_ASSERT(handle, "NULL Passed");
+    BUTTON_ASSERT(Button_Count < MAX_BUTTONS, "MAX Button count reached");
 
     if (Button_Count < MAX_BUTTONS && handle != NULL)
     {
@@ -53,8 +54,8 @@ uint8_t Button_Add(Button_Struct_t *handle)
     }
     else
     {
-        //error
-        return (255); //return error
+        //return error
+        return (255);
     }
 }
 
@@ -80,7 +81,7 @@ void Button_Loop()
 
             if (handle != NULL)
             {
-                if (handle->Button_Read && handle->Button_Read()) //pressed detected
+                if (handle->Button_Read != NULL && handle->Button_Read()) //pressed detected
                 {
                     handle->Button_Pressed_Ticks++; //
 

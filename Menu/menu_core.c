@@ -87,37 +87,28 @@ void Menu_Change_Page(uint8_t page_no, uint8_t page_Item)
 
 void Menu_Loop()
 {
-    static uint8_t call_page_callback = 1; // by default enter page0 Item0 (Home Item).
     static uint32_t Scan_Time_Stamp = 0;
-    uint8_t refresh_flag = 0;
-    Menu_Event_t menu_event;
 
     if (Menu_Get_Tick() - Scan_Time_Stamp > (REFRESH_CYCLE - 1))
     {
+        static uint8_t item_callback_flag = 1; // by default enter page0 Item0 (Home Item).
+        uint8_t item_show_flag = 0;
+        Menu_Event_t menu_event;
+
         Scan_Time_Stamp = Menu_Get_Tick();
         Menu_Get_Event(&menu_event);
 
-        if (call_page_callback)
+        if (item_callback_flag)
         {
-            call_page_callback = Current_Page->Page_Item_List[Current_Page->Current_Item].Page_Item_Callback(&menu_event);
-            if (!call_page_callback)
-            {
-                refresh_flag = 1;
-            }
+            item_callback_flag = Current_Page->Page_Item_List[Current_Page->Current_Item].Page_Item_Callback(&menu_event);
+            item_show_flag = !item_callback_flag;
         }
         else
         {
             /* enter button or select button is pressed */
             if (menu_event.Enter_Button_Clicks == 1)
             {
-                /* this click and count do not belong to page callback so reset them */
-                menu_event.Encoder_Count = 0;
-                menu_event.Enter_Button_Clicks = 0;
-                call_page_callback = Current_Page->Page_Item_List[Current_Page->Current_Item].Page_Item_Callback(&menu_event);
-                if (!call_page_callback)
-                {
-                    refresh_flag = 1;
-                }
+                item_callback_flag = 1;
             }
             /* up is pressed or encoder incremented */
             else if (menu_event.Encoder_Count > 0)
@@ -127,7 +118,7 @@ void Menu_Loop()
                 {
                     Current_Page->Current_Item = Current_Page->Items_In_Page - 1;
                 }
-                refresh_flag = 1;
+                item_show_flag = 1;
             }
             /* down is pressed or encoder decremented */
             else if (menu_event.Encoder_Count < 0)
@@ -141,11 +132,11 @@ void Menu_Loop()
                 {
                     Current_Page->Current_Item = temp;
                 }
-                refresh_flag = 1;
+                item_show_flag = 1;
             }
         }
 
-        if (refresh_flag)
+        if (item_show_flag)
         {
             Current_Page->Page_Item_List[Current_Page->Current_Item].Show_Page_Item();
         }
