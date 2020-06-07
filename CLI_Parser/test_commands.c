@@ -19,7 +19,6 @@ void Sprint_Ok_Done_Helper(const char *in, char *out, uint16_t out_max)
     snprintf(out, out_max, "\r\nOk:%s\r\nDone\r\n", in);
 }
 
-
 uint8_t Parse_Integer(const char *param, int32_t *value)
 {
     char str_to_int[11] = "0";
@@ -331,12 +330,11 @@ static uint8_t Pow_Callback(uint8_t argc, const char *argv[], char *out_buffer, 
 
 static uint8_t Sqrt_Callback(uint8_t argc, const char *argv[], char *out_buffer, uint16_t out_max)
 {
-    int32_t rslt = 0;
     int32_t tmp = 0;
 
     if (Parse_Integer(argv[1], &tmp) && argc > 1)
     {
-        rslt = sqrt(tmp);
+        int32_t rslt = sqrt(tmp);
         snprintf(out_buffer, out_max, "\r\n%li\r\n", rslt);
     }
     else

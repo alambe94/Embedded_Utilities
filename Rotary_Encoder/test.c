@@ -65,16 +65,15 @@ void main()
     Encoder_Z.Encoder_Read_Pin_B = Encoder_Z_Read_Pin_B;
     Encoder_Add(&Encoder_Z);
 
-    int16_t count_x = 0, count_y = 0, count_z = 0;
     int16_t count_x_accumulated = 0, count_y_accumulated = 0, count_z_accumulated = 0;
 
     while (1)
     {
         Encoder_Loop();
 
-        count_x = Encoder_Get_Count(&Encoder_X);
-        count_y = Encoder_Get_Count(&Encoder_Y);
-        count_z = Encoder_Get_Count(&Encoder_Z);
+        int16_t count_x = Encoder_Get_Count(&Encoder_X);
+        int16_t count_y = Encoder_Get_Count(&Encoder_Y);
+        int16_t count_z = Encoder_Get_Count(&Encoder_Z);
 
         if (count_x)
         {

@@ -1,17 +1,14 @@
 #include "rotary_encoder.h"
 #include "stddef.h"
 
-// based of
-// multi encoder code with speed up values adapted for STM32-arduino by Matthias Diro
-// no caps for encoder Pins needed: gives back wrong acc values
-// using gpio_read_bit instead of digitalRead gives about 4x more speed http://forums.leaflabs.com/topic.php?id=1107
+/** based of
+ *  multi encoder code with speed up values adapted for STM32-arduino by Matthias Diro
+ *  http://forums.leaflabs.com/topic.php?id=1107
+ **/
 
-#define MAX_ENCODERS 3
-
-#define ENCODER_SCAN_TICK 1                           // Encoder_Loop() executes every ENCODER_SCAN_TICK
-#define ENCODER_READ_TICK (250 / ENCODER_SCAN_TICK)   // only read after 100ms of inactivity
-#define ENCODER_RESET_TICK (1000 / ENCODER_SCAN_TICK) // reset encoder count after 500ms of inactivity
-
+/**
+ * @brief assert implemenation, set USE_ENCODER_ASSERT to 1 to enable assert
+ **/
 #if (USE_ENCODER_ASSERT == 1)
 #include "stdio.h"
 #define ENCODER_ASSERT(expr, msg) ((expr) ? (void)0U : Encoder_Assert(msg, "rotary_encoder.c", __LINE__))
@@ -23,13 +20,27 @@ static void Encoder_Assert(char *msg, char *file, uint32_t line)
 #define ENCODER_ASSERT(expr, msg) ((void)0U)
 #endif
 
+/**
+ * @brief list of all registered encoders
+ **/
 static Encoder_Struct_t *Encoder_List[MAX_ENCODERS];
 
+/**
+ * @brief count of registred encoders
+ **/
 static uint8_t Encoder_Count = 0;
 
-/* must be defined externally by user  */
+/**
+ * @brief need to define by user externally. used for timing purpose. simply return millis or tick elapsed
+ **/
 extern uint32_t Encoder_Get_Tick();
 
+/**
+ * @brief add given encoder to list of registered encoders
+ * @param handle handle of encoder to be registered
+ * @retval return encoder ID (index+1  of encoder in registred list)
+ * @note adjust MAX_ENCODERS accordingly
+ **/
 uint8_t Encoder_Add(Encoder_Struct_t *handle)
 {
     ENCODER_ASSERT(handle, "NULL Passed");
@@ -40,7 +51,7 @@ uint8_t Encoder_Add(Encoder_Struct_t *handle)
         ENCODER_ASSERT(handle->Encoder_Read_Pin_A, "Encoder_Read_Pin_A not defined");
         ENCODER_ASSERT(handle->Encoder_Read_Pin_B, "Encoder_Read_Pin_B not defined");
 
-        /* call init function if defined */
+        /** call init function if defined */
         if (handle->Encoder_Init != NULL)
         {
             handle->Encoder_Init();
@@ -49,7 +60,7 @@ uint8_t Encoder_Add(Encoder_Struct_t *handle)
         handle->Encoder_Time_Stamp = 0;
         handle->Encoder_Count = 0;
 
-        /* initial state of encoder pins */
+        /** read initial state of encoder pins */
         if (handle->Encoder_Read_Pin_A != NULL && handle->Encoder_Read_Pin_B != NULL)
         {
             handle->Encoder_Pin_A_State = handle->Encoder_Read_Pin_A();
@@ -59,22 +70,24 @@ uint8_t Encoder_Add(Encoder_Struct_t *handle)
         Encoder_List[Encoder_Count] = handle;
         Encoder_Count++;
 
-        return (Encoder_Count - 1); //return encoder ID
+        /** return encoder ID */
+        return Encoder_Count;
     }
-    else
-    {
-        //Error
-        return (255); //return error
-    }
+    /** return error */
+    return 0;
 }
 
-/* call in millis callback or systick callback */
+/**
+ * @brief frequently called in main or timer ISR. should be called at least every 5ms?
+ * @param none
+ * @retval none
+ **/
 void Encoder_Loop()
 {
     static uint32_t Encoder_Scan_Time_Stamp = 0;
     Encoder_Struct_t *handle = NULL;
 
-    /* execute this loop on every ENCODER_SCAN_TICK */
+    /** execute this loop on every ENCODER_SCAN_TICK */
     if (Encoder_Get_Tick() - Encoder_Scan_Time_Stamp > ENCODER_SCAN_TICK)
     {
         Encoder_Scan_Time_Stamp = Encoder_Get_Tick();
@@ -90,21 +103,24 @@ void Encoder_Loop()
                 uint8_t pin_a_new_state = handle->Encoder_Read_Pin_A();
                 uint8_t pin_b_new_state = handle->Encoder_Read_Pin_B();
 
-                /*current state != previous*/
+                /** current state != previous */
                 if (pin_a_new_state != handle->Encoder_Pin_A_State)
                 {
                     handle->Encoder_Pin_A_State = pin_a_new_state;
 
                     if (handle->Encoder_Pin_A_State != handle->Encoder_Pin_B_State)
                     {
+                        /** encoder velocity normal, last transition > 10ms */
                         if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 10)
                         {
                             handle->Encoder_Count += 1;
                         }
+                        /** encoder velocity fast, last transition 5ms < transition < 10ms */
                         else if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 5)
                         {
                             handle->Encoder_Count += 10;
                         }
+                        /** encoder velocity faster, last transition within 5ms */
                         else
                         {
                             handle->Encoder_Count += 50;
@@ -120,14 +136,17 @@ void Encoder_Loop()
 
                     if (handle->Encoder_Pin_B_State != handle->Encoder_Pin_A_State)
                     {
+                        /** encoder velocity normal, last transition > 10ms */
                         if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 10)
                         {
                             handle->Encoder_Count -= 1;
                         }
+                        /** encoder velocity fast, last transition 5ms < transition < 10ms */
                         else if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 5)
                         {
                             handle->Encoder_Count -= 10;
                         }
+                        /** encoder velocity faster, last transition within 5ms */
                         else
                         {
                             handle->Encoder_Count -= 50;
@@ -141,6 +160,12 @@ void Encoder_Loop()
     }
 }
 
+/**
+ * @brief return the count of encoder
+ * @param handle handle of encoder
+ * @retval return encoder count
+ * @note if handle is NULL, returns 0
+ **/
 int16_t Encoder_Get_Count(Encoder_Struct_t *handle)
 {
     ENCODER_ASSERT(handle, "NULL Passed");
@@ -151,25 +176,28 @@ int16_t Encoder_Get_Count(Encoder_Struct_t *handle)
     {
         if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 500)
         {
-            /* reset encoder count after 500ms of inactivity*/
+            /** reset encoder count after 500ms of inactivity */
             handle->Encoder_Count = 0;
         }
         else if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 100)
         {
-            /* copy count, only after 100ms of inactivity*/
+            /** copy count, only after 100ms of inactivity **/
             count = handle->Encoder_Count;
             handle->Encoder_Count = 0;
         }
         else
         {
-            /* do nothing, encoder is still active */
+            /** do nothing, encoder is still active (in transition) */
         }
     }
 
     return count;
 }
 
-/* to reset*/
+/**
+ * @brief reset the count of encoder
+ * @param handle handle of encoder
+ **/
 void Encoder_Reset_Count(Encoder_Struct_t *handle)
 {
     ENCODER_ASSERT(handle, "NULL Passed");
@@ -180,6 +208,10 @@ void Encoder_Reset_Count(Encoder_Struct_t *handle)
     }
 }
 
+/**
+ * @brief set the count of encoder
+ * @param handle handle of encoder
+ **/
 void Encoder_Set_Count(Encoder_Struct_t *handle, int16_t count)
 {
     ENCODER_ASSERT(handle, "NULL Passed");
