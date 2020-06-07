@@ -40,12 +40,12 @@ typedef struct
     uint8_t (*CLI_Callback)(uint8_t argc,
                             const char *argv[],
                             char *cli_out_buffer,
-                            uint16_t cli_out_max);
+                            const uint16_t cli_out_max);
 } CLI_Command_t;
 
 void CLI_Init();
 void CLI_Parse_Arguments(const char *cli_in_buffer, uint8_t *argc, const char *argv[]);
-uint8_t CLI_Process_Command(const char *cli_in_buffer, char *cli_tx_out_buffer, uint16_t max_buffer_len);
+uint8_t CLI_Process_Command(const char *cli_in_buffer, char *cli_tx_out_buffer, const uint16_t max_buffer_len);
 uint8_t CLI_Get_Argument_Length(const char *arg);
 uint8_t CLI_Add_Command(CLI_Command_t *command_def);
 

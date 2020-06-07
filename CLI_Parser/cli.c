@@ -60,12 +60,12 @@ static uint16_t Command_Count = 0;
 static uint8_t Help_Callback(uint8_t argc,
                              const char *argv[],
                              char *cli_out_buffer,
-                             uint16_t cli_out_max);
+                             const uint16_t cli_out_max);
 
 static uint8_t Clear_Callback(uint8_t argc,
                               const char *argv[],
                               char *cli_out_buffer,
-                              uint16_t cli_out_max);
+                              const uint16_t cli_out_max);
 
 /**
  * @brief definition of help command
@@ -136,7 +136,7 @@ uint8_t CLI_Add_Command(CLI_Command_t *command_def)
  **/
 uint8_t CLI_Process_Command(const char *cli_in_buffer,
                             char *cli_out_buffer,
-                            uint16_t cli_out_max)
+                            const uint16_t cli_out_max)
 {
     CLI_ASSERT(cli_in_buffer, "NULL Passed");
     CLI_ASSERT(cli_out_buffer, "NULL Passed");
@@ -271,7 +271,7 @@ uint8_t CLI_Get_Argument_Length(const char *arg)
 static uint8_t Help_Callback(uint8_t argc,
                              const char *argv[],
                              char *cli_out_buffer,
-                             uint16_t cli_out_max)
+                             const uint16_t cli_out_max)
 {
     static uint16_t count = 0;
 
@@ -304,7 +304,7 @@ static uint8_t Help_Callback(uint8_t argc,
 static uint8_t Clear_Callback(uint8_t argc,
                               const char *argv[],
                               char *cli_out_buffer,
-                              uint16_t cli_out_max)
+                              const uint16_t cli_out_max)
 {
     CLI_ASSERT(cli_out_buffer, "NULL Passed");
 
@@ -316,14 +316,14 @@ static uint8_t Clear_Callback(uint8_t argc,
         {
             count = 1;
             /* send terminal clear command */
-            strncpy(cli_out_buffer, "\033[2J", cli_out_max);
+            snprintf(cli_out_buffer, cli_out_max, "%s", "\033[2J");
             return 1; //call again to generate next output
         }
         else
         {
             count = 0;
             /* send cursor home command */
-            strncpy(cli_out_buffer, "\033[H", cli_out_max);
+            snprintf(cli_out_buffer, cli_out_max, "%s", "\033[H");
         }
     }
 
