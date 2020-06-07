@@ -111,27 +111,19 @@ void Menu_Loop()
                 item_callback_flag = 1;
             }
             /* up is pressed or encoder incremented */
-            else if (menu_event.Encoder_Count > 0)
-            {
-                Current_Page->Current_Item += menu_event.Encoder_Count;
-                if (Current_Page->Current_Item >= Current_Page->Items_In_Page)
-                {
-                    Current_Page->Current_Item = Current_Page->Items_In_Page - 1;
-                }
-                item_show_flag = 1;
-            }
             /* down is pressed or encoder decremented */
-            else if (menu_event.Encoder_Count < 0)
+            else if (menu_event.Encoder_Count)
             {
                 int16_t temp = Current_Page->Current_Item + menu_event.Encoder_Count;
                 if (temp < 0)
                 {
                     Current_Page->Current_Item = 0;
                 }
-                else
+                else if (temp >= Current_Page->Items_In_Page)
                 {
-                    Current_Page->Current_Item = temp;
+                    temp = Current_Page->Items_In_Page - 1;
                 }
+                Current_Page->Current_Item = temp;
                 item_show_flag = 1;
             }
         }
