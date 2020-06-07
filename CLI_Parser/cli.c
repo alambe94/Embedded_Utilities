@@ -44,12 +44,15 @@ static void CLI_Assert(char *msg, char *file, uint32_t line)
 #define CLI_ASSERT(expr, msg) ((void)0U)
 #endif
 
-static uint16_t Command_Count = 0;
-
 /**
  * @brief list of all registered commands
  **/
 static CLI_Command_t *Command_List[MAX_COMMANDS];
+
+/**
+ * @brief count of registred commands
+ **/
+static uint16_t Command_Count = 0;
 
 /**
  * @brief help callback prototype
