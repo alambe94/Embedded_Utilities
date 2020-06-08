@@ -1,7 +1,7 @@
-/*
+/**
  *      https://stackoverflow.com/questions/9329406/evaluating-arithmetic-expressions-from-string-in-c
  *      https://en.wikipedia.org/wiki/Recursive_descent_parser
- */
+ **/
 
 #include "expression_parser.h"
 

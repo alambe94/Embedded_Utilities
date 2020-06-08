@@ -7,6 +7,17 @@ Menu_Page_t Page0;
 
 static Page_Item_t Page0_Item_List[ITEMS_IN_PAGE];
 
+static void Page_Add_Item_Helper(void (*Show)(), uint8_t (*Callback)(Menu_Event_t *event))
+{
+    static uint8_t Page_Item_Count = 0;
+    if (Page_Item_Count < ITEMS_IN_PAGE)
+    {
+        Page0_Item_List[Page_Item_Count].Show_Page_Item = Show;
+        Page0_Item_List[Page_Item_Count].Page_Item_Callback = Callback;
+    }
+    Page_Item_Count++;
+}
+
 static void Show_Page0_Item0()
 {
     printf("\033[2J\033[1;1H");
@@ -176,20 +187,11 @@ void Menu_Page0_Init()
 {
     printf("Menu_Page0_Init\n");
 
-    Page0_Item_List[0].Show_Page_Item = Show_Page0_Item0;
-    Page0_Item_List[0].Page_Item_Callback = Run_Page0_Item0;
-
-    Page0_Item_List[1].Show_Page_Item = Show_Page0_Item1;
-    Page0_Item_List[1].Page_Item_Callback = Run_Page0_Item1;
-
-    Page0_Item_List[2].Show_Page_Item = Show_Page0_Item2;
-    Page0_Item_List[2].Page_Item_Callback = Run_Page0_Item2;
-
-    Page0_Item_List[3].Show_Page_Item = Show_Page0_Item3;
-    Page0_Item_List[3].Page_Item_Callback = Run_Page0_Item3;
-
-    Page0_Item_List[4].Show_Page_Item = Show_Page0_Item4;
-    Page0_Item_List[4].Page_Item_Callback = Run_Page0_Item4;
+    Page_Add_Item_Helper(Show_Page0_Item0, Run_Page0_Item0);
+    Page_Add_Item_Helper(Show_Page0_Item1, Run_Page0_Item1);
+    Page_Add_Item_Helper(Show_Page0_Item2, Run_Page0_Item2);
+    Page_Add_Item_Helper(Show_Page0_Item3, Run_Page0_Item3);
+    Page_Add_Item_Helper(Show_Page0_Item4, Run_Page0_Item4);
 
     Page0.Page_Item_List = Page0_Item_List;
     Page0.Items_In_Page = ITEMS_IN_PAGE;

@@ -9,10 +9,10 @@
 #define USE_ENCODER_ASSERT 1
 
 /** milliseconds in single tick */
-#define MS_IN_TICK 1
+#define ENCODER_MS_IN_TICK 1
 
 /** Encoder_Loop() executes every ENCODER_SCAN_TICK */
-#define ENCODER_SCAN_TICK (1 / MS_IN_TICK)
+#define ENCODER_SCAN_TICK (1 / ENCODER_MS_IN_TICK)
 
 /** only read after ENCODER_READ_TICK of inactivity */
 #define ENCODER_READ_TICK (250 / ENCODER_SCAN_TICK)
