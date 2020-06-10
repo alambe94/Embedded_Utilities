@@ -4,7 +4,7 @@
 #ifndef SOFT_I2C_MASTER_H_
 #define SOFT_I2C_MASTER_H_
 
-/* transaction in polling or interrupt mode*/
+/** i2c transaction in polling or interrupt mode*/
 #define I2C_USE_INTERRUPT_MODE 1
 #define I2C_USE_BUFFERED_MODE 1
 #define MAX_SOFT_I2C_MASTER 5
@@ -30,8 +30,11 @@ typedef enum Soft_I2C_Master_Flags_t
 
 typedef struct Soft_I2C_Master_t
 {
-    Ring_Buffer_t *I2C_TX_Ring_Buffer; /*I2C TX buffer*/
-    Ring_Buffer_t *I2C_RX_Ring_Buffer; /*I2C RX buffer*/
+    /** I2C TX ring buffer */
+    Ring_Buffer_t *I2C_TX_Ring_Buffer;
+
+    /** I2C RX ring buffer */
+    Ring_Buffer_t *I2C_RX_Ring_Buffer;
 
     void (*Soft_I2C_GPIO_Init)();
 
@@ -42,7 +45,8 @@ typedef struct Soft_I2C_Master_t
 
     uint8_t (*Soft_I2C_SDA_Read)();
 
-    uint8_t Address_RW; /* slave address plus read/write bit*/
+    /** slave address plus read/write bit */
+    uint8_t Address_RW;
 
     uint16_t Bytes_To_Receive; /* no of bytes to receive in Master_Receive */
 
@@ -51,8 +55,10 @@ typedef struct Soft_I2C_Master_t
 
     uint8_t Active_Flag;
 
+    /** track clock high low state */
     uint8_t CLK_State;
 
+    /** track state machine  */
     Soft_I2C_Master_State_t State;
 
     Soft_I2C_Master_Flags_t Status_Flag;

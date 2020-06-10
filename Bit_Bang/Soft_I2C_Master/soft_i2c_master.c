@@ -6,7 +6,6 @@ static void Soft_I2C_Master_State_Machine(Soft_I2C_Master_t *i2c_handle);
 #if (I2C_USE_INTERRUPT_MODE)
 static Soft_I2C_Master_t *Soft_I2C_Master_List[MAX_SOFT_I2C_MASTER];
 static uint8_t Soft_I2C_Master_Count = 0;
-extern void Soft_I2C_Master_TIM_Init();
 extern void Soft_I2C_Master_TIM_Start();
 extern void Soft_I2C_Master_TIM_Stop();
 
@@ -66,7 +65,7 @@ static void Soft_I2C_Master_State_Machine(Soft_I2C_Master_t *i2c_handle)
 {
     if (i2c_handle->CLK_State == 0)
     {
-        i2c_handle->CLK_State  = 1;
+        i2c_handle->CLK_State = 1;
 
         i2c_handle->Soft_I2C_SCL_High();
 
@@ -189,7 +188,6 @@ static void Soft_I2C_Master_State_Machine(Soft_I2C_Master_t *i2c_handle)
             }
         }
     }
-
     else if (i2c_handle->CLK_State == 1) /*i2c clock frequency is half of interrupt frequency but symmetric clock waveform*/
     //if (i2c_handle->CLK_State == 1) /*i2c clock frequency is same as interrupt frequency but asymmetric clock waveform*/
     {
@@ -263,13 +261,13 @@ void Soft_I2C_Master_Transmit(Soft_I2C_Master_t *i2c_handle,
 
     if (reg_addr_size == 2)
     {
-        /* msb of register address if address is of two bytes*/
+        /** msb of register address if address is of two bytes */
         Ring_Buffer_Put_Char(i2c_handle->I2C_TX_Ring_Buffer, (reg_addr >> 8));
     }
 
     Ring_Buffer_Put_Char(i2c_handle->I2C_TX_Ring_Buffer, reg_addr);
 
-    /* copy data to be sent in ring buffer*/
+    /** copy data to be sent in ring buffer */
     while (len--)
     {
         Ring_Buffer_Put_Char(i2c_handle->I2C_TX_Ring_Buffer, *bytes++);
@@ -313,8 +311,7 @@ void Soft_I2C_Master_Receive(Soft_I2C_Master_t *i2c_handle,
                              0);
 
     while (i2c_handle->Active_Flag)
-    {
-    }
+        ;
 
     i2c_handle->Address_RW = slave_address + 1;
 
