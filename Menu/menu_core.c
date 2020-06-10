@@ -2,7 +2,7 @@
 #include "menu_core.h"
 
 /**
- * @brief assert implemenation, set MENU_USE_ASSERT to 1 to enable assert
+ * @brief assert implementation, set MENU_USE_ASSERT to 1 to enable assert
  **/
 #if (MENU_USE_ASSERT == 1)
 #include "stdio.h"
@@ -123,7 +123,7 @@ uint8_t Menu_Change_Page(uint8_t page_no, uint8_t page_Item)
     {
         ok_flag = 0;
     }
-    
+
     return ok_flag;
 }
 
@@ -139,7 +139,6 @@ void Menu_Loop()
     if (Menu_Get_Tick() - Scan_Time_Stamp > (MENU_REFRESH_TICK - 1))
     {
         /** by default item_callback_flag set to 1 to call Home Screen*/
-        /** call Menu_Change_Page(HOME_PAGE, HOME_ITEM) in init to set home page and screen */
         static uint8_t item_callback_flag = 1;
         uint8_t item_show_flag = 0;
         Menu_Event_t menu_event;

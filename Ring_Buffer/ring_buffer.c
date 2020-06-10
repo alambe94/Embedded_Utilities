@@ -1,5 +1,5 @@
 /**
- *  V1.4
+ *  file version V1.4
  *
  *  Change log
  *  V1.1:
@@ -23,7 +23,9 @@
 
 #include "ring_buffer.h"
 
-/* set USE_RB_ASSERT to enable assert */
+/**
+ * @brief assert implemenation, set USE_RB_ASSERT to 1 to enable assert
+ **/
 #if (USE_RB_ASSERT == 1)
 #include "stdio.h"
 #define RB_ASSERT(expr, msg) ((expr) ? (void)0U : RB_Assert(msg, "ring_buffer.c", __LINE__))
@@ -35,6 +37,13 @@ static void RB_Assert(char *msg, char *file, uint32_t line)
 #define RB_ASSERT(expr, msg) ((void)0U)
 #endif
 
+/**
+ * @brief initialize new instant of ring buffer
+ * @param handle handle of ring buffer to be initialized
+ * @param buffer storage area for ring buffer
+ * @param element_size size of single element in bytes
+ * @param max_elements maximum number of element this handle can store
+ **/
 void Ring_Buffer_Init(Ring_Buffer_t *handle, uint8_t *buffer, uint8_t element_size, uint32_t max_elements)
 {
     RB_ASSERT(handle, "NULL Passed");
@@ -48,6 +57,10 @@ void Ring_Buffer_Init(Ring_Buffer_t *handle, uint8_t *buffer, uint8_t element_si
     handle->Full_Flag = 0;
 }
 
+/**
+ * @brief reset or flush the ring buffer
+ * @param handle handle of ring buffer
+ **/
 void Ring_Buffer_Flush(Ring_Buffer_t *handle)
 {
     RB_ASSERT(handle, "NULL Passed");
@@ -56,6 +69,11 @@ void Ring_Buffer_Flush(Ring_Buffer_t *handle)
     handle->Full_Flag = 0;
 }
 
+/**
+ * @brief return the number of elements in ring buffer
+ * @param handle handle of ring buffer
+ * @retval count
+ **/
 uint32_t Ring_Buffer_Get_Count(Ring_Buffer_t *handle)
 {
     RB_ASSERT(handle, "NULL Passed");
@@ -78,6 +96,11 @@ uint32_t Ring_Buffer_Get_Count(Ring_Buffer_t *handle)
     return count;
 }
 
+/**
+ * @brief check if ring buffer is full or not
+ * @param handle handle of ring buffer
+ * @retval Full_Flag return 1 if full
+ **/
 uint8_t Ring_Buffer_Is_Full(Ring_Buffer_t *handle)
 {
     RB_ASSERT(handle, "NULL Passed");
@@ -85,6 +108,11 @@ uint8_t Ring_Buffer_Is_Full(Ring_Buffer_t *handle)
     return handle->Full_Flag;
 }
 
+/**
+ * @brief check if ring buffer is empty or not
+ * @param handle handle of ring buffer
+ * @retval return 1 if empty
+ **/
 uint8_t Ring_Buffer_Is_Empty(Ring_Buffer_t *handle)
 {
     RB_ASSERT(handle, "NULL Passed");
@@ -92,6 +120,12 @@ uint8_t Ring_Buffer_Is_Empty(Ring_Buffer_t *handle)
     return (handle->Read_Index == handle->Write_Index && !Ring_Buffer_Is_Full(handle));
 }
 
+/**
+ * @brief write single element in ring buffer
+ * @param handle handle of ring buffer
+ * @param data pointer to element
+ * @retval return 1 if write is successful
+ **/
 uint8_t Ring_Buffer_Put(Ring_Buffer_t *handle, void *data)
 {
     RB_ASSERT(handle, "NULL Passed");
@@ -130,6 +164,12 @@ uint8_t Ring_Buffer_Put(Ring_Buffer_t *handle, void *data)
     return xreturn;
 }
 
+/**
+ * @brief retrieve single element from ring buffer
+ * @param handle handle of ring buffer
+ * @param data where to retrieve
+ * @retval return 1 if write is successful
+ **/
 uint8_t Ring_Buffer_Get(Ring_Buffer_t *handle, void *data)
 {
     RB_ASSERT(handle, "NULL Passed");
@@ -138,11 +178,7 @@ uint8_t Ring_Buffer_Get(Ring_Buffer_t *handle, void *data)
     uint8_t xreturn = 0;
     uint8_t *ptr = (uint8_t *)data;
 
-    if (Ring_Buffer_Is_Empty(handle))
-    {
-        //*data = 0;
-    }
-    else
+    if (!Ring_Buffer_Is_Empty(handle))
     {
         xreturn = 1;
 
@@ -164,6 +200,13 @@ uint8_t Ring_Buffer_Get(Ring_Buffer_t *handle, void *data)
     return xreturn;
 }
 
+/**
+ * @brief peek element at given position
+ * @param handle handle of ring buffer
+ * @param data where to retrieve peeked element
+ * @param position where to peek
+ * @retval return 1 if successful
+ **/
 uint8_t Ring_Buffer_Peek(Ring_Buffer_t *handle, void *data, uint32_t position)
 {
     RB_ASSERT(handle, "NULL Passed");
@@ -194,6 +237,13 @@ uint8_t Ring_Buffer_Peek(Ring_Buffer_t *handle, void *data, uint32_t position)
     return xreturn;
 }
 
+/**
+ * @brief search if given element is present in ring buffer
+ * @param handle handle of ring buffer
+ * @param data element to be searched
+ * @param position where element is found
+ * @retval return 1 if element is found
+ **/
 uint8_t Ring_Buffer_Search(Ring_Buffer_t *handle, void *data, uint32_t *position)
 {
     RB_ASSERT(handle, "NULL Passed");
@@ -235,6 +285,12 @@ uint8_t Ring_Buffer_Search(Ring_Buffer_t *handle, void *data, uint32_t *position
     return xreturn;
 }
 
+/**
+ * @brief wrapper function for single byte element write
+ * @param handle handle of ring buffer
+ * @param data byte to be written
+ * @retval return 1 if write is successful
+ **/
 uint8_t Ring_Buffer_Put_Char(Ring_Buffer_t *handle, uint8_t data)
 {
     RB_ASSERT(handle, "NULL Passed");
@@ -243,6 +299,12 @@ uint8_t Ring_Buffer_Put_Char(Ring_Buffer_t *handle, uint8_t data)
     return Ring_Buffer_Put(handle, &data);
 }
 
+/**
+ * @brief wrapper function for single byte element read
+ * @param handle handle of ring buffer
+ * @param data where byte is retrieved
+ * @retval return 1 if read is successful
+ **/
 uint8_t Ring_Buffer_Get_Char(Ring_Buffer_t *handle, uint8_t *data)
 {
     RB_ASSERT(handle, "NULL Passed");
@@ -251,6 +313,12 @@ uint8_t Ring_Buffer_Get_Char(Ring_Buffer_t *handle, uint8_t *data)
     return Ring_Buffer_Get(handle, data);
 }
 
+/**
+ * @brief wrapper function for single byte element peek
+ * @param handle handle of ring buffer
+ * @param data where byte is retrieved
+ * @retval return 1 if successful
+ **/
 uint8_t Ring_Buffer_Peek_Char(Ring_Buffer_t *handle, uint8_t *data, uint32_t position)
 {
     RB_ASSERT(handle, "NULL Passed");
@@ -259,6 +327,13 @@ uint8_t Ring_Buffer_Peek_Char(Ring_Buffer_t *handle, uint8_t *data, uint32_t pos
     return Ring_Buffer_Peek(handle, data, position);
 }
 
+/**
+ * @brief wrapper function for single byte element search
+ * @param handle handle of ring buffer
+ * @param data byte to be search
+ * @param position where byte is found
+ * @retval return 1 if byte is found
+ **/
 uint8_t Ring_Buffer_Search_Char(Ring_Buffer_t *handle, uint8_t data, uint32_t *position)
 {
     RB_ASSERT(handle, "NULL Passed");

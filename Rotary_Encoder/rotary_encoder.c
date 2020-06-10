@@ -1,7 +1,7 @@
 #include "rotary_encoder.h"
 #include "stddef.h"
 
-/** based of
+/** based on
  *  multi encoder code with speed up values adapted for STM32-arduino by Matthias Diro
  *  http://forums.leaflabs.com/topic.php?id=1107
  **/
