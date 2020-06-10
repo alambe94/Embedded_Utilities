@@ -6,9 +6,9 @@ static void Soft_I2C_Master_State_Machine(Soft_I2C_Master_t *i2c_handle);
 #if (I2C_USE_INTERRUPT_MODE)
 static Soft_I2C_Master_t *Soft_I2C_Master_List[MAX_SOFT_I2C_MASTER];
 static uint8_t Soft_I2C_Master_Count = 0;
+extern void Soft_I2C_Master_TIM_Init();
 extern void Soft_I2C_Master_TIM_Start();
 extern void Soft_I2C_Master_TIM_Stop();
-extern void Soft_I2C_Master_TIM_ISR();
 
 /* add a new instance of soft i2c master to list */
 void Soft_I2C_Master_Add(Soft_I2C_Master_t *i2c_handle)

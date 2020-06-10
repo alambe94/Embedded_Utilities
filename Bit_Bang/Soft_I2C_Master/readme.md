@@ -1,0 +1,1 @@
+stm32 examples at <https://github.com/alambe94/STM32_Bit_Bang/tree/master/STM32_Soft_I2C_Master>
