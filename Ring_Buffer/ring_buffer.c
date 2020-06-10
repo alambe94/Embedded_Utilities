@@ -294,7 +294,6 @@ uint8_t Ring_Buffer_Search(Ring_Buffer_t *handle, void *data, uint32_t *position
 uint8_t Ring_Buffer_Put_Char(Ring_Buffer_t *handle, uint8_t data)
 {
     RB_ASSERT(handle, "NULL Passed");
-    RB_ASSERT(data, "NULL Passed");
 
     return Ring_Buffer_Put(handle, &data);
 }

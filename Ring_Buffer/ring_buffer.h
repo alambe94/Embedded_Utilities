@@ -7,12 +7,12 @@
 
 typedef struct Ring_Buffer_t
 {
-	uint8_t *Storage;
-	uint8_t Full_Flag;
-	uint8_t Element_Size;
-	uint32_t MAX_Elements;
-	uint32_t Write_Index;
-	uint32_t Read_Index;
+    uint8_t *Storage;
+    uint8_t Full_Flag;
+    uint8_t Element_Size;
+    uint32_t MAX_Elements;
+    uint32_t Write_Index;
+    uint32_t Read_Index;
 
 } Ring_Buffer_t;
 
