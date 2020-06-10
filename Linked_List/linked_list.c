@@ -52,7 +52,7 @@ List_Node_t *List_New_Node(void *data)
 }
 /**
  *
- **/
+ */
 uint8_t List_Add_At_Top(List_Node_t **head, List_Node_t *new_node)
 {
     LIST_ASSERT(head, "NULL Passed");

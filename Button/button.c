@@ -93,7 +93,7 @@ uint8_t Button_Add(Button_Struct_t *handle)
  * @param none
  * @retval none
  **/
-void Button_Loop()
+void Button_Loop(void)
 {
     static uint32_t Button_Scan_Time_Stamp = 0;
 

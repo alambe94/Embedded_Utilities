@@ -58,7 +58,7 @@ typedef struct Encoder_Struct_t
 
 } Encoder_Struct_t;
 
-void Encoder_Loop();
+void Encoder_Loop(void);
 void Encoder_Reset_Count(Encoder_Struct_t *handle);
 void Encoder_Set_Count(Encoder_Struct_t *handle, int16_t count);
 int16_t Encoder_Get_Count(Encoder_Struct_t *handle);

@@ -95,7 +95,7 @@ static CLI_Command_t Clear_Definition =
 /**
  * @brief add help command to command list
  **/
-void CLI_Init()
+void CLI_Init(void)
 {
     CLI_Add_Command(&Help_Definition);
     CLI_Add_Command(&Clear_Definition);

@@ -34,10 +34,10 @@ typedef struct Soft_OW_t
     uint8_t (*Pin_Read)(void);
 
     /** set pin high */
-    void (*Pin_High)();
+    void (*Pin_High)(void);
 
     /** set pin low */
-    void (*Pin_Low)();
+    void (*Pin_Low)(void);
 
 } Soft_OW_t;
 

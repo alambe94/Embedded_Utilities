@@ -31,6 +31,7 @@ typedef struct List_Node_t
 {
     void *Data;
     struct List_Node_t *Next;
+
 } List_Node_t;
 
 List_Node_t *List_New_Node(void *data);

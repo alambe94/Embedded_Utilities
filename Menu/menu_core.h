@@ -61,7 +61,7 @@ typedef struct Menu_Event_t
 
 typedef struct Page_Item_t
 {
-    void (*Show_Page_Item)();
+    void (*Show_Page_Item)(void);
     uint8_t (*Page_Item_Callback)(Menu_Event_t *event);
 
 } Page_Item_t;
@@ -74,7 +74,7 @@ typedef struct Menu_Page_t
 
 } Menu_Page_t;
 
-void Menu_Loop();
+void Menu_Loop(void);
 uint8_t Menu_Add_Page(Menu_Page_t *page);
 uint8_t Menu_Change_Page(uint8_t page_no, uint8_t page_Item);
 

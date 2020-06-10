@@ -58,14 +58,14 @@ typedef struct Soft_I2C_Master_t
     /** I2C RX ring buffer */
     Ring_Buffer_t *I2C_RX_Ring_Buffer;
 
-    void (*Soft_I2C_GPIO_Init)();
+    void (*Soft_I2C_GPIO_Init)(void);
 
-    void (*Soft_I2C_SDA_High)();
-    void (*Soft_I2C_SDA_Low)();
-    void (*Soft_I2C_SCL_High)();
-    void (*Soft_I2C_SCL_Low)();
+    void (*Soft_I2C_SDA_High)(void);
+    void (*Soft_I2C_SDA_Low)(void);
+    void (*Soft_I2C_SCL_High)(void);
+    void (*Soft_I2C_SCL_Low)(void);
 
-    uint8_t (*Soft_I2C_SDA_Read)();
+    uint8_t (*Soft_I2C_SDA_Read)(void);
 
     /** slave address plus read/write bit */
     uint8_t Address_RW;
@@ -89,7 +89,7 @@ typedef struct Soft_I2C_Master_t
 
 } Soft_I2C_Master_t;
 
-void Soft_I2C_Master_Init();
+void Soft_I2C_Master_Init(void);
 
 void Soft_I2C_Master_Add(Soft_I2C_Master_t *i2c_handle);
 

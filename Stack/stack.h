@@ -36,8 +36,8 @@ typedef struct Stack_t
 } Stack_t;
 
 void Stack_Init(Stack_t *handle, uint8_t *buffer, uint16_t size);
-uint8_t Stack_Get_Count();
-uint8_t Stack_Clear();
+uint8_t Stack_Get_Count(Stack_t *handle);
+uint8_t Stack_Clear(Stack_t *handle);
 uint8_t Stack_Is_Full(Stack_t *handle);
 uint8_t Stack_Is_Empty(Stack_t *stack);
 uint8_t Stack_Push(Stack_t *handle, uint8_t data);

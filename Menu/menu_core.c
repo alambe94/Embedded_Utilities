@@ -154,7 +154,7 @@ uint8_t Menu_Change_Page(uint8_t page_no, uint8_t page_Item)
  * @param none
  * @retval none
  **/
-void Menu_Loop()
+void Menu_Loop(void)
 {
     static uint32_t Scan_Time_Stamp = 0;
 

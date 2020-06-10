@@ -22,6 +22,7 @@
 
 #include "soft_one_wire.h"
 
+/** defined externally */
 extern Delay_Micros(uint16_t micros);
 
 void Soft_OW_Init(Soft_OW_t *ow_handle)

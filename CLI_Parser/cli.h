@@ -43,7 +43,7 @@ typedef struct
                             const uint16_t cli_out_max);
 } CLI_Command_t;
 
-void CLI_Init();
+void CLI_Init(void);
 void CLI_Parse_Arguments(const char *cli_in_buffer, uint8_t *argc, const char *argv[]);
 uint8_t CLI_Process_Command(const char *cli_in_buffer, char *cli_tx_out_buffer, const uint16_t max_buffer_len);
 uint8_t CLI_Get_Argument_Length(const char *arg);

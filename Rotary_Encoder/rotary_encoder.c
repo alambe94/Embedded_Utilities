@@ -103,7 +103,7 @@ uint8_t Encoder_Add(Encoder_Struct_t *handle)
  * @param none
  * @retval none
  **/
-void Encoder_Loop()
+void Encoder_Loop(void)
 {
     static uint32_t Encoder_Scan_Time_Stamp = 0;
     Encoder_Struct_t *handle = NULL;
