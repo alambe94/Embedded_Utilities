@@ -30,7 +30,10 @@
 
 #include "stdint.h"
 
-#define USE_CLI_ASSERT 1
+#define CLI_USE_ASSERT 1
+#define CLI_MAX_COMMANDS 100
+#define CLI_MAX_COMMAND_LEN 32
+#define CLI_MAX_ARGS_IN_CMD 10
 
 typedef struct
 {

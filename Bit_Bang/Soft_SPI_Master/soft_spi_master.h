@@ -20,8 +20,8 @@
  *
  */
 
-#ifndef SOFT_SPI_H_
-#define SOFT_SPI_H_
+#ifndef SOFT_SPI_MASTER_H_
+#define SOFT_SPI_MASTER_H_
 
 #include "stdint.h"
 
@@ -37,4 +37,4 @@ void Soft_SPI_Transmit_Receive_Byte(Soft_SPI_t *spi_handle, uint8_t tx_data, uin
 void Soft_SPI_Transmit_Bytes(Soft_SPI_t *spi_handle, uint8_t *tx_buffer, uint16_t len);
 void Soft_SPI_Receive_Bytes(Soft_SPI_t *spi_handle, uint8_t *rx_buffer, uint16_t len);
 
-#endif /* SOFT_SPI_H_ */
+#endif /* SOFT_SPI_MASTER_H_ */

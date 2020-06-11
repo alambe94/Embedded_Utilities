@@ -29,11 +29,7 @@
 #include "string.h"
 #include "stdio.h"
 
-#define MAX_COMMANDS 100
-#define MAX_COMMAND_LEN 32
-#define MAX_ARGS_IN_CMD 10
-
-#if (USE_CLI_ASSERT == 1)
+#if (CLI_USE_ASSERT == 1)
 #include "stdio.h"
 #define CLI_ASSERT(expr, msg) ((expr) ? (void)0U : CLI_Assert(msg, "cli.c", __LINE__))
 static void CLI_Assert(char *msg, char *file, uint32_t line)
@@ -47,7 +43,7 @@ static void CLI_Assert(char *msg, char *file, uint32_t line)
 /**
  * @brief list of all registered commands
  **/
-static CLI_Command_t *Command_List[MAX_COMMANDS];
+static CLI_Command_t *Command_List[CLI_MAX_COMMANDS];
 
 /**
  * @brief count of registred commands
@@ -55,17 +51,12 @@ static CLI_Command_t *Command_List[MAX_COMMANDS];
 static uint16_t Command_Count = 0;
 
 /**
- * @brief help callback prototype
+ * @brief help command callback prototype
  **/
 static uint8_t Help_Callback(uint8_t argc,
                              const char *argv[],
                              char *cli_out_buffer,
                              const uint16_t cli_out_max);
-
-static uint8_t Clear_Callback(uint8_t argc,
-                              const char *argv[],
-                              char *cli_out_buffer,
-                              const uint16_t cli_out_max);
 
 /**
  * @brief definition of help command
@@ -81,42 +72,34 @@ static CLI_Command_t Help_Definition =
         /* function to run. */
         .CLI_Callback = Help_Callback};
 
-static CLI_Command_t Clear_Definition =
-    {
-        /* command string to type */
-        .CLI_Command = "clear",
-
-        /* command help string */
-        .CLI_Command_Description = "Clear terminal screen",
-
-        /* function to run. */
-        .CLI_Callback = Clear_Callback};
-
 /**
  * @brief add help command to command list
  **/
 void CLI_Init(void)
 {
     CLI_Add_Command(&Help_Definition);
-    CLI_Add_Command(&Clear_Definition);
 }
 
 /**
  * @brief add given command to list of registered commands
  * @param command_def command to be registered
  * @see CLI_Init for example
- * @note adjust MAX_COMMANDS accordingly
+ * @note adjust CLI_MAX_COMMANDS accordingly
  **/
 uint8_t CLI_Add_Command(CLI_Command_t *command_def)
 {
     CLI_ASSERT(command_def, "NULL Passed");
-    CLI_ASSERT(Command_Count < MAX_COMMANDS, "MAX Command count reached");
+    CLI_ASSERT(Command_Count < CLI_MAX_COMMANDS, "MAX Command count reached");
 
-    if (Command_Count < MAX_COMMANDS && command_def != NULL)
+    if (Command_Count < CLI_MAX_COMMANDS && command_def != NULL)
     {
         CLI_ASSERT(command_def->CLI_Callback, "CLI_Callback not defined");
 
-        command_def->CLI_Command_Length = strnlen(command_def->CLI_Command, MAX_COMMAND_LEN);
+        uint8_t cmd_len = strnlen(command_def->CLI_Command, CLI_MAX_COMMAND_LEN);
+
+        CLI_ASSERT(cmd_len <= CLI_MAX_COMMAND_LEN, "Command length exceeds MAX_COMMAND_LEN");
+
+        command_def->CLI_Command_Length = cmd_len;
         Command_List[Command_Count] = command_def;
         Command_Count++;
         return 1; // command add successful
@@ -175,7 +158,7 @@ uint8_t CLI_Process_Command(const char *cli_in_buffer,
         if (cmd->CLI_Callback != NULL)
         {
             uint8_t argc = 0;
-            const char *argv[MAX_ARGS_IN_CMD];
+            const char *argv[CLI_MAX_ARGS_IN_CMD];
 
             CLI_Parse_Arguments(cli_in_buffer, &argc, argv);
 
@@ -214,7 +197,7 @@ void CLI_Parse_Arguments(const char *cli_in_buffer,
     /* arg 0 is input command */
     argv[argc_temp++] = cli_in_buffer;
 
-    while (argc_temp < MAX_ARGS_IN_CMD)
+    while (argc_temp < CLI_MAX_ARGS_IN_CMD)
     {
         while (((*cli_in_buffer) != 0x00) && ((*cli_in_buffer) != ' '))
         {
@@ -291,41 +274,6 @@ static uint8_t Help_Callback(uint8_t argc,
     }
 
     count = 0;
-
-    return 0; // operation complete do not call again
-}
-
-/**
- * @brief Implementation of clear callback
- * @note  Callback function will be call repeatedly until it returns 0.
- *        Required only if generated output in callback is larger than output buffer.
- *        This is done to split generated output in small segments that can fit in output buffer.
- **/
-static uint8_t Clear_Callback(uint8_t argc,
-                              const char *argv[],
-                              char *cli_out_buffer,
-                              const uint16_t cli_out_max)
-{
-    CLI_ASSERT(cli_out_buffer, "NULL Passed");
-
-    if (cli_out_buffer != NULL)
-    {
-        static uint16_t count = 0;
-
-        if (!count)
-        {
-            count = 1;
-            /* send terminal clear command */
-            snprintf(cli_out_buffer, cli_out_max, "%s", "\033[2J");
-            return 1; //call again to generate next output
-        }
-        else
-        {
-            count = 0;
-            /* send cursor home command */
-            snprintf(cli_out_buffer, cli_out_max, "%s", "\033[H");
-        }
-    }
 
     return 0; // operation complete do not call again
 }
