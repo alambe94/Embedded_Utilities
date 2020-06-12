@@ -59,11 +59,10 @@ void Soft_SPI_Transmit_Receive_Byte(Soft_SPI_t *spi_handle, uint8_t tx_data, uin
 void Soft_SPI_Transmit_Bytes(Soft_SPI_t *spi_handle, uint8_t *buffer, uint16_t len)
 {
     uint8_t rx_data;
-    uint8_t tx_data = 0;
 
     while (len--)
     {
-        tx_data = *buffer++;
+        uint8_t tx_data = *buffer++;
         Soft_SPI_Transmit_Receive_Byte(spi_handle, tx_data, &rx_data);
     }
 }

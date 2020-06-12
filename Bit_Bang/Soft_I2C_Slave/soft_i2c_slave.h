@@ -76,6 +76,8 @@ struct Soft_I2C_Slave_t
     void (*callback)(Soft_I2C_Slave_Event_t event);
 };
 
+extern struct Soft_I2C_Slave_t Soft_I2C_Slave;
+
 void Soft_I2C_Slave_Init(void (*Event_Callback)(Soft_I2C_Slave_Event_t event));
 
 #endif /* SOFT_I2C_SLAVE_H_ */
