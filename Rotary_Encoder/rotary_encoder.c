@@ -49,7 +49,7 @@
 
 /**
  * @brief assert implemenation, set USE_ENCODER_ASSERT to 1 to enable assert
- **/
+ */
 #if (USE_ENCODER_ASSERT == 1)
 #include "stdio.h"
 #define ENCODER_ASSERT(expr, msg) ((expr) ? (void)0U : Encoder_Assert(msg, "rotary_encoder.c", __LINE__))
@@ -63,25 +63,25 @@ static void Encoder_Assert(char *msg, char *file, uint32_t line)
 
 /**
  * @brief list of all registered encoders
- **/
+ */
 static Encoder_Struct_t *Encoder_List[MAX_ENCODERS];
 
 /**
  * @brief count of registred encoders
- **/
+ */
 static uint8_t Encoder_Count = 0;
 
 /**
  * @brief need to define by user externally. used for timing purpose. simply return millis or tick elapsed
- **/
+ */
 extern uint32_t Encoder_Get_Tick();
 
 /**
  * @brief add given encoder to list of registered encoders
  * @param handle handle of encoder to be registered
- * @retval return encoder ID (index+1  of encoder in registred list)
+ * @retval return encoder ID (index of encoder in registred list)
  * @note adjust MAX_ENCODERS accordingly
- **/
+ */
 int32_t Encoder_Add(Encoder_Struct_t *handle)
 {
     ENCODER_ASSERT(handle, "NULL Passed");
@@ -111,18 +111,18 @@ int32_t Encoder_Add(Encoder_Struct_t *handle)
         Encoder_List[Encoder_Count] = handle;
         Encoder_Count++;
 
-        /** return encoder ID */
+        /** return encoder ID. index of encoder in list */
         return Encoder_Count;
     }
     /** return error */
-    return 0;
+    return -1;
 }
 
 /**
  * @brief frequently called in main or timer ISR. should be called at least every 5ms?
  * @param none
  * @retval none
- **/
+ */
 void Encoder_Loop(void)
 {
     static uint32_t Encoder_Scan_Time_Stamp = 0;
@@ -206,7 +206,7 @@ void Encoder_Loop(void)
  * @param handle handle of encoder
  * @retval return encoder count
  * @note if handle is NULL, returns 0
- **/
+ */
 int16_t Encoder_Get_Count(Encoder_Struct_t *handle)
 {
     ENCODER_ASSERT(handle, "NULL Passed");
@@ -222,7 +222,7 @@ int16_t Encoder_Get_Count(Encoder_Struct_t *handle)
         }
         else if (Encoder_Get_Tick() - handle->Encoder_Time_Stamp > 100)
         {
-            /** copy count, only after 100ms of inactivity **/
+            /** copy count, only after 100ms of inactivity */
             count = handle->Encoder_Count;
             handle->Encoder_Count = 0;
         }
@@ -238,7 +238,7 @@ int16_t Encoder_Get_Count(Encoder_Struct_t *handle)
 /**
  * @brief reset the count of encoder
  * @param handle handle of encoder
- **/
+ */
 void Encoder_Reset_Count(Encoder_Struct_t *handle)
 {
     ENCODER_ASSERT(handle, "NULL Passed");
@@ -252,7 +252,7 @@ void Encoder_Reset_Count(Encoder_Struct_t *handle)
 /**
  * @brief set the count of encoder
  * @param handle handle of encoder
- **/
+ */
 void Encoder_Set_Count(Encoder_Struct_t *handle, int16_t count)
 {
     ENCODER_ASSERT(handle, "NULL Passed");

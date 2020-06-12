@@ -118,7 +118,7 @@ int32_t CLI_Add_Command(CLI_Command_t *command_def)
         return Command_Count - 1;
     }
 
-    /** command add failed. return */
+    /** command add failed. return error */
     return -1;
 }
 

@@ -51,7 +51,7 @@
 
 /**
  * @brief assert implemenation, set BUTTON_USE_ASSERT to 1 to enable assert
- **/
+ */
 #if (BUTTON_USE_ASSERT == 1)
 #include <stdio.h>
 #define BUTTON_ASSERT(expr, msg) ((expr) ? (void)0U : Button_Assert(msg, "button.c", __LINE__))
@@ -65,17 +65,17 @@ void Button_Assert(char *msg, char *file, uint32_t line)
 
 /**
  * @brief list of all registered buttons
- **/
+ */
 static Button_Struct_t *Button_List[MAX_BUTTONS];
 
 /**
  * @brief count of registred buttons
- **/
+ */
 static uint8_t Button_Count = 0;
 
 /**
  * @brief need to define by user externally. used for timing purpose. simply return millis or tick elapsed
- **/
+ */
 extern uint32_t Button_Get_Tick();
 
 /**
@@ -83,7 +83,7 @@ extern uint32_t Button_Get_Tick();
  * @param handle handle of button to be registered
  * @retval return button ID (index of button in registred list), return 0 on failure
  * @note adjust MAX_BUTTONS accordingly
- **/
+ */
 int32_t Button_Add(Button_Struct_t *handle)
 {
     BUTTON_ASSERT(handle, "NULL Passed");
@@ -118,7 +118,7 @@ int32_t Button_Add(Button_Struct_t *handle)
  * @brief frequently called in main or timer ISR. should be called at least every 20ms?
  * @param none
  * @retval none
- **/
+ */
 void Button_Loop(void)
 {
     static uint32_t Button_Scan_Time_Stamp = 0;
@@ -218,7 +218,7 @@ void Button_Loop(void)
  * @param handle handle of button
  * @retval return Button_Event
  * @note if handle is NULL, returns 0, which same as Button_Idle
- **/
+ */
 Button_Event_t Button_Get_Status(Button_Struct_t *handle)
 {
     BUTTON_ASSERT(handle, "NULL Passed");
@@ -236,7 +236,7 @@ Button_Event_t Button_Get_Status(Button_Struct_t *handle)
  * @param handle handle of button
  * @retval return clicked count
  * @note if handle is NULL, returns 0
- **/
+ */
 uint8_t Button_Get_Clicked_Count(Button_Struct_t *handle)
 {
     BUTTON_ASSERT(handle, "NULL Passed");
@@ -258,7 +258,7 @@ uint8_t Button_Get_Clicked_Count(Button_Struct_t *handle)
 /**
  * @brief reset the clicked count of button
  * @param handle handle of button
- **/
+ */
 void Button_Reset_Count(Button_Struct_t *handle)
 {
     BUTTON_ASSERT(handle, "NULL Passed");

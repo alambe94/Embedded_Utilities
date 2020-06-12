@@ -63,7 +63,7 @@ typedef struct Menu_Page_t
 } Menu_Page_t;
 
 void Menu_Loop(void);
-uint8_t Menu_Add_Page(Menu_Page_t *page);
+int32_t Menu_Add_Page(Menu_Page_t *page);
 uint8_t Menu_Change_Page(uint8_t page_no, uint8_t page_Item);
 
 #endif /* INC_MENU_CORE_H_ */

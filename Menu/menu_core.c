@@ -36,7 +36,7 @@
 
 /**
  * @brief assert implementation, set MENU_USE_ASSERT to 1 to enable assert
- **/
+ */
 #if (MENU_USE_ASSERT == 1)
 #include <stdio.h>
 #define MENU_ASSERT(expr, msg) ((expr) ? (void)0U : Menu_Assert(msg, "menu_core.c", __LINE__))
@@ -50,36 +50,36 @@ static void Menu_Assert(char *msg, char *file, uint32_t line)
 
 /**
  * @brief list of all registered pages
- **/
+ */
 static Menu_Page_t *Menu_Page_List[MENU_MAX_PAGES];
 
 /**
  * @brief count of registred pages
- **/
+ */
 static uint8_t Menu_Page_Count = 0;
 
 /**
  * @brief handle of current or active page
- **/
+ */
 Menu_Page_t *Current_Page;
 
 /**
  * @brief need to define by user externally. used for timing purpose. simply return millis or tick elapsed
- **/
+ */
 extern uint32_t Menu_Get_Tick();
 
 /**
  * @brief need to define by user externally. used for navigation purpose. return state of navigation keys
- **/
+ */
 extern void Menu_Get_Event(Menu_Event_t *event);
 
 /**
  * @brief add given page to list of registered pages
  * @param handle handle of page to be registered
- * @retval return page ID (index+1  of page in registred list), return 0 on failure
+ * @retval return page ID (index  of page in registred list), return -1 on failure
  * @note adjust MENU_MAX_PAGES accordingly
- **/
-uint8_t Menu_Add_Page(Menu_Page_t *page)
+ */
+int32_t Menu_Add_Page(Menu_Page_t *page)
 {
     MENU_ASSERT(page, "NULL Passed");
     MENU_ASSERT(Menu_Page_Count < MENU_MAX_PAGES, "MAX Page count reached");
@@ -118,10 +118,10 @@ uint8_t Menu_Add_Page(Menu_Page_t *page)
     {
         Menu_Page_List[Menu_Page_Count++] = page;
         /** return page ID */
-        return Menu_Page_Count;
+        return Menu_Page_Count - 1;
     }
     /** return error */
-    return 0;
+    return -1;
 }
 
 /**
@@ -130,7 +130,7 @@ uint8_t Menu_Add_Page(Menu_Page_t *page)
  * @param page_Item page item to switch to
  * @retval return 1 if success
  * @note adjust MENU_MAX_PAGES accordingly
- **/
+ */
 uint8_t Menu_Change_Page(uint8_t page_no, uint8_t page_Item)
 {
     MENU_ASSERT(page_no < MENU_MAX_PAGES, "Page out of index");
@@ -164,7 +164,7 @@ uint8_t Menu_Change_Page(uint8_t page_no, uint8_t page_Item)
  * @brief frequently called in main loop. should be called at least every 20ms?
  * @param none
  * @retval none
- **/
+ */
 void Menu_Loop(void)
 {
     static uint32_t Scan_Time_Stamp = 0;
