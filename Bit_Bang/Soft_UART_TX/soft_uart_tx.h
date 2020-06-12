@@ -23,7 +23,10 @@
 #ifndef SOFT_UART_TX_H_
 #define SOFT_UART_TX_H_
 
-#include "stdint.h"
+/** std includes */
+#include <stdint.h>
+
+/** lib includes */
 #include "ring_buffer.h"
 
 #define MAX_SOFT_UART 10

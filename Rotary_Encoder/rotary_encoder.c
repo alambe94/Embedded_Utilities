@@ -24,8 +24,28 @@
  *
  */
 
+/** std includes */
+#include <stddef.h>
+
+/** std includes */
 #include "rotary_encoder.h"
-#include "stddef.h"
+
+#define MAX_ENCODERS 3
+
+/** enable disable assert */
+#define USE_ENCODER_ASSERT 1
+
+/** milliseconds in single tick */
+#define ENCODER_MS_IN_TICK 1
+
+/** Encoder_Loop() executes every ENCODER_SCAN_TICK */
+#define ENCODER_SCAN_TICK (1 / ENCODER_MS_IN_TICK)
+
+/** only read after ENCODER_READ_TICK of inactivity */
+#define ENCODER_READ_TICK (250 / ENCODER_SCAN_TICK)
+
+/** reset encoder count after ENCODER_RESET_TICK of inactivity */
+#define ENCODER_RESET_TICK (1000 / ENCODER_SCAN_TICK)
 
 /**
  * @brief assert implemenation, set USE_ENCODER_ASSERT to 1 to enable assert
@@ -62,7 +82,7 @@ extern uint32_t Encoder_Get_Tick();
  * @retval return encoder ID (index+1  of encoder in registred list)
  * @note adjust MAX_ENCODERS accordingly
  **/
-uint8_t Encoder_Add(Encoder_Struct_t *handle)
+int32_t Encoder_Add(Encoder_Struct_t *handle)
 {
     ENCODER_ASSERT(handle, "NULL Passed");
     ENCODER_ASSERT(Encoder_Count < MAX_ENCODERS, "MAX Encoder count reached");

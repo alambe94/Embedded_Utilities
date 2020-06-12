@@ -23,9 +23,8 @@
 #ifndef LINKED_LIST_H_
 #define LINKED_LIST_H_
 
-#include "stdint.h"
-
-#define USE_LIST_ASSERT 1
+/** std includes */
+#include <stdint.h>
 
 typedef struct List_Node_t
 {
@@ -49,7 +48,5 @@ uint8_t List_Delete_All(List_Node_t **head);
 uint8_t List_Push(List_Node_t **head, void *data);
 uint8_t List_Pop(List_Node_t **head, void **data);
 uint16_t List_Get_Count(List_Node_t **head);
-
-
 
 #endif /* LINKED_LIST_H_ */

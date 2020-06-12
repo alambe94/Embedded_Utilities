@@ -20,7 +20,8 @@
  *
  */
 
-#include "stdint.h"
+/** std includes */
+#include <stdint.h>
 
 #ifndef SOFT_I2C_SLAVE_H_
 #define SOFT_I2C_SLAVE_H_

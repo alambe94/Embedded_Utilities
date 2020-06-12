@@ -28,18 +28,14 @@
 #ifndef _CLI_H_
 #define _CLI_H_
 
-#include "stdint.h"
-
-#define CLI_USE_ASSERT 1
-#define CLI_MAX_COMMANDS 100
-#define CLI_MAX_COMMAND_LEN 32
-#define CLI_MAX_ARGS_IN_CMD 10
+/** std includes */
+#include <stdint.h>
 
 typedef struct
 {
     const char *CLI_Command;
     const char *CLI_Command_Description;
-    uint16_t CLI_Command_Length;
+    uint8_t CLI_Command_Length;
     uint8_t (*CLI_Callback)(uint8_t argc,
                             const char *argv[],
                             char *cli_out_buffer,
@@ -50,6 +46,6 @@ void CLI_Init(void);
 void CLI_Parse_Arguments(const char *cli_in_buffer, uint8_t *argc, const char *argv[]);
 uint8_t CLI_Process_Command(const char *cli_in_buffer, char *cli_tx_out_buffer, const uint16_t max_buffer_len);
 uint8_t CLI_Get_Argument_Length(const char *arg);
-uint8_t CLI_Add_Command(CLI_Command_t *command_def);
+int32_t CLI_Add_Command(CLI_Command_t *command_def);
 
 #endif /* _CLI_H_ */

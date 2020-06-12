@@ -20,7 +20,9 @@
  *
  */
 
-#include "stdint.h"
+/** std includes */
+#include <stdint.h>
+
 #include "ring_buffer.h"
 
 #ifndef SOFT_I2C_MASTER_H_

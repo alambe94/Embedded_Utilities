@@ -25,12 +25,23 @@
  * 1 tab == 4 spaces!
  */
 
+/** std includes */
+#include <string.h>
+#include <stdio.h>
+
+/** cli includes */
 #include "cli.h"
-#include "string.h"
-#include "stdio.h"
+
+/** enable/disable cli assert */
+#define CLI_USE_ASSERT 1
+
+#define CLI_MAX_COMMANDS 100
+
+#define CLI_MAX_COMMAND_LEN 32
+
+#define CLI_MAX_ARGS_IN_CMD 10
 
 #if (CLI_USE_ASSERT == 1)
-#include "stdio.h"
 #define CLI_ASSERT(expr, msg) ((expr) ? (void)0U : CLI_Assert(msg, "cli.c", __LINE__))
 static void CLI_Assert(char *msg, char *file, uint32_t line)
 {
@@ -42,17 +53,17 @@ static void CLI_Assert(char *msg, char *file, uint32_t line)
 
 /**
  * @brief list of all registered commands
- **/
+ */
 static CLI_Command_t *Command_List[CLI_MAX_COMMANDS];
 
 /**
  * @brief count of registred commands
- **/
+ */
 static uint16_t Command_Count = 0;
 
 /**
  * @brief help command callback prototype
- **/
+ */
 static uint8_t Help_Callback(uint8_t argc,
                              const char *argv[],
                              char *cli_out_buffer,
@@ -60,7 +71,7 @@ static uint8_t Help_Callback(uint8_t argc,
 
 /**
  * @brief definition of help command
- **/
+ */
 static CLI_Command_t Help_Definition =
     {
         /* command string to type */
@@ -74,7 +85,7 @@ static CLI_Command_t Help_Definition =
 
 /**
  * @brief add help command to command list
- **/
+ */
 void CLI_Init(void)
 {
     CLI_Add_Command(&Help_Definition);
@@ -85,8 +96,8 @@ void CLI_Init(void)
  * @param command_def command to be registered
  * @see CLI_Init for example
  * @note adjust CLI_MAX_COMMANDS accordingly
- **/
-uint8_t CLI_Add_Command(CLI_Command_t *command_def)
+ */
+int32_t CLI_Add_Command(CLI_Command_t *command_def)
 {
     CLI_ASSERT(command_def, "NULL Passed");
     CLI_ASSERT(Command_Count < CLI_MAX_COMMANDS, "MAX Command count reached");
@@ -102,10 +113,13 @@ uint8_t CLI_Add_Command(CLI_Command_t *command_def)
         command_def->CLI_Command_Length = cmd_len;
         Command_List[Command_Count] = command_def;
         Command_Count++;
-        return 1; // command add successful
+
+        /** command add successful. return command index in list */
+        return Command_Count - 1;
     }
 
-    return 0;
+    /** command add failed. return */
+    return -1;
 }
 
 /**
@@ -116,7 +130,7 @@ uint8_t CLI_Add_Command(CLI_Command_t *command_def)
  * @param cli_out_max maximum number of char that can be written to cli_out_buffer
  * @retval return 0 if command process completed. return 1 if there are more outputs to be generated
  * @see cli_uart_interface.c
- **/
+ */
 uint8_t CLI_Process_Command(const char *cli_in_buffer,
                             char *cli_out_buffer,
                             const uint16_t cli_out_max)
@@ -184,7 +198,7 @@ uint8_t CLI_Process_Command(const char *cli_in_buffer,
  * @param cli_in_buffer: input string to be parsed
  * @param argc: count of argument found in input string
  * @param argv[]:pointers to arguments found in input string
- **/
+ */
 void CLI_Parse_Arguments(const char *cli_in_buffer,
                          uint8_t *argc,
                          const char *argv[])
@@ -228,7 +242,7 @@ void CLI_Parse_Arguments(const char *cli_in_buffer,
  * @brief return the length of argument with null terminated or space ' ' separated
  * @param arg input argument
  * @retval len argument length
- **/
+ */
 uint8_t CLI_Get_Argument_Length(const char *arg)
 {
     uint8_t len = 0;
@@ -250,7 +264,7 @@ uint8_t CLI_Get_Argument_Length(const char *arg)
  * @note  Callback function will be call repeatedly until it returns 0.
  *        Required only if generated output in callback is larger than output buffer.
  *        This is done to split generated output in small segments that can fit in output buffer.
- **/
+ */
 static uint8_t Help_Callback(uint8_t argc,
                              const char *argv[],
                              char *cli_out_buffer,

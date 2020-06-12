@@ -20,11 +20,16 @@
  *
  */
 
+/** std includes */
+#include <stdlib.h>
+
+/** list includes */
 #include "linked_list.h"
-#include "stdlib.h"
+
+#define USE_LIST_ASSERT 1
 
 #if (USE_LIST_ASSERT == 1)
-#include "stdio.h"
+#include <stdio.h>
 #define LIST_ASSERT(expr, msg) ((expr) ? (void)0U : List_Assert(msg, "linked_list.c", __LINE__))
 static void List_Assert(char *msg, char *file, uint32_t line)
 {

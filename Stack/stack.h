@@ -23,9 +23,8 @@
 #ifndef STACK_H_
 #define STACK_H_
 
-#include "stdint.h"
-
-#define USE_STACK_ASSERT 1
+/** std includes */
+#include <stdint.h>
 
 typedef struct Stack_t
 {

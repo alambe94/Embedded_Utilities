@@ -19,8 +19,11 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  */
+
+/** std includes */
+#include <stddef.h>
+
 #include "soft_i2c_master.h"
-#include "stddef.h"
 
 static void Soft_I2C_Master_State_Machine(Soft_I2C_Master_t *i2c_handle);
 

@@ -23,30 +23,8 @@
 #ifndef BUTTON_H_
 #define BUTTON_H_
 
-#include "stdint.h"
-
-#define MAX_BUTTONS 5
-
-/** enable disable assert */
-#define BUTTON_USE_ASSERT 1
-
-/** milliseconds in single tick */
-#define BUTTON_MS_IN_TICK 1
-
-/** Button_Loop() executes every BUTTON_SCAN_TICK */
-#define BUTTON_SCAN_TICK (10 / BUTTON_MS_IN_TICK)
-
-/** if released for BUTTON_DEBOUNCE_TICK, register click */
-#define BUTTON_DEBOUNCE_TICK (50 / BUTTON_SCAN_TICK)
-
-/** if released for BUTTON_CLICKED_TICK, capture count and call the callback if defned */
-#define BUTTON_CLICKED_TICK (250 / BUTTON_SCAN_TICK)
-
-/** if repressed within BUTTON_REPRESSED_TICK, increment count */
-#define BUTTON_REPRESSED_TICK (150 / BUTTON_SCAN_TICK)
-
-/** if pressed for BUTTON_LONG_PRESSED_TICK, set count to 255 to indicate long pressed */
-#define BUTTON_LONG_PRESSED_TICK (1000 / BUTTON_SCAN_TICK)
+/** std includes */
+#include <stdint.h>
 
 typedef enum Button_Event_t
 {
@@ -86,7 +64,7 @@ typedef struct Button_Struct_t
 
 void Button_Loop(void);
 void Button_Reset_Count(Button_Struct_t *handle);
-uint8_t Button_Add(Button_Struct_t *handle);
+int32_t Button_Add(Button_Struct_t *handle);
 uint8_t Button_Get_Clicked_Count(Button_Struct_t *handle);
 Button_Event_t Button_Get_Status(Button_Struct_t *handle);
 

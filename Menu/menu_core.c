@@ -20,14 +20,25 @@
  *
  */
 
-#include "stdio.h"
+/** menu includes */
 #include "menu_core.h"
+
+#define MENU_MAX_PAGES 15
+
+/** enable disable assert */
+#define MENU_USE_ASSERT 1
+
+/** milliseconds in single tick */
+#define MENU_MS_IN_TICK 1
+
+/** Menu_Loop() executes every MENU_REFRESH_TICK */
+#define MENU_REFRESH_TICK (20 / MENU_MS_IN_TICK)
 
 /**
  * @brief assert implementation, set MENU_USE_ASSERT to 1 to enable assert
  **/
 #if (MENU_USE_ASSERT == 1)
-#include "stdio.h"
+#include <stdio.h>
 #define MENU_ASSERT(expr, msg) ((expr) ? (void)0U : Menu_Assert(msg, "menu_core.c", __LINE__))
 static void Menu_Assert(char *msg, char *file, uint32_t line)
 {

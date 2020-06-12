@@ -20,8 +20,10 @@
  *
  */
 
+/** std includes */
+#include <stddef.h>
+
 #include "soft_uart_tx.h"
-#include "stddef.h"
 
 extern void Soft_UART_TX_TIM_Start();
 extern void Soft_UART_TX_TIM_Stop();

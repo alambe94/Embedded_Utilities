@@ -23,7 +23,8 @@
 #ifndef SOFT_OW_H_
 #define SOFT_OW_H_
 
-#include "stdint.h"
+/** std includes */
+#include <stdint.h>
 
 typedef struct Soft_OW_t
 {

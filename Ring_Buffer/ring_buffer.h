@@ -23,9 +23,8 @@
 #ifndef RING_BUFFER_H_
 #define RING_BUFFER_H_
 
-#include "stdint.h"
-
-#define USE_RB_ASSERT 1
+/** std includes */
+#include <stdint.h>
 
 typedef struct Ring_Buffer_t
 {

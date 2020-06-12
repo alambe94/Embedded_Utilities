@@ -23,7 +23,8 @@
 #ifndef SOFT_SPI_MASTER_H_
 #define SOFT_SPI_MASTER_H_
 
-#include "stdint.h"
+/** std includes */
+#include <stdint.h>
 
 typedef struct Soft_SPI_t
 {

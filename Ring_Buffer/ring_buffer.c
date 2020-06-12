@@ -42,13 +42,16 @@
  *  1. added assersions
  */
 
+/** rin buffer includes */
 #include "ring_buffer.h"
+
+#define USE_RB_ASSERT 1
 
 /**
  * @brief assert implemenation, set USE_RB_ASSERT to 1 to enable assert
  **/
 #if (USE_RB_ASSERT == 1)
-#include "stdio.h"
+#include <stdio.h>
 #define RB_ASSERT(expr, msg) ((expr) ? (void)0U : RB_Assert(msg, "ring_buffer.c", __LINE__))
 static void RB_Assert(char *msg, char *file, uint32_t line)
 {

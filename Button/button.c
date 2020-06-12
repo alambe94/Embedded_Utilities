@@ -20,14 +20,40 @@
  *
  */
 
+/** std includes */
+#include <stddef.h>
+
+/** button includes */
 #include "button.h"
-#include "stddef.h"
+
+#define MAX_BUTTONS 5
+
+/** enable disable assert */
+#define BUTTON_USE_ASSERT 1
+
+/** milliseconds in single tick */
+#define BUTTON_MS_IN_TICK 1
+
+/** Button_Loop() executes every BUTTON_SCAN_TICK */
+#define BUTTON_SCAN_TICK (10 / BUTTON_MS_IN_TICK)
+
+/** if released for BUTTON_DEBOUNCE_TICK, register click */
+#define BUTTON_DEBOUNCE_TICK (50 / BUTTON_SCAN_TICK)
+
+/** if released for BUTTON_CLICKED_TICK, capture count and call the callback if defned */
+#define BUTTON_CLICKED_TICK (250 / BUTTON_SCAN_TICK)
+
+/** if repressed within BUTTON_REPRESSED_TICK, increment count */
+#define BUTTON_REPRESSED_TICK (150 / BUTTON_SCAN_TICK)
+
+/** if pressed for BUTTON_LONG_PRESSED_TICK, set count to 255 to indicate long pressed */
+#define BUTTON_LONG_PRESSED_TICK (1000 / BUTTON_SCAN_TICK)
 
 /**
  * @brief assert implemenation, set BUTTON_USE_ASSERT to 1 to enable assert
  **/
 #if (BUTTON_USE_ASSERT == 1)
-#include "stdio.h"
+#include <stdio.h>
 #define BUTTON_ASSERT(expr, msg) ((expr) ? (void)0U : Button_Assert(msg, "button.c", __LINE__))
 void Button_Assert(char *msg, char *file, uint32_t line)
 {
@@ -55,10 +81,10 @@ extern uint32_t Button_Get_Tick();
 /**
  * @brief add given button to list of registered buttons
  * @param handle handle of button to be registered
- * @retval return button ID (index+1  of button in registred list), return 0 on failure
+ * @retval return button ID (index of button in registred list), return 0 on failure
  * @note adjust MAX_BUTTONS accordingly
  **/
-uint8_t Button_Add(Button_Struct_t *handle)
+int32_t Button_Add(Button_Struct_t *handle)
 {
     BUTTON_ASSERT(handle, "NULL Passed");
     BUTTON_ASSERT(Button_Count < MAX_BUTTONS, "MAX Button count reached");
@@ -82,10 +108,10 @@ uint8_t Button_Add(Button_Struct_t *handle)
         Button_Count++;
 
         /** return button ID */
-        return Button_Count;
+        return Button_Count - 1;
     }
     /** return error */
-    return 0;
+    return -1;
 }
 
 /**

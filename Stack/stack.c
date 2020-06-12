@@ -20,10 +20,13 @@
  *
  */
 
+/** stack includes */
 #include "stack.h"
 
+#define USE_STACK_ASSERT 1
+
 #if (USE_STACK_ASSERT == 1)
-#include "stdio.h"
+#include <stdio.h>
 #define STACK_ASSERT(expr, msg) ((expr) ? (void)0U : Stack_Assert(msg, "stack.c", __LINE__))
 static void Stack_Assert(char *msg, char *file, uint32_t line)
 {
