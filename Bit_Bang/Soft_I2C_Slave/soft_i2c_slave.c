@@ -24,11 +24,11 @@
 
 #include "stm32f4xx_hal.h"
 
-#define SOFT_I2C_SLAVE_SCL_PIN GPIO_PIN_8
-#define SOFT_I2C_SLAVE_SCL_PORT GPIOC
+#define SOFT_I2C_SLAVE_SCL_PIN GPIO_PIN_14
+#define SOFT_I2C_SLAVE_SCL_PORT GPIOB
 
-#define SOFT_I2C_SLAVE_SDA_PIN GPIO_PIN_6
-#define SOFT_I2C_SLAVE_SDA_PORT GPIOC
+#define SOFT_I2C_SLAVE_SDA_PIN GPIO_PIN_13
+#define SOFT_I2C_SLAVE_SDA_PORT GPIOB
 
 #define SOFT_I2C_SLAVE_ADDRESS 0x50
 
@@ -58,8 +58,8 @@ void Soft_I2C_Slave_Init(void (*Event_Callback)(Soft_I2C_Slave_Event_t event))
 
     /* GPIO Ports Clock Enable */
     //__HAL_RCC_GPIOA_CLK_ENABLE();
-    //__HAL_RCC_GPIOB_CLK_ENABLE();
-    __HAL_RCC_GPIOC_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    //__HAL_RCC_GPIOC_CLK_ENABLE();
     //__HAL_RCC_GPIOD_CLK_ENABLE();
     //__HAL_RCC_GPIOE_CLK_ENABLE();
     //__HAL_RCC_GPIOF_CLK_ENABLE();
@@ -76,13 +76,13 @@ void Soft_I2C_Slave_Init(void (*Event_Callback)(Soft_I2C_Slave_Event_t event))
     HAL_GPIO_Init(SOFT_I2C_SLAVE_SCL_PORT, &GPIO_InitStruct);
 
     GPIO_InitStruct.Pin = SOFT_I2C_SLAVE_SDA_PIN;
-    GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+    GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
     GPIO_InitStruct.Pull = GPIO_PULLUP;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
     HAL_GPIO_Init(SOFT_I2C_SLAVE_SDA_PORT, &GPIO_InitStruct);
 
-    HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+    HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+    HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
     Soft_I2C_Slave_SCL_Disable_INT();
 }
@@ -117,30 +117,47 @@ static void Soft_I2C_Slave_State_Machine_SDA_ISR()
     if (Soft_I2C_Slave_SCL_Read())
     {
         /*start detected*/
-        if (!Soft_I2C_Slave_SDA_Read())
+        if (!Soft_I2C_Slave_SDA_Read() && Soft_I2C_Slave.state == Slave_Detect_Start)
         {
             Soft_I2C_Slave_SCL_Enable_INT();
             Soft_I2C_Slave.Active_Flag = 1;
             Soft_I2C_Slave.state = Slave_Address_In;
+
+            /* disable interrupt on sda, make it open drain ouput */
+            /* stm32 open drain output can also read input data register, thus acting as input/output simultaneously */
+            GPIO_InitTypeDef GPIO_InitStruct;
+            GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
+            GPIO_InitStruct.Pull = GPIO_PULLUP;
+            GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+            HAL_GPIO_Init(SOFT_I2C_SLAVE_SDA_PORT, &GPIO_InitStruct);
 
             if (Soft_I2C_Slave.callback != NULL)
             {
                 Soft_I2C_Slave.callback(Slave_Start_Detected);
             }
         }
-        else
+        else if (Soft_I2C_Slave.state == Slave_Detect_Stop)
         {
-            if (Soft_I2C_Slave.callback != NULL)
-            {
-                Soft_I2C_Slave.callback(Slave_Stop_Detected);
-            }
-            Soft_I2C_Slave.state = Slave_Detect_Start;
+            Soft_I2C_Slave_SCL_Disable_INT();
             Soft_I2C_Slave.Active_Flag = 0;
             Soft_I2C_Slave.Bit_Count = 0;
             Soft_I2C_Slave.Current_Byte = 0;
             Soft_I2C_Slave.Buffer_Index = 0;
             Soft_I2C_Slave.Byte_Count = 0;
-            Soft_I2C_Slave_SCL_Disable_INT();
+
+            if (Soft_I2C_Slave.callback != NULL)
+            {
+                Soft_I2C_Slave.callback(Slave_Stop_Detected);
+            }
+
+            Soft_I2C_Slave.state = Slave_Detect_Start;
+
+            /* enable falling edge interrupt on sda*/
+            GPIO_InitTypeDef GPIO_InitStruct;
+            GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+            GPIO_InitStruct.Pull = GPIO_PULLUP;
+            GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+            HAL_GPIO_Init(SOFT_I2C_SLAVE_SDA_PORT, &GPIO_InitStruct);
         }
     }
 }
@@ -152,7 +169,8 @@ static void Soft_I2C_Slave_State_Machine_SCL_ISR()
     {
         if (Soft_I2C_Slave.state == Slave_Detect_Start || Soft_I2C_Slave.state == Slave_Detect_Stop)
         {
-            Soft_I2C_Slave_SDA_High();
+            /** nothing to do here */
+            (void)0;
         }
         else if (Soft_I2C_Slave.state == Slave_Address_In)
         {
@@ -205,8 +223,12 @@ static void Soft_I2C_Slave_State_Machine_SCL_ISR()
             }
             else
             {
-        	/**(Own_Address + 1) read request */
+                /**(Own_Address + 1) read request */
                 Soft_I2C_Slave.state = Slave_Data_Out;
+
+                /* grab first byte from buffer to send */
+                Soft_I2C_Slave.Current_Byte = Soft_I2C_Slave.Buffer[0];
+                Soft_I2C_Slave.Buffer_Index++;
             }
         }
         else if (Soft_I2C_Slave.state == Slave_Data_In)
@@ -278,7 +300,7 @@ static void Soft_I2C_Slave_State_Machine_SCL_ISR()
     else
     {
         /*falling edge edge*/
-        if (Soft_I2C_Slave.state == Slave_Detect_Start || Soft_I2C_Slave.state == Slave_Detect_Stop)
+        if (Soft_I2C_Slave.state == Slave_Detect_Start)
         {
             /** nothing to do here */
             (void)0;
@@ -307,10 +329,19 @@ static void Soft_I2C_Slave_State_Machine_SCL_ISR()
             Soft_I2C_Slave.Current_Byte <<= 1;
             Soft_I2C_Slave.Bit_Count++;
         }
+        else if (Soft_I2C_Slave.state == Slave_Detect_Stop)
+        {
+            /* enable rising edge interrupt on sda*/
+            GPIO_InitTypeDef GPIO_InitStruct;
+            GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+            GPIO_InitStruct.Pull = GPIO_PULLUP;
+            GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+            HAL_GPIO_Init(SOFT_I2C_SLAVE_SDA_PORT, &GPIO_InitStruct);
+        }
     }
 }
 
-void EXTI9_5_IRQHandler(void)
+void EXTI15_10_IRQHandler(void)
 {
     if (__HAL_GPIO_EXTI_GET_IT(SOFT_I2C_SLAVE_SDA_PIN) != RESET)
     {
