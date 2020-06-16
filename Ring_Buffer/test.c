@@ -33,7 +33,7 @@ void Ring_Buffer_Test_Char()
     uint8_t data = 0;
     uint64_t time_elapsed = system_current_time_millis();
 
-    printf("elements = %d\n", sizeof(Storage_Char) / sizeof(Storage_Char[0]));
+    printf("elements = %zu\n", sizeof(Storage_Char) / sizeof(Storage_Char[0]));
 
     Ring_Buffer_Init(&RB_Char, (uint8_t *)Storage_Char, sizeof(Storage_Char[0]), sizeof(Storage_Char) / sizeof(Storage_Char[0]));
 
@@ -50,7 +50,7 @@ void Ring_Buffer_Test_Char()
 
     time_elapsed = system_current_time_millis() - time_elapsed;
 
-    printf("elapsed time %llu\n", time_elapsed);
+    printf("elapsed time %lu\n", time_elapsed);
 }
 
 uint16_t Storage_Short[10000];
@@ -60,7 +60,7 @@ void Ring_Buffer_Test_Short()
     uint16_t data = 0;
     uint64_t time_elapsed = system_current_time_millis();
 
-    printf("elements = %d\n", sizeof(Storage_Short) / sizeof(Storage_Short[0]));
+    printf("elements = %zu\n", sizeof(Storage_Short) / sizeof(Storage_Short[0]));
 
     Ring_Buffer_Init(&RB_Short, (uint8_t *)Storage_Short, sizeof(Storage_Short[0]), sizeof(Storage_Short) / sizeof(Storage_Short[0]));
 
@@ -94,7 +94,7 @@ void Ring_Buffer_Test_Custom()
     struct XYZ_t data = {0, 0, 0};
     uint64_t time_elapsed = system_current_time_millis();
 
-    printf("elements = %d\n", sizeof(Storage_Custom) / sizeof(Storage_Custom[0]));
+    printf("elements = %zu\n", sizeof(Storage_Custom) / sizeof(Storage_Custom[0]));
 
     Ring_Buffer_Init(&RB_Custom, (uint8_t *)Storage_Custom, sizeof(Storage_Custom[0]), sizeof(Storage_Custom) / sizeof(Storage_Custom[0]));
 
@@ -107,20 +107,20 @@ void Ring_Buffer_Test_Custom()
     }
 
     /* get count test */
-    printf("counts = %d\n", Ring_Buffer_Get_Count(&RB_Custom));
+    printf("counts = %ui\n", Ring_Buffer_Get_Count(&RB_Custom));
 
     /* peek test*/
     for (uint32_t i = 0; i < sizeof(Storage_Custom) / sizeof(Storage_Custom[0]); i++)
     {
         Ring_Buffer_Peek(&RB_Custom, &data, i);
-        printf("x%llu y%llu z%llu\n", data.x, data.y, data.z);
+        printf("x%lu y%lu z%lu\n", data.x, data.y, data.z);
     }
 
     /* search test */
     struct XYZ_t search = {9998, 19996, 99980};
     uint32_t position = 0;
     Ring_Buffer_Search(&RB_Custom, &search, &position);
-    printf("position = %llu\n", position);
+    printf("position = %lu\n", position);
     Ring_Buffer_Peek(&RB_Custom, &data, position);
     printf("x%llu y%llu z%llu\n", data.x, data.y, data.z);
 
