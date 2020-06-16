@@ -6,5 +6,5 @@ Simple Button Library to read button event such as single, double , tripple ... 
 [more](https://github.com/alambe94/Embedded_Utilities/blob/master/Button/readme.md)
 
 ## Encoder
-Encoder Library to read general purpose encoders used in menu navigation. (not used for motors ones!!!)
+Encoder Library to read general purpose encoders used in menu navigation. (not used for motor!!!)
 [more](https://github.com/alambe94/Embedded_Utilities/blob/master/Rotary_Encoder/readme.md)
