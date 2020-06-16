@@ -142,7 +142,7 @@ static uint8_t Add_Callback(uint8_t argc, const char *argv[], char *out_buffer, 
 
     if (is_command_valid)
     {
-        snprintf(out_buffer, out_max, "\r\n%li\r\n", rslt);
+        snprintf(out_buffer, out_max, "\r\n%i\r\n", rslt);
     }
     else
     {

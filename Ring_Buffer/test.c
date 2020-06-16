@@ -77,7 +77,7 @@ void Ring_Buffer_Test_Short()
 
     time_elapsed = system_current_time_millis() - time_elapsed;
 
-    printf("elapsed time %llu\n", time_elapsed);
+    printf("elapsed time %lu\n", time_elapsed);
 }
 
 struct XYZ_t
@@ -120,9 +120,9 @@ void Ring_Buffer_Test_Custom()
     struct XYZ_t search = {9998, 19996, 99980};
     uint32_t position = 0;
     Ring_Buffer_Search(&RB_Custom, &search, &position);
-    printf("position = %lu\n", position);
+    printf("position = %ui\n", position);
     Ring_Buffer_Peek(&RB_Custom, &data, position);
-    printf("x%llu y%llu z%llu\n", data.x, data.y, data.z);
+    printf("x%lu y%lu z%lu\n", data.x, data.y, data.z);
 
     /* get test */
     while (Ring_Buffer_Get(&RB_Custom, &data))
