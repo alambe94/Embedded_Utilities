@@ -4,16 +4,16 @@ This is simple Button Library to read button event such as single, double , trip
 
 ## How to use
 ### External functions dependencies
-1. Button_Get_Tick(), used for timing purpose. simply return millis or tick elapsed.
+1.  Button_Get_Tick(), used for timing purpose. simply return millis or tick elapsed.
 ```
 uint32_t Button_Get_Tick()
 {
     return HAL_GetTick();
 }
 ```
-2. GPIO Init, enable clock, configure as gpio as input.
-3. GPIO Pin Read, returns pin status.
-3. (Optional)Event callback. Called after an event has ocurred.
+2.  GPIO Init, enable clock, configure as gpio as input.
+3.  GPIO Pin Read, returns pin status.
+3.  (Optional)Event callback. Called after an event has ocurred.
 
 ### Code
 1. Create button handles
