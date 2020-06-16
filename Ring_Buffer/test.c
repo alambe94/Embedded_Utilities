@@ -132,5 +132,5 @@ void Ring_Buffer_Test_Custom()
 
     time_elapsed = system_current_time_millis() - time_elapsed;
 
-    printf("elapsed time %llu\n", time_elapsed);
+    printf("elapsed time %lu\n", time_elapsed);
 }
