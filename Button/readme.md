@@ -1,9 +1,9 @@
 ##[STM32 Example](https://github.com/alambe94/STM32_Button.git)
 
-This is simple Button Library to read button event such as single, double , tripple ... upto 254 clicked!!! and long pressed event with optional callback.
+This is simple Button Library to read button event such as single, double , triple ... up to 254 clicked!!! and long pressed event with optional callback.
 
 ## How to use
-### Extrenal funtions dependencies
+### External functions dependencies
 1. Button_Get_Tick(), used for timing purpose. simply return millis or tick elapsed.
 ```
 uint32_t Button_Get_Tick()
@@ -31,22 +31,22 @@ void Button_A_Init()
     // enable clock, configure as gpio as input
 }
 void Button_B_Init()
-{ 
+{
    // enable clock, configure as gpio as input
 }
 ```
 3. Provide GPIO Pin Read functions
 ```
-Button logic high
+// Button logic high
 uint8_t Button_A_Read()
-{   
+{
     return HAL_GPIO_ReadPin(A_GPIO_Port, A_Pin);
 }
 ```
 ```
-Button logic low
+// Button logic low
 uint8_t Button_B_Read()
-{    
+{
     return HAL_GPIO_ReadPin(B_GPIO_Port, B_Pin) ? 0 : 1;
 }
 ```
@@ -73,13 +73,13 @@ void Button_B_Callback(uint8_t clicked_count)
     printf("Button_B clicked %d times\n", clicked_count);
 }
 ```
-4. Add handles to list of registred button
+4. Add handles to list of registered button
 ```
     Button_A.Button_Init = Button_A_Init;
     Button_A.Button_Read = Button_A_Read;
     Button_A.Callback = Button_A_Callback;
     Button_Add(&Button_A);
-    
+
     Button_B.Button_Init = Button_B_Init;
     Button_B.Button_Read = Button_B_Read;
     Button_B.Callback = Button_B_Callback;
@@ -93,7 +93,7 @@ void Button_B_Callback(uint8_t clicked_count)
     .
     .
 ```
-5. Call Button_Loop() frequently. In main loop or in Timer ISR. Note, If Called in Timer ISR and callback  is defined, then callback should be as short as possible.
+5. Call Button_Loop() frequently. In main loop or in Timer ISR. Note, If Called in Timer ISR and callback is defined, then callback should be as short as possible.
 ```
 while (1)
     {
@@ -106,20 +106,20 @@ Systick_ISR()
         Button_Loop();
     }
 ```
-6. If callback is defined it will be called when any event happens. I not we can read manually
+6. If callback is defined it will be called when any event happens. If not we can read manually
 ```
-        clicked_count_a = Button_Get_Clicked_Count(&Button_A);
-        clicked_count_b = Button_Get_Clicked_Count(&Button_B);
-        clicked_count_c = Button_Get_Clicked_Count(&Button_C);
-        
-        if (clicked_count_a)
+    clicked_count_a = Button_Get_Clicked_Count(&Button_A);
+    clicked_count_b = Button_Get_Clicked_Count(&Button_B);
+    clicked_count_c = Button_Get_Clicked_Count(&Button_C);
+
+    if (clicked_count_a)
+    {
+        if (clicked_count_a == 255)
         {
-            if (clicked_count_a == 255)
-            {
-                printf("Button_A long pressed\n");
-            }
-            {
-                printf("Button_A clicked %d times\n", clicked_count_a);
-            }
+            printf("Button_A long pressed\n");
         }
+        {
+            printf("Button_A clicked %d times\n", clicked_count_a);
+        }
+    }
 ```
