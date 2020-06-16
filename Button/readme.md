@@ -73,7 +73,7 @@ void Button_B_Callback(uint8_t clicked_count)
     printf("Button_B clicked %d times\n", clicked_count);
 }
 ```
-4. Add handles to list of registered button
+5. Add handles to list of registered buttons
 ```
     Button_A.Button_Init = Button_A_Init;
     Button_A.Button_Read = Button_A_Read;
@@ -87,13 +87,13 @@ void Button_B_Callback(uint8_t clicked_count)
 
     Button_C.Button_Init = Button_C_Init;
     Button_C.Button_Read = Button_C_Read;
-    Button_C.Callback = NULL; /** whithout callback */
+    Button_C.Callback = NULL; /** without callback */
     Button_Add(&Button_C);
     .
     .
     .
 ```
-5. Call Button_Loop() frequently. In main loop or in Timer ISR. Note, If Called in Timer ISR and callback is defined, then callback should be as short as possible.
+6. Call Button_Loop() frequently. In main loop or in Timer ISR. Note, If Called in Timer ISR and callback is defined, then callback should be as short as possible.
 ```
 while (1)
     {
@@ -106,7 +106,7 @@ Systick_ISR()
         Button_Loop();
     }
 ```
-6. If callback is defined it will be called when any event happens. If not we can read manually
+7. If callback is defined it will be called when any event happens. If not we can read manually
 ```
     clicked_count_a = Button_Get_Clicked_Count(&Button_A);
     clicked_count_b = Button_Get_Clicked_Count(&Button_B);
