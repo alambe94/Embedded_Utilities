@@ -26,6 +26,7 @@
 /** list includes */
 #include "linked_list.h"
 
+/** enable/disable assert */
 #define USE_LIST_ASSERT 1
 
 #if (USE_LIST_ASSERT == 1)
@@ -39,6 +40,11 @@ static void List_Assert(char *msg, char *file, uint32_t line)
 #define LIST_ASSERT(expr, msg) ((void)0U)
 #endif
 
+/**
+ * @brief create new node
+ * @param data data field of new node
+ * @retval return handle of node. return NULL on failure
+ */
 List_Node_t *List_New_Node(void *data)
 {
     LIST_ASSERT(data, "NULL Passed");
@@ -55,8 +61,12 @@ List_Node_t *List_New_Node(void *data)
 
     return new_node;
 }
+
 /**
- *
+ * @brief add node to top of the list
+ * @param head head of the list
+ * @param new_node node to be added
+ * @retval xreturn return 1 on success else 0
  */
 uint8_t List_Add_At_Top(List_Node_t **head, List_Node_t *new_node)
 {
@@ -75,6 +85,13 @@ uint8_t List_Add_At_Top(List_Node_t **head, List_Node_t *new_node)
     return xreturn;
 }
 
+/**
+ * @brief add node after specified node
+ * @param head head of the list
+ * @param node node to be added
+ * @param new_node node after witch new node is to be added
+ * @retval xreturn return 1 on success else 0
+ */
 uint8_t List_Add_After(List_Node_t **head, List_Node_t *node, List_Node_t *new_node)
 {
     LIST_ASSERT(head, "NULL Passed");
@@ -93,6 +110,13 @@ uint8_t List_Add_After(List_Node_t **head, List_Node_t *node, List_Node_t *new_n
     return xreturn;
 }
 
+/**
+ * @brief add node before specified node
+ * @param head head of the list
+ * @param node node to be added
+ * @param new_node node before witch new node is to be added
+ * @retval xreturn return 1 on success else 0
+ */
 uint8_t List_Add_Before(List_Node_t **head, List_Node_t *node, List_Node_t *new_node)
 {
     LIST_ASSERT(head, "NULL Passed");
@@ -131,6 +155,12 @@ uint8_t List_Add_Before(List_Node_t **head, List_Node_t *node, List_Node_t *new_
     return xreturn;
 }
 
+/**
+ * @brief add node at the end of the list
+ * @param head head of the list
+ * @param new_node node is to be added
+ * @retval xreturn return 1 on success else 0
+ */
 uint8_t List_Add_At_End(List_Node_t **head, List_Node_t *new_node)
 {
     LIST_ASSERT(head, "NULL Passed");
@@ -163,6 +193,11 @@ uint8_t List_Add_At_End(List_Node_t **head, List_Node_t *new_node)
     return xreturn;
 }
 
+/**
+ * @brief delete node from op of the list
+ * @param head head of the list
+ * @retval xreturn return 1 on success else 0
+ */
 uint8_t List_Delete_From_Top(List_Node_t **head)
 {
     LIST_ASSERT(head, "NULL Passed");
@@ -190,6 +225,11 @@ uint8_t List_Delete_From_Top(List_Node_t **head)
     return xreturn;
 }
 
+/**
+ * @brief delete node from bottom of the list
+ * @param head head of the list
+ * @retval xreturn return 1 on success else 0
+ */
 uint8_t List_Delete_From_End(List_Node_t **head)
 {
     LIST_ASSERT(head, "NULL Passed");
@@ -223,6 +263,12 @@ uint8_t List_Delete_From_End(List_Node_t **head)
     return xreturn;
 }
 
+/**
+ * @brief delete specified node
+ * @param head head of the list
+ * @param node node to be deleted
+ * @retval xreturn return 1 on success else 0
+ */
 uint8_t List_Delete_Node(List_Node_t **head, List_Node_t *node)
 {
     LIST_ASSERT(head, "NULL Passed");
@@ -260,6 +306,11 @@ uint8_t List_Delete_Node(List_Node_t **head, List_Node_t *node)
     return xreturn;
 }
 
+/**
+ * @brief delete all nodes in the list
+ * @param head head of the list
+ * @retval xreturn return 1 on success else 0
+ */
 uint8_t List_Delete_All(List_Node_t **head)
 {
     LIST_ASSERT(head, "NULL Passed");
@@ -283,6 +334,12 @@ uint8_t List_Delete_All(List_Node_t **head)
     return xreturn;
 }
 
+/**
+ * @brief find node with specified data field in the list
+ * @param head head of the list
+ * @param data data field to search for
+ * @retval List_Node_t return handle of node if success else return NULL
+ */
 List_Node_t *List_Find_Node(List_Node_t **head, void *data)
 {
     LIST_ASSERT(head, "NULL Passed");
@@ -306,6 +363,12 @@ List_Node_t *List_Find_Node(List_Node_t **head, void *data)
     return NULL;
 }
 
+/**
+ * @brief list as stack, push data on top of the stack
+ * @param head head of the list acting as stack
+ * @param data data to be push onto stack
+ * @retval return 1 if success else 0
+ */
 uint8_t List_Push(List_Node_t **head, void *data)
 {
     LIST_ASSERT(head, "NULL Passed");
@@ -314,6 +377,12 @@ uint8_t List_Push(List_Node_t **head, void *data)
     return List_Add_At_Top(head, List_New_Node(data));
 }
 
+/**
+ * @brief list as stack, pop data from top of the stack
+ * @param head head of the list acting as stack
+ * @param data where data will be retrieved
+ * @retval return 1 if success else 0
+ */
 uint8_t List_Pop(List_Node_t **head, void **data)
 {
     LIST_ASSERT(head, "NULL Passed");
@@ -327,6 +396,44 @@ uint8_t List_Pop(List_Node_t **head, void **data)
     return List_Delete_From_Top(head);
 }
 
+/**
+ * @brief list as queue, push data into the queue
+ * @param head head of the list acting as queue
+ * @param data data to be queued
+ * @retval return 1 if success else 0
+ */
+uint8_t List_Enqueue(List_Node_t **head, void *data)
+{
+    LIST_ASSERT(head, "NULL Passed");
+    LIST_ASSERT(data, "NULL Passed");
+
+    return List_Add_At_End(head, List_New_Node(data));
+}
+
+/**
+ * @brief list as queue, enqueue data from queue
+ * @param head head of the list acting as queue
+ * @param data where data will be retrieved
+ * @retval return 1 if success else 0
+ */
+uint8_t List_Dequeue(List_Node_t **head, void **data)
+{
+    LIST_ASSERT(head, "NULL Passed");
+    LIST_ASSERT(data, "NULL Passed");
+
+    if (head != NULL && *head != NULL)
+    {
+        *data = (*head)->Data;
+    }
+
+    return List_Delete_From_Top(head);
+}
+
+/**
+ * @brief returns number on nodes in list
+ * @param head head of the list
+ * @retval count number of nodes
+ */
 uint16_t List_Get_Count(List_Node_t **head)
 {
     LIST_ASSERT(head, "NULL Passed");

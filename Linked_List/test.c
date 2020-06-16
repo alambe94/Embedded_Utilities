@@ -1,17 +1,17 @@
-
-
 #include "stdio.h"
 #include "stdlib.h"
 #include "linked_list.h"
 
 void Test();
 void List_As_Stack_Test();
+void List_As_Queue_Test();
 void List_Assersions();
 
 void main()
 {
-    Test();
+    //Test();
     List_As_Stack_Test();
+    //List_As_Queue_Test();
     //List_Assersions();
 }
 
@@ -141,6 +141,45 @@ void List_As_Stack_Test()
     }
 
     while (List_Pop(&head, &data))
+    {
+        printf("%s\n", data);
+    }
+}
+
+void List_As_Queue_Test()
+{
+    List_Node_t *head = NULL;
+    void *data;
+
+    List_Enqueue(&head, "1");
+    List_Enqueue(&head, "2");
+    List_Enqueue(&head, "3");
+    List_Enqueue(&head, "4");
+    List_Enqueue(&head, "5");
+    List_Enqueue(&head, "6");
+    List_Enqueue(&head, "7");
+    List_Enqueue(&head, "8");
+    List_Enqueue(&head, "9");
+    List_Enqueue(&head, "10");
+    List_Enqueue(&head, "11");
+    List_Enqueue(&head, "12");
+    List_Enqueue(&head, "13");
+    List_Enqueue(&head, "14");
+    List_Enqueue(&head, "15");
+    List_Enqueue(&head, "16");
+    List_Enqueue(&head, "17");
+    List_Enqueue(&head, "18");
+    List_Enqueue(&head, "19");
+    List_Enqueue(&head, "20");
+
+    for (uint16_t i = 21; i < 50000; i++)
+    {
+        char *buf = malloc(6);
+        snprintf(buf, 6, "%d", i);
+        List_Enqueue(&head, buf);
+    }
+
+    while (List_Dequeue(&head, &data))
     {
         printf("%s\n", data);
     }

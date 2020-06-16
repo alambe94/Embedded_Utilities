@@ -47,6 +47,10 @@ uint8_t List_Delete_All(List_Node_t **head);
 
 uint8_t List_Push(List_Node_t **head, void *data);
 uint8_t List_Pop(List_Node_t **head, void **data);
+
+uint8_t List_Enqueue(List_Node_t **head, void *data);
+uint8_t List_Dequeue(List_Node_t **head, void **data);
+
 uint16_t List_Get_Count(List_Node_t **head);
 
 #endif /* LINKED_LIST_H_ */
