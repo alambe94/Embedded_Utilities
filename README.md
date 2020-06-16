@@ -4,3 +4,7 @@
 ## Button
 Simple Button Library to read button event such as single, double , tripple ... upto 254 clicked!!! and long pressed event.
 [more](https://github.com/alambe94/Embedded_Utilities/blob/master/Button/readme.md)
+
+## Encoder
+Encoder Library to read general purpose encoders used in menu navigation. (not used for motors ones!!!)
+[more](https://github.com/alambe94/Embedded_Utilities/blob/master/Rotary_Encoder/readme.md)
