@@ -125,11 +125,10 @@ int32_t Menu_Add_Page(Menu_Page_t *page)
 }
 
 /**
- * @brief change current menu and screen(item) to specified page
+ * @brief change current menu and screen(item) to specified page and item
  * @param page_no page number to switch to
  * @param page_Item page item to switch to
  * @retval return 1 if success
- * @note adjust MENU_MAX_PAGES accordingly
  */
 uint8_t Menu_Change_Page(uint8_t page_no, uint8_t page_Item)
 {
@@ -179,6 +178,7 @@ void Menu_Loop(void)
         Scan_Time_Stamp = Menu_Get_Tick();
         Menu_Get_Event(&menu_event);
 
+        /** call the callback of selected item of current page */
         if (item_callback_flag)
         {
             item_callback_flag = Current_Page->Page_Item_List[Current_Page->Current_Item].Page_Item_Callback(&menu_event);

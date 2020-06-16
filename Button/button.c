@@ -28,7 +28,7 @@
 
 #define MAX_BUTTONS 5
 
-/** enable disable assert */
+/** enable/disable assert */
 #define BUTTON_USE_ASSERT 1
 
 /** milliseconds in single tick */
@@ -40,7 +40,7 @@
 /** if released for BUTTON_DEBOUNCE_TICK, register click */
 #define BUTTON_DEBOUNCE_TICK (50 / BUTTON_SCAN_TICK)
 
-/** if released for BUTTON_CLICKED_TICK, capture count and call the callback if defned */
+/** if released for BUTTON_CLICKED_TICK, capture click count and call the callback if defned */
 #define BUTTON_CLICKED_TICK (250 / BUTTON_SCAN_TICK)
 
 /** if repressed within BUTTON_REPRESSED_TICK, increment count */
@@ -81,7 +81,7 @@ extern uint32_t Button_Get_Tick();
 /**
  * @brief add given button to list of registered buttons
  * @param handle handle of button to be registered
- * @retval return button ID (index of button in registred list), return 0 on failure
+ * @retval return button ID (index of button in registred list), return -1 on failure
  * @note adjust MAX_BUTTONS accordingly
  */
 int32_t Button_Add(Button_Struct_t *handle)
@@ -107,7 +107,7 @@ int32_t Button_Add(Button_Struct_t *handle)
 
         Button_Count++;
 
-        /** return button ID */
+        /** return button ID (index of button in registred list) */
         return Button_Count - 1;
     }
     /** return error */
@@ -115,7 +115,7 @@ int32_t Button_Add(Button_Struct_t *handle)
 }
 
 /**
- * @brief frequently called in main or timer ISR. should be called at least every 20ms?
+ * @brief frequently called in main loop or timer ISR. should be called at least every 20ms?
  * @param none
  * @retval none
  */
@@ -131,6 +131,7 @@ void Button_Loop(void)
 
         for (uint8_t Index = 0; Index < Button_Count; Index++)
         {
+            /** grab button handle from list */
             handle = Button_List[Index];
 
             BUTTON_ASSERT(handle, "NULL found in list");
@@ -175,10 +176,11 @@ void Button_Loop(void)
                     /** button released detected */
                     handle->Button_Released_Ticks++;
 
-                    /** button was pressed for BUTTON_DEBOUNCE_TICK */
+                    /** if button was pressed for BUTTON_DEBOUNCE_TICK */
                     if (handle->Button_Pressed_Ticks > BUTTON_DEBOUNCE_TICK)
                     {
                         handle->Button_Pressed_Ticks = 0;
+
                         if (handle->Button_Event == Button_Repressed)
                         {
                             handle->Button_Clicked_Count++;
@@ -193,17 +195,20 @@ void Button_Loop(void)
                         }
                     }
 
+                    /** if button released for BUTTON_CLICKED_TICK */
                     if (handle->Button_Released_Ticks > BUTTON_CLICKED_TICK)
                     {
                         if (handle->Button_Event != Button_Idle)
                         {
                             handle->Button_Event = Button_Idle;
+                            /** capture the button click so we can read it manually if we want */
                             handle->Button_Count_Captured = handle->Button_Clicked_Count;
-                            /** if button callback is defined, call it*/
+                            /** if button callback is defined, call it */
                             if (handle->Callback != NULL)
                             {
                                 handle->Callback(handle->Button_Clicked_Count);
                             }
+                            /** reest click count after callback and start the scan again */
                             handle->Button_Clicked_Count = 0;
                         }
                     }
@@ -217,7 +222,6 @@ void Button_Loop(void)
  * @brief return the current state of button
  * @param handle handle of button
  * @retval return Button_Event
- * @note if handle is NULL, returns 0, which same as Button_Idle
  */
 Button_Event_t Button_Get_Status(Button_Struct_t *handle)
 {
@@ -235,7 +239,6 @@ Button_Event_t Button_Get_Status(Button_Struct_t *handle)
  * @brief return the clicked count of button
  * @param handle handle of button
  * @retval return clicked count
- * @note if handle is NULL, returns 0
  */
 uint8_t Button_Get_Clicked_Count(Button_Struct_t *handle)
 {

@@ -95,7 +95,7 @@ void CLI_Init(void)
  * @brief add given command to list of registered commands
  * @param command_def command to be registered
  * @see CLI_Init for example
- * @note adjust CLI_MAX_COMMANDS accordingly
+ * @note adjust CLI_MAX_COMMANDS accordingly. return -1 on failure
  */
 int32_t CLI_Add_Command(CLI_Command_t *command_def)
 {
@@ -198,6 +198,7 @@ uint8_t CLI_Process_Command(const char *cli_in_buffer,
  * @param cli_in_buffer: input string to be parsed
  * @param argc: count of argument found in input string
  * @param argv[]:pointers to arguments found in input string
+ * @note arguments are not null terminted except last one.
  */
 void CLI_Parse_Arguments(const char *cli_in_buffer,
                          uint8_t *argc,
@@ -208,7 +209,7 @@ void CLI_Parse_Arguments(const char *cli_in_buffer,
     CLI_ASSERT(argv, "NULL Passed");
 
     uint8_t argc_temp = 0;
-    /* arg 0 is input command */
+    /** arg 0 is input command */
     argv[argc_temp++] = cli_in_buffer;
 
     while (argc_temp < CLI_MAX_ARGS_IN_CMD)
@@ -220,8 +221,6 @@ void CLI_Parse_Arguments(const char *cli_in_buffer,
 
         while ((*cli_in_buffer) == ' ')
         {
-            /* convert ' ' to NULL */
-            //*cli_in_buffer = 0x00;
             cli_in_buffer++;
         }
 
@@ -260,7 +259,7 @@ uint8_t CLI_Get_Argument_Length(const char *arg)
 }
 
 /**
- * @brief Implementation of help callback
+ * @brief Implementation of help callback.
  * @note  Callback function will be call repeatedly until it returns 0.
  *        Required only if generated output in callback is larger than output buffer.
  *        This is done to split generated output in small segments that can fit in output buffer.
