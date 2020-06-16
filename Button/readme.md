@@ -5,7 +5,7 @@ This is simple Button Library to read button event such as single, double , trip
 ## How to use
 ### External functions dependencies
 1.  Button_Get_Tick(), used for timing purpose. simply return millis or tick elapsed.
-```
+```c
 uint32_t Button_Get_Tick()
 {
     return HAL_GetTick();
@@ -13,19 +13,19 @@ uint32_t Button_Get_Tick()
 ```
 2.  GPIO Init, enable clock, configure as gpio as input.
 3.  GPIO Pin Read, returns pin status.
-3.  (Optional)Event callback. Called after an event has ocurred.
+4.  (Optional)Event callback. Called after an event has ocurred.
 
 ### Code
-1. Create button handles
-```
+1.  Create button handles
+```c
 Button_Struct_t Button_A;
 Button_Struct_t Button_B;
 Button_Struct_t Button_C;
 Button_Struct_t Button_D;
 Button_Struct_t Button_E;
 ```
-2. Create GPIO Init function
-```
+2.  Create GPIO Init function
+```c
 void Button_A_Init()
 {
     // enable clock, configure as gpio as input
@@ -35,23 +35,23 @@ void Button_B_Init()
    // enable clock, configure as gpio as input
 }
 ```
-3. Provide GPIO Pin Read functions
-```
+3.  Provide GPIO Pin Read functions
+```c
 // Button logic high
 uint8_t Button_A_Read()
 {
     return HAL_GPIO_ReadPin(A_GPIO_Port, A_Pin);
 }
 ```
-```
+```c
 // Button logic low
 uint8_t Button_B_Read()
 {
     return HAL_GPIO_ReadPin(B_GPIO_Port, B_Pin) ? 0 : 1;
 }
 ```
-4. Create optional callbacks
-```
+4.  Create optional callbacks
+```c
 void Button_A_Callback(uint8_t clicked_count)
 {
     if (clicked_count == 255)
@@ -73,8 +73,8 @@ void Button_B_Callback(uint8_t clicked_count)
     printf("Button_B clicked %d times\n", clicked_count);
 }
 ```
-5. Add handles to list of registered buttons
-```
+5.  Add handles to list of registered buttons
+```c
     Button_A.Button_Init = Button_A_Init;
     Button_A.Button_Read = Button_A_Read;
     Button_A.Callback = Button_A_Callback;
@@ -93,21 +93,21 @@ void Button_B_Callback(uint8_t clicked_count)
     .
     .
 ```
-6. Call Button_Loop() frequently. In main loop or in Timer ISR. Note, If Called in Timer ISR and callback is defined, then callback should be as short as possible.
-```
+6.  Call Button_Loop() frequently. In main loop or in Timer ISR. Note, If Called in Timer ISR and callback is defined, then callback should be as short as possible.
+```c
 while (1)
     {
         Button_Loop();
     }
 ```
-```
+```c
 Systick_ISR()
     {
         Button_Loop();
     }
 ```
-7. If callback is defined it will be called when any event happens. If not we can read manually
-```
+7.  If callback is defined it will be called when any event happens. If not we can read manually
+```c
     clicked_count_a = Button_Get_Clicked_Count(&Button_A);
     clicked_count_b = Button_Get_Clicked_Count(&Button_B);
     clicked_count_c = Button_Get_Clicked_Count(&Button_C);
