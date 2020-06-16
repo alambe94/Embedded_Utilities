@@ -127,7 +127,7 @@ void Ring_Buffer_Test_Custom()
     /* get test */
     while (Ring_Buffer_Get(&RB_Custom, &data))
     {
-        printf("x%llu y%llu z%llu\n", data.x, data.y, data.z);
+        printf("x%lu y%lu z%lu\n", data.x, data.y, data.z);
     }
 
     time_elapsed = system_current_time_millis() - time_elapsed;
