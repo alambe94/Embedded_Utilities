@@ -86,7 +86,7 @@ extern uint32_t Button_Get_Tick();
  */
 int32_t Button_Add(Button_Struct_t *handle)
 {
-    BUTTON_ASSERT(handle, "NULL Passed");
+    BUTTON_ASSERT(handle, "handle is NULL");
     BUTTON_ASSERT(Button_Count < MAX_BUTTONS, "MAX Button count reached");
 
     if (Button_Count < MAX_BUTTONS && handle != NULL)
@@ -225,7 +225,7 @@ void Button_Loop(void)
  */
 Button_Event_t Button_Get_Status(Button_Struct_t *handle)
 {
-    BUTTON_ASSERT(handle, "NULL Passed");
+    BUTTON_ASSERT(handle, "handle is NULL");
 
     if (handle != NULL)
     {
@@ -242,7 +242,7 @@ Button_Event_t Button_Get_Status(Button_Struct_t *handle)
  */
 uint8_t Button_Get_Clicked_Count(Button_Struct_t *handle)
 {
-    BUTTON_ASSERT(handle, "NULL Passed");
+    BUTTON_ASSERT(handle, "handle is NULL");
 
     uint8_t count = 0;
 
@@ -264,7 +264,7 @@ uint8_t Button_Get_Clicked_Count(Button_Struct_t *handle)
  */
 void Button_Reset_Count(Button_Struct_t *handle)
 {
-    BUTTON_ASSERT(handle, "NULL Passed");
+    BUTTON_ASSERT(handle, "handle is NULL");
 
     if (handle != NULL)
     {

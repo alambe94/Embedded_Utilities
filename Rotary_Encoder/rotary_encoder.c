@@ -84,7 +84,7 @@ extern uint32_t Encoder_Get_Tick();
  */
 int32_t Encoder_Add(Encoder_Struct_t *handle)
 {
-    ENCODER_ASSERT(handle, "NULL Passed");
+    ENCODER_ASSERT(handle, "handle is NULL");
     ENCODER_ASSERT(Encoder_Count < MAX_ENCODERS, "MAX Encoder count reached");
 
     if (Encoder_Count < MAX_ENCODERS && handle != NULL)
@@ -209,7 +209,7 @@ void Encoder_Loop(void)
  */
 int16_t Encoder_Get_Count(Encoder_Struct_t *handle)
 {
-    ENCODER_ASSERT(handle, "NULL Passed");
+    ENCODER_ASSERT(handle, "handle is NULL");
 
     int16_t count = 0;
 
@@ -241,7 +241,7 @@ int16_t Encoder_Get_Count(Encoder_Struct_t *handle)
  */
 void Encoder_Reset_Count(Encoder_Struct_t *handle)
 {
-    ENCODER_ASSERT(handle, "NULL Passed");
+    ENCODER_ASSERT(handle, "handle is NULL");
 
     if (handle != NULL)
     {
@@ -255,7 +255,7 @@ void Encoder_Reset_Count(Encoder_Struct_t *handle)
  */
 void Encoder_Set_Count(Encoder_Struct_t *handle, int16_t count)
 {
-    ENCODER_ASSERT(handle, "NULL Passed");
+    ENCODER_ASSERT(handle, "handle is NULL");
 
     if (handle != NULL)
     {

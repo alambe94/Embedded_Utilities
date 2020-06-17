@@ -38,8 +38,8 @@ static void Stack_Assert(char *msg, char *file, uint32_t line)
 
 void Stack_Init(Stack_t *handle, uint8_t *buffer, uint16_t size)
 {
-    STACK_ASSERT(handle, "NULL Passed");
-    STACK_ASSERT(buffer, "NULL Passed");
+    STACK_ASSERT(handle, "handle is NULL");
+    STACK_ASSERT(buffer, "buffer is NULL");
 
     if (handle != NULL && buffer != NULL)
     {
@@ -51,31 +51,31 @@ void Stack_Init(Stack_t *handle, uint8_t *buffer, uint16_t size)
 
 uint8_t Stack_Get_Count(Stack_t *handle)
 {
-    STACK_ASSERT(handle, "NULL Passed");
+    STACK_ASSERT(handle, "handle is NULL");
     return handle->Index;
 }
 
 uint8_t Stack_Clear(Stack_t *handle)
 {
-    STACK_ASSERT(handle, "NULL Passed");
+    STACK_ASSERT(handle, "handle is NULL");
     return handle->Index = 0;
 }
 
 uint8_t Stack_Is_Full(Stack_t *handle)
 {
-    STACK_ASSERT(handle, "NULL Passed");
+    STACK_ASSERT(handle, "handle is NULL");
     return handle->Index == handle->Size;
 }
 
 uint8_t Stack_Is_Empty(Stack_t *handle)
 {
-    STACK_ASSERT(handle, "NULL Passed");
+    STACK_ASSERT(handle, "handle is NULL");
     return handle->Index == 0;
 }
 
 uint8_t Stack_Push(Stack_t *handle, uint8_t data)
 {
-    STACK_ASSERT(handle, "NULL Passed");
+    STACK_ASSERT(handle, "handle is NULL");
 
     uint8_t xreturn = 0;
 
@@ -98,8 +98,8 @@ uint8_t Stack_Push(Stack_t *handle, uint8_t data)
 
 uint8_t Stack_Pop(Stack_t *handle, uint8_t *data)
 {
-    STACK_ASSERT(handle, "NULL Passed");
-    STACK_ASSERT(data, "NULL Passed");
+    STACK_ASSERT(handle, "handle is NULL");
+    STACK_ASSERT(data, "data is NULL");
 
     uint8_t xreturn = 0;
 
@@ -121,8 +121,8 @@ uint8_t Stack_Pop(Stack_t *handle, uint8_t *data)
 
 uint8_t Stack_Peek(Stack_t *handle, uint8_t *data)
 {
-    STACK_ASSERT(handle, "NULL Passed");
-    STACK_ASSERT(data, "NULL Passed");
+    STACK_ASSERT(handle, "handle is NULL");
+    STACK_ASSERT(data, "data is NULL");
 
     uint8_t xreturn = 0;
 

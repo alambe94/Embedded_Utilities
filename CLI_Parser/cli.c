@@ -99,7 +99,7 @@ void CLI_Init(void)
  */
 int32_t CLI_Add_Command(CLI_Command_t *command_def)
 {
-    CLI_ASSERT(command_def, "NULL Passed");
+    CLI_ASSERT(command_def, "command_def is NULL");
     CLI_ASSERT(Command_Count < CLI_MAX_COMMANDS, "MAX Command count reached");
 
     if (Command_Count < CLI_MAX_COMMANDS && command_def != NULL)
@@ -135,8 +135,8 @@ uint8_t CLI_Process_Command(const char *cli_in_buffer,
                             char *cli_out_buffer,
                             const uint16_t cli_out_max)
 {
-    CLI_ASSERT(cli_in_buffer, "NULL Passed");
-    CLI_ASSERT(cli_out_buffer, "NULL Passed");
+    CLI_ASSERT(cli_in_buffer, "cli_in_buffer is NULL");
+    CLI_ASSERT(cli_out_buffer, "cli_out_buffer is NULL");
 
     uint8_t is_command_valid = 0;
     uint8_t xreturn = 0;
@@ -204,9 +204,9 @@ void CLI_Parse_Arguments(const char *cli_in_buffer,
                          uint8_t *argc,
                          const char *argv[])
 {
-    CLI_ASSERT(cli_in_buffer, "NULL Passed");
-    CLI_ASSERT(argc, "NULL Passed");
-    CLI_ASSERT(argv, "NULL Passed");
+    CLI_ASSERT(cli_in_buffer, "cli_in_buffer is NULL");
+    CLI_ASSERT(argc, "argc is NULL");
+    CLI_ASSERT(argv, "argv is NULL");
 
     uint8_t argc_temp = 0;
     /** arg 0 is input command */

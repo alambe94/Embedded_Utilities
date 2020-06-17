@@ -81,7 +81,7 @@ extern void Menu_Get_Event(Menu_Event_t *event);
  */
 int32_t Menu_Add_Page(Menu_Page_t *page)
 {
-    MENU_ASSERT(page, "NULL Passed");
+    MENU_ASSERT(page, "page is NULL");
     MENU_ASSERT(Menu_Page_Count < MENU_MAX_PAGES, "MAX Page count reached");
 
     uint8_t page_valid_flag = 1;
