@@ -398,35 +398,72 @@ uint8_t List_Pop(List_Node_t **head, void **data)
 
 /**
  * @brief list as queue, push data into the queue
- * @param head head of the list acting as queue
+ * @param q head and tail of the list acting as queue
  * @param data data to be queued
  * @retval return 1 if success else 0
  */
-uint8_t List_Enqueue(List_Node_t **head, void *data)
+uint8_t List_Enqueue(List_Queue_t *q, void *data)
 {
-    LIST_ASSERT(head, "NULL Passed");
+    LIST_ASSERT(q, "NULL Passed");
     LIST_ASSERT(data, "NULL Passed");
 
-    return List_Add_At_End(head, List_New_Node(data));
+    uint8_t xreturn = 0;
+
+    if (q != NULL && data != NULL)
+    {
+        List_Node_t *new_node = List_New_Node(data);
+
+        if (new_node != NULL)
+        {
+            xreturn = 1;
+            /** if this is the first push */
+            if (q->Head == NULL)
+            {
+                q->Head = new_node;
+            }
+            if (q->Tail != NULL)
+            {
+                q->Tail->Next = new_node;
+            }
+            /** update tail */
+            q->Tail = new_node;
+        }
+    }
+
+    return xreturn;
 }
 
 /**
  * @brief list as queue, enqueue data from queue
- * @param head head of the list acting as queue
+ * @param q head and tail of the list acting as queue
  * @param data where data will be retrieved
  * @retval return 1 if success else 0
  */
-uint8_t List_Dequeue(List_Node_t **head, void **data)
+uint8_t List_Dequeue(List_Queue_t *q, void **data)
 {
-    LIST_ASSERT(head, "NULL Passed");
+    LIST_ASSERT(q, "NULL Passed");
     LIST_ASSERT(data, "NULL Passed");
 
-    if (head != NULL && *head != NULL)
+    uint8_t xreturn = 0;
+
+    if (q != NULL && data != NULL)
     {
-        *data = (*head)->Data;
+        if (q->Head != NULL)
+        {
+            xreturn = 1;
+
+            *data = q->Head->Data;
+            List_Node_t *temp = q->Head;
+            q->Head = q->Head->Next;
+            if (q->Head == NULL)
+            {
+                q->Tail = NULL;
+            }
+            free(temp);
+        }
     }
 
-    return List_Delete_From_Top(head);
+    return xreturn;
 }
 
 /**
@@ -440,9 +477,12 @@ uint16_t List_Get_Count(List_Node_t **head)
 
     uint16_t count = 0;
 
-    for (List_Node_t *temp = *head; temp != NULL; temp = temp->Next)
+    if (head != NULL)
     {
-        count++;
+        for (List_Node_t *temp = *head; temp != NULL; temp = temp->Next)
+        {
+            count++;
+        }
     }
 
     return count;

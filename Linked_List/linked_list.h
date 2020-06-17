@@ -33,6 +33,14 @@ typedef struct List_Node_t
 
 } List_Node_t;
 
+/** list as queue structure */
+typedef struct List_Queue_t
+{
+    List_Node_t *Head;
+    List_Node_t *Tail;
+
+} List_Queue_t;
+
 List_Node_t *List_New_Node(void *data);
 List_Node_t *List_Find_Node(List_Node_t **head, void *data);
 
@@ -48,8 +56,8 @@ uint8_t List_Delete_All(List_Node_t **head);
 uint8_t List_Push(List_Node_t **head, void *data);
 uint8_t List_Pop(List_Node_t **head, void **data);
 
-uint8_t List_Enqueue(List_Node_t **head, void *data);
-uint8_t List_Dequeue(List_Node_t **head, void **data);
+uint8_t List_Enqueue(List_Queue_t *q, void *data);
+uint8_t List_Dequeue(List_Queue_t *q, void **data);
 
 uint16_t List_Get_Count(List_Node_t **head);
 

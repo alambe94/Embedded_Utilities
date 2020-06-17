@@ -10,8 +10,8 @@ void List_Assersions();
 void main()
 {
     //Test();
-    List_As_Stack_Test();
-    //List_As_Queue_Test();
+    //List_As_Stack_Test();
+    List_As_Queue_Test();
     //List_Assersions();
 }
 
@@ -133,6 +133,7 @@ void List_As_Stack_Test()
     List_Push(&head, "19");
     List_Push(&head, "20");
 
+    /* data on heap */
     for (uint16_t i = 21; i < 50000; i++)
     {
         char *buf = malloc(6);
@@ -148,38 +149,38 @@ void List_As_Stack_Test()
 
 void List_As_Queue_Test()
 {
-    List_Node_t *head = NULL;
+    List_Queue_t Queue = {.Head = NULL, .Tail = NULL};
     void *data;
 
-    List_Enqueue(&head, "1");
-    List_Enqueue(&head, "2");
-    List_Enqueue(&head, "3");
-    List_Enqueue(&head, "4");
-    List_Enqueue(&head, "5");
-    List_Enqueue(&head, "6");
-    List_Enqueue(&head, "7");
-    List_Enqueue(&head, "8");
-    List_Enqueue(&head, "9");
-    List_Enqueue(&head, "10");
-    List_Enqueue(&head, "11");
-    List_Enqueue(&head, "12");
-    List_Enqueue(&head, "13");
-    List_Enqueue(&head, "14");
-    List_Enqueue(&head, "15");
-    List_Enqueue(&head, "16");
-    List_Enqueue(&head, "17");
-    List_Enqueue(&head, "18");
-    List_Enqueue(&head, "19");
-    List_Enqueue(&head, "20");
+    List_Enqueue(&Queue, "1");
+    List_Enqueue(&Queue, "2");
+    List_Enqueue(&Queue, "3");
+    List_Enqueue(&Queue, "4");
+    List_Enqueue(&Queue, "5");
+    List_Enqueue(&Queue, "6");
+    List_Enqueue(&Queue, "7");
+    List_Enqueue(&Queue, "8");
+    List_Enqueue(&Queue, "9");
+    List_Enqueue(&Queue, "10");
+    List_Enqueue(&Queue, "11");
+    List_Enqueue(&Queue, "12");
+    List_Enqueue(&Queue, "13");
+    List_Enqueue(&Queue, "14");
+    List_Enqueue(&Queue, "15");
+    List_Enqueue(&Queue, "16");
+    List_Enqueue(&Queue, "17");
+    List_Enqueue(&Queue, "18");
+    List_Enqueue(&Queue, "19");
+    List_Enqueue(&Queue, "20");
 
     for (uint16_t i = 21; i < 50000; i++)
     {
         char *buf = malloc(6);
         snprintf(buf, 6, "%d", i);
-        List_Enqueue(&head, buf);
+        List_Enqueue(&Queue, buf);
     }
 
-    while (List_Dequeue(&head, &data))
+    while (List_Dequeue(&Queue, &data))
     {
         printf("%s\n", data);
     }
