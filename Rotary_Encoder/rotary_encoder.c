@@ -33,7 +33,7 @@
 #define MAX_ENCODERS 3
 
 /** enable disable assert */
-#define USE_ENCODER_ASSERT 1
+#define ENCODER_USE_ASSERT 1
 
 /** milliseconds in single tick */
 #define ENCODER_MS_IN_TICK 1
@@ -48,9 +48,9 @@
 #define ENCODER_RESET_TICK (1000 / ENCODER_SCAN_TICK)
 
 /**
- * @brief assert implemenation, set USE_ENCODER_ASSERT to 1 to enable assert
+ * @brief assert implemenation, set ENCODER_USE_ASSERT to 1 to enable assert
  */
-#if (USE_ENCODER_ASSERT == 1)
+#if (ENCODER_USE_ASSERT == 1)
 #include "stdio.h"
 #define ENCODER_ASSERT(expr, msg) ((expr) ? (void)0U : Encoder_Assert(msg, "rotary_encoder.c", __LINE__))
 static void Encoder_Assert(char *msg, char *file, uint32_t line)
@@ -82,7 +82,7 @@ extern uint32_t Encoder_Get_Tick();
  * @retval return encoder ID (index of encoder in registred list)
  * @note adjust MAX_ENCODERS accordingly
  */
-int32_t Encoder_Add(Encoder_Struct_t *handle)
+int8_t Encoder_Add(Encoder_Struct_t *handle)
 {
     ENCODER_ASSERT(handle, "handle is NULL");
     ENCODER_ASSERT(Encoder_Count < MAX_ENCODERS, "MAX Encoder count reached");

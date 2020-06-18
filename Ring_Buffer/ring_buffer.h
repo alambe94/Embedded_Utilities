@@ -39,7 +39,9 @@ typedef struct Ring_Buffer_t
 
 void Ring_Buffer_Init(Ring_Buffer_t *handle, uint8_t *buffer, uint8_t element_size, uint32_t max_elements);
 void Ring_Buffer_Flush(Ring_Buffer_t *handle);
+
 uint32_t Ring_Buffer_Get_Count(Ring_Buffer_t *handle);
+
 uint8_t Ring_Buffer_Is_Full(Ring_Buffer_t *handle);
 uint8_t Ring_Buffer_Is_Empty(Ring_Buffer_t *handle);
 uint8_t Ring_Buffer_Put(Ring_Buffer_t *handle, void *buffer);

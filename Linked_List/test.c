@@ -10,7 +10,7 @@ void List_Assersions();
 void main()
 {
     //Test();
-    //List_As_Stack_Test();
+    List_As_Stack_Test();
     List_As_Queue_Test();
     //List_Assersions();
 }
@@ -173,6 +173,7 @@ void List_As_Queue_Test()
     List_Enqueue(&Queue, "19");
     List_Enqueue(&Queue, "20");
 
+    /* data on heap */
     for (uint16_t i = 21; i < 50000; i++)
     {
         char *buf = malloc(6);

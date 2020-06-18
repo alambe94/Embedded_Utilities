@@ -185,6 +185,7 @@ int32_t Evaluate_Expression(const char *str)
     {
         str++;
     }
+
     return Parse_Expression((EXP_Handle_t *)&str);
 }
 

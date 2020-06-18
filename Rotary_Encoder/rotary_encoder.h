@@ -30,13 +30,13 @@ typedef struct Encoder_Struct_t
 {
 	uint8_t Encoder_Pin_A_State;
 	uint8_t Encoder_Pin_B_State;
-	uint32_t Encoder_Time_Stamp;
 	int16_t Encoder_Count;
+	uint32_t Encoder_Time_Stamp;
 
-	/** enable clock, configure as gpio as input */
+	/** enable clock, configure gpio as input */
 	void (*Encoder_Init)(void);
 
-	/** return pin A & pin Bstate */
+	/** return pin A & pin B state */
 	uint8_t (*Encoder_Read_Pin_A)(void);
 	uint8_t (*Encoder_Read_Pin_B)(void);
 
@@ -46,6 +46,6 @@ void Encoder_Loop(void);
 void Encoder_Reset_Count(Encoder_Struct_t *handle);
 void Encoder_Set_Count(Encoder_Struct_t *handle, int16_t count);
 int16_t Encoder_Get_Count(Encoder_Struct_t *handle);
-int32_t Encoder_Add(Encoder_Struct_t *Encoder_Struct_handle);
+int8_t Encoder_Add(Encoder_Struct_t *Encoder_Struct_handle);
 
 #endif /* ROTARY_ENCODER_H_ */

@@ -364,6 +364,28 @@ List_Node_t *List_Find_Node(List_Node_t **head, void *data)
 }
 
 /**
+ * @brief returns number on nodes in list
+ * @param head head of the list
+ * @retval count number of nodes
+ */
+uint32_t List_Get_Count(List_Node_t **head)
+{
+    LIST_ASSERT(head, "head is NULL");
+
+    uint32_t count = 0;
+
+    if (head != NULL)
+    {
+        for (List_Node_t *temp = *head; temp != NULL; temp = temp->Next)
+        {
+            count++;
+        }
+    }
+
+    return count;
+}
+
+/**
  * @brief list as stack, push data on top of the stack
  * @param head head of the list acting as stack
  * @param data data to be push onto stack
@@ -464,26 +486,4 @@ uint8_t List_Dequeue(List_Queue_t *q, void **data)
     }
 
     return xreturn;
-}
-
-/**
- * @brief returns number on nodes in list
- * @param head head of the list
- * @retval count number of nodes
- */
-uint16_t List_Get_Count(List_Node_t **head)
-{
-    LIST_ASSERT(head, "head is NULL");
-
-    uint16_t count = 0;
-
-    if (head != NULL)
-    {
-        for (List_Node_t *temp = *head; temp != NULL; temp = temp->Next)
-        {
-            count++;
-        }
-    }
-
-    return count;
 }
