@@ -82,7 +82,7 @@ extern uint32_t Encoder_Get_Tick();
  * @retval return encoder ID (index of encoder in registred list)
  * @note adjust MAX_ENCODERS accordingly
  */
-int8_t Encoder_Add(Encoder_Struct_t *handle)
+int32_t Encoder_Add(Encoder_Struct_t *handle)
 {
     ENCODER_ASSERT(handle, "handle is NULL");
     ENCODER_ASSERT(Encoder_Count < MAX_ENCODERS, "MAX Encoder count reached");
@@ -207,11 +207,11 @@ void Encoder_Loop(void)
  * @retval return encoder count
  * @note if handle is NULL, returns 0
  */
-int16_t Encoder_Get_Count(Encoder_Struct_t *handle)
+int32_t Encoder_Get_Count(Encoder_Struct_t *handle)
 {
     ENCODER_ASSERT(handle, "handle is NULL");
 
-    int16_t count = 0;
+    int32_t count = 0;
 
     if (handle != NULL)
     {

@@ -45,7 +45,7 @@ typedef struct Encoder_Struct_t
 void Encoder_Loop(void);
 void Encoder_Reset_Count(Encoder_Struct_t *handle);
 void Encoder_Set_Count(Encoder_Struct_t *handle, int16_t count);
-int16_t Encoder_Get_Count(Encoder_Struct_t *handle);
-int8_t Encoder_Add(Encoder_Struct_t *Encoder_Struct_handle);
+int32_t Encoder_Get_Count(Encoder_Struct_t *handle);
+int32_t Encoder_Add(Encoder_Struct_t *Encoder_Struct_handle);
 
 #endif /* ROTARY_ENCODER_H_ */

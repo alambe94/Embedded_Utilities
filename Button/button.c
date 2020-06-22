@@ -84,7 +84,7 @@ extern uint32_t Button_Get_Tick();
  * @retval return button ID (index of button in registred list), return -1 on failure
  * @note adjust MAX_BUTTONS accordingly
  */
-int8_t Button_Add(Button_Struct_t *handle)
+int32_t Button_Add(Button_Struct_t *handle)
 {
     BUTTON_ASSERT(handle, "handle is NULL");
     BUTTON_ASSERT(Button_Count < MAX_BUTTONS, "MAX Button count reached");

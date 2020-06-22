@@ -64,7 +64,7 @@ typedef struct Button_Struct_t
 
 void Button_Loop(void);
 void Button_Reset_Count(Button_Struct_t *handle);
-int8_t Button_Add(Button_Struct_t *handle);
+int32_t Button_Add(Button_Struct_t *handle);
 uint8_t Button_Get_Clicked_Count(Button_Struct_t *handle);
 Button_Event_t Button_Get_Status(Button_Struct_t *handle);
 
