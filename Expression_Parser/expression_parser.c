@@ -3,7 +3,7 @@
  *      https://en.wikipedia.org/wiki/Recursive_descent_parser
  */
 /*
- * file version V0.0.0
+ * file version V0.0.3
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -54,7 +54,7 @@ typedef struct EXP_Handle_t
 
 static float Parse_Expression(EXP_Handle_t *handle);
 
-static uint32_t power_0f_10(uint8_t power)
+static uint32_t power_Of_10(uint8_t power)
 {
     uint32_t result = 1;
 
@@ -81,7 +81,7 @@ static char get(EXP_Handle_t *handle)
     return *(handle->EXP)++;
 }
 
-float number(EXP_Handle_t *handle)
+static float number(EXP_Handle_t *handle)
 {
     float result = get(handle) - '0';
     uint8_t dp_count = 0; /** decimal point */
