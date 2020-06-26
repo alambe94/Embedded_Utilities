@@ -95,7 +95,7 @@ static float number(EXP_Handle_t *handle)
         }
         if (dp_count)
         {
-            result = result + (float)(get(handle) - '0') / power_0f_10(dp_count);
+            result = result + (float)(get(handle) - '0') / power_Of_10(dp_count);
             dp_count++;
         }
         else
