@@ -24,6 +24,25 @@
  *
  */
 
+/**
+ * Change Log
+ *
+ * ***V0.0.1***
+ * 1. simplified orignal code
+ * 2. removed double pointer, intead using wrapped struct
+ *
+ * ***V0.0.2***
+ * 1. added Validate_Expression()
+ * 2. added Evaluate_Expression2()
+ *
+ * ***V0.0.3***
+ * 1. added floating point support
+ * 2. added suffix such as u, m, K, M (micro, millis, kilo, mega)
+ *
+ */
+
+/** standard includes */
+
 /** parser includes */
 #include "expression_parser.h"
 
@@ -33,7 +52,19 @@ typedef struct EXP_Handle_t
     const char *EXP;
 } EXP_Handle_t;
 
-static int32_t Parse_Expression(EXP_Handle_t *handle);
+static float Parse_Expression(EXP_Handle_t *handle);
+
+static uint32_t power_0f_10(uint8_t power)
+{
+    uint32_t result = 1;
+
+    while (power--)
+    {
+        result *= 10;
+    }
+
+    return result;
+}
 
 static char peek(EXP_Handle_t *handle)
 {
@@ -50,19 +81,60 @@ static char get(EXP_Handle_t *handle)
     return *(handle->EXP)++;
 }
 
-static int32_t number(EXP_Handle_t *handle)
+float number(EXP_Handle_t *handle)
 {
-    int32_t result = get(handle) - '0';
+    float result = get(handle) - '0';
+    uint8_t dp_count = 0; /** decimal point */
 
-    while (peek(handle) >= '0' && peek(handle) <= '9')
+    while (peek(handle) >= '0' && peek(handle) <= '9' || peek(handle) == '.')
     {
-        result = 10 * result + get(handle) - '0';
+        if (peek(handle) == '.')
+        {
+            get(handle);
+            dp_count = 1;
+        }
+        if (dp_count)
+        {
+            result = result + (float)(get(handle) - '0') / power_0f_10(dp_count);
+            dp_count++;
+        }
+        else
+        {
+            result = 10 * result + get(handle) - '0';
+        }
+    }
+    /** micro */
+    if (peek(handle) == 'u')
+    {
+        get(handle);
+        result /= 1000000;
+    }
+
+    /** milli */
+    if (peek(handle) == 'm')
+    {
+        get(handle);
+        result /= 1000;
+    }
+
+    /** Kilo */
+    if (peek(handle) == 'K')
+    {
+        get(handle);
+        result *= 1000;
+    }
+
+    /** Mega */
+    if (peek(handle) == 'M')
+    {
+        get(handle);
+        result *= 1000000;
     }
 
     return result;
 }
 
-static int32_t factor(EXP_Handle_t *handle)
+static float factor(EXP_Handle_t *handle)
 {
     if (peek(handle) >= '0' && peek(handle) <= '9')
     {
@@ -71,7 +143,7 @@ static int32_t factor(EXP_Handle_t *handle)
     else if (peek(handle) == '(')
     {
         get(handle); // '('
-        int32_t result = Parse_Expression(handle);
+        float result = Parse_Expression(handle);
         get(handle); // ')'
         return result;
     }
@@ -84,9 +156,9 @@ static int32_t factor(EXP_Handle_t *handle)
     return 0; // error
 }
 
-static int32_t term(EXP_Handle_t *handle)
+static float term(EXP_Handle_t *handle)
 {
-    int32_t result = factor(handle);
+    float result = factor(handle);
 
     while (peek(handle) == '*' || peek(handle) == '/')
     {
@@ -103,9 +175,9 @@ static int32_t term(EXP_Handle_t *handle)
     return result;
 }
 
-static int32_t Parse_Expression(EXP_Handle_t *handle)
+static float Parse_Expression(EXP_Handle_t *handle)
 {
-    int32_t result = term(handle);
+    float result = term(handle);
 
     while (peek(handle) == '+' || peek(handle) == '-')
     {
@@ -135,6 +207,7 @@ uint8_t Validate_Expression(const char *str)
 
     while (*str)
     {
+        /** space is used as delimeter */
         if (*str == ' ')
         {
             break;
@@ -160,6 +233,13 @@ uint8_t Validate_Expression(const char *str)
                 xreturn = 0;
                 break;
             }
+        } /** add chars here to ignore theme */
+        else if (*str == 'u' || *str == 'm' || *str == 'K' || *str == 'M')
+        {
+            // u->micro
+            // m->milli
+            // K->kilo
+            // M->Mega
         }
         else
         {
@@ -178,7 +258,7 @@ uint8_t Validate_Expression(const char *str)
     return xreturn;
 }
 
-int32_t Evaluate_Expression(const char *str)
+float Evaluate_Expression(const char *str)
 {
     /* skip '=' if any*/
     if (*str == '=')
@@ -189,7 +269,7 @@ int32_t Evaluate_Expression(const char *str)
     return Parse_Expression((EXP_Handle_t *)&str);
 }
 
-uint8_t Evaluate_Expression2(const char *str, int32_t *value, uint8_t *sign)
+uint8_t Evaluate_Expression2(const char *str, float *value, uint8_t *sign)
 {
     uint8_t xreturn = 0;
 
@@ -197,7 +277,7 @@ uint8_t Evaluate_Expression2(const char *str, int32_t *value, uint8_t *sign)
     {
         xreturn = 1;
 
-        int32_t val = Evaluate_Expression(str);
+        float val = Evaluate_Expression(str);
 
         if (val >= 0)
         {
