@@ -54,7 +54,7 @@ typedef struct EXP_Handle_t
 
 static float Parse_Expression(EXP_Handle_t *handle);
 
-static uint32_t power_Of_10(uint8_t power)
+static uint32_t power_of_10(uint8_t power)
 {
     uint32_t result = 1;
 
@@ -86,7 +86,7 @@ static float number(EXP_Handle_t *handle)
     float result = get(handle) - '0';
     uint8_t dp_count = 0; /** decimal point */
 
-    while (peek(handle) >= '0' && peek(handle) <= '9' || peek(handle) == '.')
+    while ((peek(handle) >= '0' && peek(handle) <= '9') || peek(handle) == '.')
     {
         if (peek(handle) == '.')
         {
@@ -95,7 +95,7 @@ static float number(EXP_Handle_t *handle)
         }
         if (dp_count)
         {
-            result = result + (float)(get(handle) - '0') / power_Of_10(dp_count);
+            result = result + (float)(get(handle) - '0') / power_of_10(dp_count);
             dp_count++;
         }
         else
@@ -103,30 +103,28 @@ static float number(EXP_Handle_t *handle)
             result = 10 * result + get(handle) - '0';
         }
     }
-    /** micro */
+
     if (peek(handle) == 'u')
     {
+        /** micro */
         get(handle);
         result /= 1000000;
     }
-
-    /** milli */
-    if (peek(handle) == 'm')
+    else if (peek(handle) == 'm')
     {
+        /** milli */
         get(handle);
         result /= 1000;
     }
-
-    /** Kilo */
-    if (peek(handle) == 'K')
+    else if (peek(handle) == 'K')
     {
+        /** Kilo */
         get(handle);
         result *= 1000;
     }
-
-    /** Mega */
-    if (peek(handle) == 'M')
+    else if (peek(handle) == 'M')
     {
+        /** Mega */
         get(handle);
         result *= 1000000;
     }
