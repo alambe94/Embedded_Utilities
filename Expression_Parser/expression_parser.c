@@ -1,9 +1,5 @@
-/**
- *      https://stackoverflow.com/questions/9329406/evaluating-arithmetic-expressions-from-string-in-c
- *      https://en.wikipedia.org/wiki/Recursive_descent_parser
- */
 /*
- * file version V0.0.3
+ * file version V0.0.4
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -25,10 +21,15 @@
  */
 
 /**
+ *      https://stackoverflow.com/questions/9329406/evaluating-arithmetic-expressions-from-string-in-c
+ *      https://en.wikipedia.org/wiki/Recursive_descent_parser
+ */
+
+/**
  * Change Log
  *
  * ***V0.0.1***
- * 1. simplified orignal code
+ * 1. simplified original code
  * 2. removed double pointer, intead using wrapped struct
  *
  * ***V0.0.2***
@@ -36,8 +37,12 @@
  * 2. added Evaluate_Expression2()
  *
  * ***V0.0.3***
- * 1. added floating point support
+ * 1. added floating point evaluation
  * 2. added suffix such as u, m, K, M (micro, millis, kilo, mega)
+ *
+ * ***V0.0.4***
+ * 1. added e, E power of 10 exponential
+ * 2. added Evaluate_Expression3(), Evaluate_Expression4() for truncated int32_t output
  *
  */
 
@@ -52,15 +57,31 @@ typedef struct EXP_Handle_t
     const char *EXP;
 } EXP_Handle_t;
 
-static float Parse_Expression(EXP_Handle_t *handle);
+static float power_of_10(int8_t power);
+static char peek(EXP_Handle_t *handle);
+static char get(EXP_Handle_t *handle);
+static float number(EXP_Handle_t *handle);
+static float factor(EXP_Handle_t *handle);
+static float term(EXP_Handle_t *handle);
+static float parse_expression(EXP_Handle_t *handle);
 
-static uint32_t power_of_10(uint8_t power)
+static float power_of_10(int8_t power)
 {
-    uint32_t result = 1;
+    float result = 1;
 
-    while (power--)
+    if (power > 0)
     {
-        result *= 10;
+        while (power--)
+        {
+            result *= 10;
+        }
+    }
+    else
+    {
+        while (power++)
+        {
+            result /= 10;
+        }
     }
 
     return result;
@@ -68,9 +89,10 @@ static uint32_t power_of_10(uint8_t power)
 
 static char peek(EXP_Handle_t *handle)
 {
+    /** space is used as delimeter */
     if (*(handle->EXP) == ' ')
     {
-        return *++(handle->EXP);
+        return '\0';
     }
 
     return *(handle->EXP);
@@ -128,6 +150,11 @@ static float number(EXP_Handle_t *handle)
         get(handle);
         result *= 1000000;
     }
+    else if (peek(handle) == 'e' || peek(handle) == 'E')
+    {
+        get(handle);
+        result *= power_of_10(factor(handle));
+    }
 
     return result;
 }
@@ -141,7 +168,7 @@ static float factor(EXP_Handle_t *handle)
     else if (peek(handle) == '(')
     {
         get(handle); // '('
-        float result = Parse_Expression(handle);
+        float result = parse_expression(handle);
         get(handle); // ')'
         return result;
     }
@@ -173,7 +200,7 @@ static float term(EXP_Handle_t *handle)
     return result;
 }
 
-static float Parse_Expression(EXP_Handle_t *handle)
+static float parse_expression(EXP_Handle_t *handle)
 {
     float result = term(handle);
 
@@ -232,12 +259,13 @@ uint8_t Validate_Expression(const char *str)
                 break;
             }
         } /** add chars here to ignore theme */
-        else if (*str == 'u' || *str == 'm' || *str == 'K' || *str == 'M')
+        else if (*str == 'u' || *str == 'm' || *str == 'K' || *str == 'M' || *str == 'e' || *str == 'E')
         {
             // u->micro
             // m->milli
             // K->kilo
             // M->Mega
+            // e, E power of 10
         }
         else
         {
@@ -256,6 +284,9 @@ uint8_t Validate_Expression(const char *str)
     return xreturn;
 }
 
+/**
+ * return evaluated expression in float
+ */
 float Evaluate_Expression(const char *str)
 {
     /* skip '=' if any*/
@@ -264,9 +295,12 @@ float Evaluate_Expression(const char *str)
         str++;
     }
 
-    return Parse_Expression((EXP_Handle_t *)&str);
+    return parse_expression((EXP_Handle_t *)&str);
 }
 
+/**
+ * return evaluated expression in float, sign and magnitude separately
+ */
 uint8_t Evaluate_Expression2(const char *str, float *value, uint8_t *sign)
 {
     uint8_t xreturn = 0;
@@ -289,6 +323,28 @@ uint8_t Evaluate_Expression2(const char *str, float *value, uint8_t *sign)
 
         *value = val;
     }
+
+    return xreturn;
+}
+
+/**
+ * return evaluated expression truncated to int32_t
+ */
+int32_t Evaluate_Expression3(const char *str)
+{
+    return (int32_t)Evaluate_Expression(str);
+}
+
+/**
+ * return evaluated expression truncated to int32_t, sign and magnitude separately
+ */
+uint8_t Evaluate_Expression4(const char *str, int32_t *value, uint8_t *sign)
+{
+    uint8_t xreturn = 0;
+    float tmp = 0;
+
+    xreturn = Evaluate_Expression2(str, &tmp, sign);
+    *value = (int32_t)tmp;
 
     return xreturn;
 }
