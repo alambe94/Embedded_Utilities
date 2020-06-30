@@ -25,6 +25,10 @@ void main()
     char *exp15 = "10e2/1E4+5.5";
     char *exp16 = "1e-5+74";
 
+    char *exp17 = "2^12";
+    char *exp18 = "0^12";
+    char *exp19 = "1^12";
+
     if (Validate_Expression(exp1))
     {
         printf("exp1 = %.4f\n", Evaluate_Expression(exp1));
@@ -51,4 +55,8 @@ void main()
 
     printf("exp15 = %.5f\n", Evaluate_Expression(exp15));
     printf("exp16 = %.5f\n", Evaluate_Expression(exp16));
+
+    printf("exp17 = %.5f\n", Evaluate_Expression(exp17));
+    printf("exp18 = %.5f\n", Evaluate_Expression(exp18));
+    printf("exp19 = %.5f\n", Evaluate_Expression(exp19));
 }

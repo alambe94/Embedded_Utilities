@@ -38,11 +38,13 @@
  *
  * ***V0.0.3***
  * 1. added floating point evaluation
- * 2. added suffix such as u, m, K, M (micro, millis, kilo, mega)
+ * 2. added suffix such as 'u', 'm', 'K', 'M' (micro, millis, kilo, mega)
  *
  * ***V0.0.4***
- * 1. added e, E power of 10 exponential
- * 2. added Evaluate_Expression3(), Evaluate_Expression4() for truncated int32_t output
+ * 1. added 'e', 'E' power of 10 exponential
+ *
+ * ***V0.0.5***
+ * 1. added '^' integer power of
  *
  */
 
@@ -57,7 +59,7 @@ typedef struct EXP_Handle_t
     const char *EXP;
 } EXP_Handle_t;
 
-static float power_of_10(int8_t power);
+static float power_of(float n, int8_t power);
 static char peek(EXP_Handle_t *handle);
 static char get(EXP_Handle_t *handle);
 static float number(EXP_Handle_t *handle);
@@ -65,22 +67,27 @@ static float factor(EXP_Handle_t *handle);
 static float term(EXP_Handle_t *handle);
 static float parse_expression(EXP_Handle_t *handle);
 
-static float power_of_10(int8_t power)
+static float power_of(float n, int8_t power)
 {
     float result = 1;
+
+    if (n == 0.0)
+    {
+        return 0.0;
+    }
 
     if (power > 0)
     {
         while (power--)
         {
-            result *= 10;
+            result *= n;
         }
     }
     else
     {
         while (power++)
         {
-            result /= 10;
+            result /= n;
         }
     }
 
@@ -117,7 +124,7 @@ static float number(EXP_Handle_t *handle)
         }
         if (dp_count)
         {
-            result = result + (float)(get(handle) - '0') / power_of_10(dp_count);
+            result = result + (float)(get(handle) - '0') / power_of(10, dp_count);
             dp_count++;
         }
         else
@@ -153,7 +160,13 @@ static float number(EXP_Handle_t *handle)
     else if (peek(handle) == 'e' || peek(handle) == 'E')
     {
         get(handle);
-        result *= power_of_10(factor(handle));
+        result *= power_of(10, factor(handle));
+    }
+    else if (peek(handle) == '^')
+    {
+        /** power raise */
+        get(handle);
+        result = power_of(result, factor(handle));
     }
 
     return result;
@@ -259,13 +272,14 @@ uint8_t Validate_Expression(const char *str)
                 break;
             }
         } /** add chars here to ignore theme */
-        else if (*str == 'u' || *str == 'm' || *str == 'K' || *str == 'M' || *str == 'e' || *str == 'E')
+        else if (*str == 'u' || *str == 'm' || *str == 'K' || *str == 'M' || *str == 'e' || *str == 'E' || *str == '^')
         {
             // u->micro
             // m->milli
             // K->kilo
             // M->Mega
             // e, E power of 10
+            // power raise to
         }
         else
         {
@@ -323,28 +337,6 @@ uint8_t Evaluate_Expression2(const char *str, float *value, uint8_t *sign)
 
         *value = val;
     }
-
-    return xreturn;
-}
-
-/**
- * return evaluated expression truncated to int32_t
- */
-int32_t Evaluate_Expression3(const char *str)
-{
-    return (int32_t)Evaluate_Expression(str);
-}
-
-/**
- * return evaluated expression truncated to int32_t, sign and magnitude separately
- */
-uint8_t Evaluate_Expression4(const char *str, int32_t *value, uint8_t *sign)
-{
-    uint8_t xreturn = 0;
-    float tmp = 0;
-
-    xreturn = Evaluate_Expression2(str, &tmp, sign);
-    *value = (int32_t)tmp;
 
     return xreturn;
 }
