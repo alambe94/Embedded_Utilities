@@ -1,6 +1,6 @@
 /** Non blocking stm32 uart tx and rx stream with dma */
 
-#include<stdarg.h>
+#include <stdarg.h>
 
 #include "rb.h"
 
@@ -25,6 +25,59 @@ void UART_Init(void)
 }
 
 /**
+ * @brief send character
+ * @param data char to be sent
+ */
+void UART_Send_Char(char data)
+{
+    RB_Put_Char(&UART_TX_RB, data);
+
+    /** uart is not transmitting */
+    if (HAL_UART_GetState(&huart1) & HAL_USART_STATE_BUSY_TX != HAL_USART_STATE_BUSY_TX)
+    {
+        /** call complete ISR manually to trigger start of new transaction*/
+        UART_TX_CMPLT_ISR();
+    }
+}
+
+/**
+ * @brief send bytes buffer
+ * @param data input buffer
+ * @param number of chars to send
+ **/
+void UART_Send_Bytes(char *data, uint32_t count)
+{
+    RB_Put_Chars(&UART_TX_RB, data, count);
+
+    /** uart is not transmitting */
+    if (HAL_UART_GetState(&huart1) & HAL_USART_STATE_BUSY_TX != HAL_USART_STATE_BUSY_TX)
+    {
+        /** call complete ISR manually to trigger start of new transaction*/
+        UART_TX_CMPLT_ISR();
+    }
+}
+
+/**
+ * @brief send null terminated string
+ * @param data input buffer
+ * @param number of chars to send
+ **/
+void UART_Send_String(char *str)
+{
+    while (*str)
+    {
+        RB_Put_Char(&UART_TX_RB, *str++);
+    }
+
+    /** uart is not transmitting */
+    if (HAL_UART_GetState(&huart1) & HAL_USART_STATE_BUSY_TX != HAL_USART_STATE_BUSY_TX)
+    {
+        /** call complete ISR manually to trigger start of new transaction*/
+        UART_TX_CMPLT_ISR();
+    }
+}
+
+/**
  * @brief wrapper printf around uart
  * @param fmt formatted string
  **/
@@ -37,23 +90,20 @@ void UART_Printf(const char *fmt, ...)
     uint32_t count = vsnprintf(buffer, sizeof(buffer), fmt, args);
     va_end(args);
 
-    /** uart is not transmitting */
-    if (HAL_USART_GetState(&huart1) != HAL_USART_STATE_BUSY_TX)
-    {
-        /** start new transaction*/
-        HAL_USART_Transmit_DMA(&huart1, buffer, count);
-    }
-    else
-    {
-        RB_Put_Chars(&UART_TX_RB, buffer, count, 1000);
-    }
+    RB_Put_Chars(&UART_TX_RB, buffer, count, 1000);
 
+    /** uart is not transmitting */
+    if (HAL_UART_GetState(&huart1) & HAL_USART_STATE_BUSY_TX != HAL_USART_STATE_BUSY_TX)
+    {
+        /** call complete ISR manually to trigger start of new transaction*/
+        UART_TX_CMPLT_ISR();
+    }
 }
 
 /**
- * @brief number of chars received in uart
+ * @brief number of chars received in uart buffer
  */
-uint16_t UART_Get_Count()
+uint32_t UART_Get_Count()
 {
     RB_Get_Count(&UART_RX_RB);
 }
@@ -71,9 +121,43 @@ int UART_Get_Char()
  * @brief get number chars 
  * retval 0 if no char
  */
-uint16_t UART_Get_Chars(uint8_t *buffer, uint16_t count)
+uint32_t UART_Get_Chars(uint8_t *buffer, uint32_t count, uint32_t timeout)
 {
-    return RB_Get_Chars(&UART_RX_RB, buffer, count, 1000);
+    return RB_Get_Chars(&UART_RX_RB, buffer, count, timeout);
+}
+
+/**
+ * @brief get chars upto '\r'
+ * @param timeout
+ * @retval number chars received
+ */
+uint32_t UART_Get_Line(char *buffer, uint32_t timeout)
+{
+    uint32_t tick_now = HAL_GetTick();
+    uint32_t tick_timeout = tick_now + timeout;
+    uint32_t rx_chars_cnt = 0;
+    int rx_char;
+
+    while (tick_now < tick_timeout)
+    {
+        tick_now = HAL_GetTick();
+        rx_char = UART_Get_Char(1);
+        if (rx_char != -1)
+        {
+            /** carriage return found */
+            if (rx_char == '\r')
+            {
+                buffer[rx_chars_cnt] = '\0';
+                break;
+            }
+            if (rx_char != '\n') /** ignore '\n' if any */
+            {
+                buffer[rx_chars_cnt++] = rx_char;
+            }
+        }
+    }
+
+    return rx_chars_cnt;
 }
 
 /**************************** ISR ***********************/
@@ -87,14 +171,13 @@ void UART_TX_CMPLT_ISR()
     /** if ring buffer in not empty, start next transaction */
     if (count)
     {
-        for (uint16_t i=0; i<count; i++)
+        for (uint32_t i = 0; i < count; i++)
         {
             buffer[i] = RB_Get_Char(&UART_TX_RB);
         }
 
         HAL_USART_Transmit_DMA(&huart1, buffer, count);
     }
-
 }
 
 /** call from USARTx_IRQHandler in stm32fxxx_it.c*/
