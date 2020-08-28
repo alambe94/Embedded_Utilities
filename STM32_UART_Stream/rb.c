@@ -1,4 +1,6 @@
-#include"rb.h"
+#include "rb.h"
+
+#include "stm32f1xx_hal.h"
 
 /**
  * @brief Initialize ring buffer
@@ -57,7 +59,7 @@ uint32_t RB_Get_Count(RB_t *handle)
  */
 uint32_t RB_Get_Free(RB_t *handle)
 {
-    handle->RB_Size-RB_Get_Count(handle);
+    return handle->RB_Size - RB_Get_Count(handle);
 }
 
 /**
@@ -116,12 +118,12 @@ uint32_t RB_Put_Chars(RB_t *handle, char *buff, uint32_t cnt, uint32_t timeout)
     uint32_t tick_timeout = tick_now + timeout;
     uint32_t count = cnt;
 
-    while (RB_Get_Free(handle) < cnt && (tick_now < tick_timeout))
+    while (RB_Get_Free(handle) < cnt && (tick_now <= tick_timeout))
     {
         tick_now = HAL_GetTick();
     }
 
-    if (tick_now >= tick_timeout)
+    if (tick_now > tick_timeout)
     {
         /** get available slots within timeout */
         count = RB_Get_Free(handle);
@@ -148,12 +150,12 @@ uint32_t RB_Get_Chars(RB_t *handle, char *buff, uint32_t cnt, uint32_t timeout)
     uint32_t tick_timeout = tick_now + timeout;
     uint32_t count = cnt;
 
-    while (RB_Get_Count(handle) < cnt && (tick_now < tick_timeout))
+    while (RB_Get_Count(handle) < cnt && (tick_now <= tick_timeout))
     {
         tick_now = HAL_GetTick();
     }
 
-    if (tick_now >= tick_timeout)
+    if (tick_now > tick_timeout)
     {
         /** get bytes available chars within timeout */
         count = RB_Get_Count(handle);
