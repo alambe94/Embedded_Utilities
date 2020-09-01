@@ -61,7 +61,7 @@ void CMD_Parse_ARGS(char *cmd, uint8_t *argc, char *argv[])
 
         while ((*cmd) == ' ')
         {
-            cmd++;
+            *cmd++ = '\0';
         }
 
         if (*cmd != 0x00)
@@ -88,10 +88,33 @@ void CMD_Help_CB(uint8_t argc, char *argv[])
 
 void CMD_Time_CB(uint8_t argc, char *argv[])
 {
-	for(uint32_t i=0; i<argc; i++)
-	{
-
-	}
+    for (uint32_t i = 0; i < argc; i++)
+    {
+        if (strncmp(argv[i], "year=") == 0)
+        {
+            uint8_t year = atoi(argv[i] + 5);
+        }
+        else if (strncmp(argv[i], "month=") == 0)
+        {
+            uint8_t month = atoi(argv[i] + 6);
+        }
+        else if (strncmp(argv[i], "date=") == 0)
+        {
+            uint8_t date = atoi(argv[i] + 5);
+        }
+        else if (strncmp(argv[i], "hours=") == 0)
+        {
+            uint8_t hours = atoi(argv[i] + 6);
+        }
+        else if (strncmp(argv[i], "minutes=") == 0)
+        {
+            uint8_t minutes = atoi(argv[i] + 8);
+        }
+        else if (strncmp(argv[i], "seconds=") == 0)
+        {
+            uint8_t seconds = atoi(argv[i] + 8);
+        }
+    }
 }
 
 void CMD_Calibrate_ADC_CB(uint8_t argc, char *argv[])

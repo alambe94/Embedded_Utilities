@@ -147,7 +147,7 @@ uint8_t CLI_Process_Command(const char *cli_in_buffer,
     {
         cmd = Command_List[i];
 
-        CLI_ASSERT(cli_out_buffer, "NULL found in list");
+        CLI_ASSERT(cmd, "NULL found in list");
 
         uint16_t cmd_len = cmd->CLI_Command_Length;
 
