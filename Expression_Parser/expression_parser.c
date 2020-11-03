@@ -1,5 +1,5 @@
 /*
- * file version V0.0.4
+ * file version V0.0.5
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -96,7 +96,7 @@ static float power_of(float n, int8_t power)
 
 static char peek(EXP_Handle_t *handle)
 {
-    /** space is used as delimeter */
+    /** space is used as delimiter */
     if (*(handle->EXP) == ' ')
     {
         return '\0';
@@ -245,7 +245,7 @@ uint8_t Validate_Expression(const char *str)
 
     while (*str)
     {
-        /** space is used as delimeter */
+        /** space is used as delimiter */
         if (*str == ' ')
         {
             break;
